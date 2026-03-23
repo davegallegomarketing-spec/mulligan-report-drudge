@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE MULLIGAN REPORT</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Courier,'Courier New',monospace;background:#faf6ef;color:#1a1a1a;text-align:center;font-size:15px;line-height:1.6;max-width:500px;margin:0 auto;}
+  a{color:#1b4332;font-weight:bold;text-decoration:underline;}
+  a:hover{color:#b8860b;}
+  .siren{display:inline-block;animation:pulse .5s infinite alternate;}
+  @keyframes pulse{from{opacity:1}to{opacity:.2}}
+  .crawl{background:#0f2b1f;overflow:hidden;border-bottom:2px solid #b8860b;height:26px;}
+  .crawl-inner{display:flex;align-items:center;height:100%;animation:cr 60s linear infinite;width:max-content;white-space:nowrap;}
+  @keyframes cr{to{transform:translateX(-50%)}}
+  .ci{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#d4cbb5;padding:0 6px;text-transform:uppercase;white-space:nowrap;}
+  .ci .g{color:#4ade80;}.ci .r{color:#c0392b;}.ci .y{color:#d4a828;}
+  .csp{color:#2d6a4f;padding:0 4px;font-size:11px;}
+  .optin{background:#1b4332;padding:8px 14px;font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.55);border-bottom:1px solid #2d6a4f;}
+  .optin strong{color:#faf6ef;}.optin a{color:#d4a828;text-decoration:underline;cursor:pointer;}
+  .hero{padding:12px 14px 10px;border-bottom:1px solid #c9bfa8;}
+  .hero-img{width:100%;display:block;border:2px solid #1b4332;margin-bottom:8px;background:#0f2b1f;min-height:120px;object-fit:cover;}
+  .hero-hl{font-family:Arial,Helvetica,sans-serif;font-size:24px;font-weight:bold;color:#c0392b;text-transform:uppercase;line-height:1.1;cursor:pointer;}
+  .hero-cluster{margin-top:4px;font-size:14px;line-height:1.8;}
+  .hero-cluster a{font-weight:bold;color:#1b4332;text-decoration:underline;}
+  .hero-cluster .hot{color:#c0392b;text-transform:uppercase;}
+  .hero-cluster .sub{color:#1b4332;}
+  .hero-cluster em{font-family:Georgia,serif;color:#666;font-size:13px;text-decoration:none;}
+  .logo-bar{padding:10px 0 8px;border-bottom:1px solid #c9bfa8;}
+  .logo-bar .logo{font-family:'Times New Roman',Times,Georgia,serif;font-size:42px;font-weight:bold;color:#1b4332;letter-spacing:.05em;line-height:1;text-shadow:2px 2px 0px #c9bfa8,3px 3px 0px rgba(15,43,31,.15);}
+  .logo-bar .tagline{font-family:Georgia,serif;font-size:12px;font-style:italic;color:#999;margin-top:2px;}
+  .util-bar{position:sticky;top:0;z-index:100;padding:8px 10px;border-bottom:2px solid #b8860b;background:#ebe4d6;font-family:Arial,sans-serif;font-size:12px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+  .util-bar a{font-size:12px;color:#1b4332;font-weight:bold;text-transform:uppercase;padding:0 5px;white-space:nowrap;text-decoration:underline;}
+  .util-bar .sep{color:#c9bfa8;text-decoration:none;}
+  .feed{padding:10px 14px;text-align:center;}
+  .d{display:block;color:#c9bfa8;font-size:12px;margin:8px 0;letter-spacing:.3em;}
+  .sl{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.12em;display:block;margin:10px 0 4px;}
+  a.L{display:block;padding:5px 0;font-size:15px;font-weight:bold;color:#1b4332;text-decoration:underline;}
+  a.L:hover{color:#b8860b;}
+  a.H{display:block;padding:5px 0;font-size:18px;font-weight:bold;color:#c0392b;text-transform:uppercase;text-decoration:underline;}
+  a.H:hover{color:#b8860b;}
+  a.B{display:block;padding:4px 0;font-size:16px;font-weight:bold;color:#1b4332;text-transform:uppercase;text-decoration:underline;}
+  .src{font-size:12px;color:#999;font-style:italic;display:block;margin-top:-2px;margin-bottom:2px;}
+  .aside{font-family:Georgia,serif;font-style:italic;font-size:13px;color:#666;font-weight:normal;display:block;}
+  .sm{font-size:13px;}.sm a{font-size:13px;color:#1b4332;text-decoration:underline;}
+  .ht{text-align:left;border-left:3px solid #b8860b;padding:8px 12px;margin:4px 0;background:rgba(184,134,11,.04);font-family:Georgia,serif;font-size:14px;font-style:italic;color:#333;line-height:1.5;}
+  .ht .tag{font-family:Arial,sans-serif;font-size:11px;font-style:normal;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:3px;}
+  .ps{background:#ebe4d6;border:1px solid #c9bfa8;padding:8px 12px;margin:6px 0;font-size:13px;}
+  .ps .badge{font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#b8860b;letter-spacing:.12em;text-transform:uppercase;}
+  .ps a{color:#1b4332;text-decoration:underline;}
+  .sb{background:#1b4332;padding:12px 14px;margin:8px 0;border:2px solid #b8860b;}
+  .sb .t{font-family:Arial,sans-serif;font-size:14px;font-weight:bold;color:#faf6ef;text-transform:uppercase;letter-spacing:.06em;}
+  .sb .s{font-size:12px;color:rgba(255,255,255,.45);font-style:italic;font-family:Georgia,serif;}
+  .sb input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:8px 10px;color:#fff;font-size:14px;font-family:Courier,monospace;margin-top:4px;width:60%;}
+  .sb button{background:#b8860b;color:#0f2b1f;font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:8px 16px;border:none;text-transform:uppercase;cursor:pointer;}
+  .dir{font-size:12px;line-height:1.5;color:#999;margin-top:8px;padding-top:8px;border-top:1px solid #ddd5c4;}
+  .dir a{font-size:12px;color:#1b4332;font-weight:bold;text-decoration:underline;}
+  .app-promo{background:#0f2b1f;border:2px solid #b8860b;padding:10px;margin:8px 0;color:#d4cbb5;font-size:13px;line-height:1.5;}
+  .app-promo strong{color:#d4a828;}.app-promo a{color:#d4a828;text-decoration:underline;}
+  .vc{font-size:12px;color:#999;margin-top:8px;padding-top:6px;border-top:1px solid #ddd5c4;}
+  .vc b{color:#1b4332;}
+  .footer{background:#0f2b1f;padding:16px;border-top:2px solid #b8860b;color:rgba(255,255,255,.3);font-size:12px;}
+  .footer a{color:#b8860b;}
+  .ao{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,43,31,.93);z-index:9999;overflow-y:auto;}
+  .ao.active{display:block;}
+  .ai{max-width:500px;margin:0 auto;background:#faf6ef;position:relative;min-height:100vh;}
+  .ai-mast{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#0f2b1f;border-bottom:2px solid #b8860b;position:sticky;top:0;z-index:10;}
+  .ai-mast-logo{font-family:Courier,monospace;font-size:14px;font-weight:bold;color:#faf6ef;letter-spacing:.04em;text-transform:uppercase;}
+  .ai-mast-logo em{color:#b8860b;font-style:normal;}
+  .ai-mast-back{font-family:Courier,monospace;font-size:11px;font-weight:bold;color:#d4a828;cursor:pointer;text-transform:uppercase;}
+  .ai-content{padding:20px 16px 16px;text-align:center;}
+  .ai .acat{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:#b8860b;margin-bottom:6px;}
+  .ai .atit{font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:bold;color:#1a1a1a;line-height:1.15;margin-bottom:10px;text-transform:uppercase;text-align:center;}
+  .ai .asb{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:2px solid #1a1a1a;border-bottom:1px solid #c9bfa8;margin-bottom:16px;gap:8px;}
+  .ai .asb-source{font-family:Courier,monospace;font-size:12px;color:#999;}
+  .ai .asb-source strong{color:#1b4332;}
+  .ai .asl{font-family:Courier,monospace;font-size:11px;font-weight:bold;color:#1b4332;text-transform:uppercase;padding:5px 10px;border:1px solid #1b4332;text-decoration:none;display:inline-block;white-space:nowrap;}
+  .ai .asl:hover{background:#1b4332;color:#faf6ef;}
+  .ai .atx{font-family:Courier,monospace;font-size:15px;color:#333;line-height:1.75;text-align:left;}
+  .ai .atx p{margin-bottom:14px;}
+  .ai-cta{background:#1b4332;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:2px solid #b8860b;}
+  .ai-cta-text{font-family:Courier,monospace;font-size:12px;color:rgba(255,255,255,.6);}
+  .ai-cta-text strong{color:#faf6ef;}
+  .ai-cta-btn{background:#b8860b;color:#0f2b1f;font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:8px 16px;text-transform:uppercase;border:none;cursor:pointer;white-space:nowrap;}
+  .ai-nav{display:flex;justify-content:space-between;padding:14px 16px;border-top:1px solid #c9bfa8;background:#ebe4d6;}
+  .ai-nav a{font-family:Courier,monospace;font-size:13px;font-weight:bold;color:#1b4332;cursor:pointer;text-transform:uppercase;}
+  .so{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,43,31,.93);z-index:10001;overflow-y:auto;}
+  .so.active{display:flex;justify-content:center;align-items:center;}
+  .si{background:#faf6ef;border:2px solid #b8860b;padding:24px 18px;max-width:360px;width:92%;text-align:center;position:relative;}
+  .sv{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,43,31,.95);z-index:10000;justify-content:center;align-items:center;flex-direction:column;}
+</style>
+</head>
+<body>
+<div class="crawl"><div class="crawl-inner">
+  <span class="ci"><span class="y">⛳ PLAYERS R3</span></span><span class="csp">|</span>
+  <span class="ci">ÅBERG <span class="g">-12</span></span><span class="csp">|</span>
+  <span class="ci">SCHAUFFELE <span class="g">-10</span></span><span class="csp">|</span>
+  <span class="ci">THOMAS <span class="g">-8</span></span><span class="csp">|</span>
+  <span class="ci">McILROY <span class="r">WD</span></span><span class="csp">|</span>
+  <span class="ci"><span class="y">ODDS: ÅBERG +175</span></span><span class="csp">|</span>
+  <span class="ci"><span class="y">MASTERS 27 DAYS</span></span><span class="csp">|</span>
+  <span class="ci"><span class="y">⛳ PLAYERS R3</span></span><span class="csp">|</span>
+  <span class="ci">ÅBERG <span class="g">-12</span></span><span class="csp">|</span>
+  <span class="ci">SCHAUFFELE <span class="g">-10</span></span><span class="csp">|</span>
+  <span class="ci">THOMAS <span class="g">-8</span></span><span class="csp">|</span>
+  <span class="ci">McILROY <span class="r">WD</span></span><span class="csp">|</span>
+  <span class="ci"><span class="y">ODDS: ÅBERG +175</span></span><span class="csp">|</span>
+  <span class="ci"><span class="y">MASTERS 27 DAYS</span></span><span class="csp">|</span>
+</div></div>
+<div class="optin"><strong>Get inside the ropes.</strong> Free daily golf briefing. <a onclick="openSubscribe()">SUBSCRIBE →</a></div>
+<div class="hero">
+  <img class="hero-img" src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774301136/05e3c737-b9ea-4018-b8b6-0c1b64dd531e_lk7yn1.jpg" alt="Tiger Woods">
+  <div class="hero-hl" onclick="openArticle('tiger')"><span class="siren">🚨</span> TIGER TOLD AUGUSTA TO SET AN EXTRA PLACE. <span class="siren">🚨</span></div>
+  <div class="hero-cluster">
+    <a class="hot" href="#" onclick="openArticle('tiger');return false;">MASTERS CONFIRMED...</a><br>
+    <a class="sub" href="#" onclick="openArticle('scheffler');return false;">SCHEFFLER LEFT $3.6M ON THE GREEN...</a><br>
+    <a class="sub" href="#" onclick="openArticle('mcilroy');return false;">McILROY WD — BACK ISSUES...</a>
+  </div>
+</div>
+<div class="logo-bar">
+  <div class="logo">THE MULLIGAN REPORT</div>
+  <div class="tagline">Curated, never automated · Monday, March 23, 2026</div>
+</div>
+<div class="util-bar">
+  <a href="#">LEADERBOARD</a><span class="sep"> | </span><a href="#">TEE TIMES</a><span class="sep"> | </span><a href="#">ODDS</a><span class="sep"> | </span><a href="#">WITB</a><span class="sep"> | </span><a href="#">TV</a><span class="sep"> | </span><a href="#">WEATHER</a><span class="sep"> | </span><a href="#">FANTASY</a><span class="sep"> | </span><a href="#">DRAFTKINGS</a>
+</div>
+<div class="feed">
+  <div style="text-align:left;margin:4px 0 8px;">
+    <input type="text" id="searchInput" placeholder="Search stories..." onkeydown="if(event.key==='Enter')searchStories()" style="font-family:Courier,monospace;font-size:14px;padding:8px 10px;border:1px solid #c9bfa8;background:#fff;width:68%;color:#1a1a1a;">
+    <button onclick="searchStories()" style="font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:8px 14px;border:1px solid #1b4332;background:#faf6ef;color:#1b4332;cursor:pointer;">SEARCH</button>
+    <div id="searchResults" style="font-size:12px;color:#999;margin-top:4px;text-align:left;display:none;"></div>
+  </div>
+  <span class="d">---</span>
+  <a class="H" href="#" onclick="openArticle('scheffler');return false;">SCHEFFLER LEFT $3.6M ON THE PUTTING GREEN. LITERALLY.</a>
+  <span class="aside">*178th in putting. +2.1 tee-to-green...*</span>
+  <span class="src">ESPN Golf · 4h ago</span>
+  <a class="L" href="#" onclick="openArticle('rahm');return false;">Rahm Might Be Done With LIV. Exit Clause Interesting...</a>
+  <a class="L" href="#" onclick="openArticle('mcilroy');return false;" style="color:#c0392b;">McILROY PULLS OUT. MASTERS PREP IN JEOPARDY...</a>
+  <a class="L" href="#" onclick="openArticle('morikawa');return false;">Morikawa Felt Something Pop on Range. Withdrew...</a>
+  <span class="aside">*Two WDs in one morning at Sawgrass...*</span>
+  <span class="d">---</span>
+  <a class="L" href="#" onclick="openArticle('schauffele');return false;">Schauffele's 65 Best Round of Saturday. Nobody Noticed...</a>
+  <a class="L" href="#" onclick="openArticle('jt');return false;">Thomas Back From Surgery. Suddenly Contending...</a>
+  <span class="aside">*"Not saying I'm back. That's a jinx."*</span>
+  <a class="L" href="#" onclick="openArticle('usga');return false;">USGA Changed 3 Rules That Will Make Golfers Furious...</a>
+  <a class="L" href="#" onclick="openArticle('livfox');return false;">LIV Fox TV Deal. $800M. Game Changer...</a>
+  <span class="d">---</span>
+  <a class="L" href="#">Spieth Two Late Doubles — Still Fighting...</a>
+  <a class="L" href="#">Koepka 3 Birdies in a Row. Charging Sunday...</a>
+  <a class="L" href="#" style="color:#c0392b;">HOVLAND MISSED CUT BY ONE. CADDIE CHANGE?</a>
+  <a class="L" href="#">Cantlay Benched Caddie Mid-Round. Shot 31 on Back...</a>
+  <span class="d">---</span>
+  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306732/0341222c-b14d-403b-a9a8-ceebe55d32ed_edzbnt.jpg" style="width:220px;height:220px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
+  <span class="d">---</span>
+  <a class="H" href="#" onclick="openArticle('drivers2026');return false;">EVERY 2026 DRIVER TESTED. ONE BLEW THEM AWAY.</a>
+  <span class="aside">*Ping G440 Max. 267 yds. Not TaylorMade.*</span>
+  <span class="src">MyGolfSpy · 3h ago</span>
+  <a class="L" href="#" onclick="openArticle('training');return false;" style="color:#c0392b;">$29 TRAINING AID OUTSELLING CLUBS ON AMAZON...</a>
+  <a class="L" href="#" onclick="openArticle('kirkland');return false;">Kirkland $28 vs Pro V1. Spin Numbers Awkward...</a>
+  <a class="L" href="#" onclick="openArticle('callaway-deal');return false;" style="color:#c0392b;">CALLAWAY IRONS $499. HALF PRICE. WON'T LAST...</a>
+  <a class="L" href="#" onclick="openArticle('garmin');return false;">Garmin S72 Reads Greens. Worth $700?</a>
+  <a class="L" href="#" onclick="openArticle('scotty');return false;">Scotty $600 Putter Sold Out in 11 Minutes...</a>
+  <span class="d">---</span>
+  <div class="ps"><div class="badge">/// PRO PICK ///</div> TaylorMade Qi35 — "Best since M2." <a href="#" onclick="openArticle('qi35');return false;">REVIEW →</a></div>
+  <div class="ps"><div class="badge">/// PRO PICK ///</div> Callaway AI Smoke Max — $549. <a href="#" onclick="openArticle('callaway');return false;">REVIEW →</a></div>
+  <span class="d">---</span>
+  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306734/9394050e-e9b9-47a9-a845-f7fb505e05b3_m0ijlx.jpg" style="width:220px;height:220px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
+  <span class="d">---</span>
+  <div class="sb"><div class="t">Enjoying the Front 9?</div><div class="s">Tomorrow's round, before your tee time.</div><input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button></div>
+  <span class="d">---</span>
+  <a class="H" href="#" onclick="openArticle('slice');return false;">3-SECOND DRILL KILLED MY SLICE. GONE IN A MONTH.</a>
+  <span class="src">Rick Shiels · 890K views</span>
+  <a class="L" href="#" onclick="openArticle('grip');return false;">Your Grip Is Too Tight. Can't Hit a Fairway...</a>
+  <a class="L" href="#" onclick="openArticle('gravity');return false;">"Gravity Drop" Video Hit 4 Million Views...</a>
+  <a class="L" href="#" onclick="openArticle('flop');return false;">Flop Shot Explained in 60 Seconds...</a>
+  <a class="L" href="#" onclick="openArticle('arccos');return false;">10,000 Drives. #1 Problem: Where You Aim...</a>
+  <a class="L" href="#" onclick="openArticle('putting');return false;">Pros Miss 40% of 8-Footers. Stop Being Mad...</a>
+  <span class="d">---</span>
+  <a class="L" href="#">The One Drill Every Coach Agrees On...</a>
+  <a class="L" href="#">Stop Hitting Up on Driver. Do This Instead...</a>
+  <a class="L" href="#">Butch Harmon's 3 Rules for Breaking 90...</a>
+  <span class="d">---</span>
+  <span class="sl">▶ CADDIE'S PICK — VIDEO</span>
+  <a class="H" href="#" style="font-size:16px;">$50 CLUBS VS $5,000 SETUP. GUESS WHO WON.</a>
+  <span class="src">Good Good · 1.2M views · 18:42</span>
+  <span class="aside">*"Was that driver worth it? Probably not."*</span>
+  <div class="sm" style="margin-top:4px;">
+    <a href="#">Rick Shiels Breaks 75 With ONE Club...</a><br>
+    <a href="#">Tiger's Augusta Warm-Up. No Commentary...</a><br>
+    <a href="#">Bob Does Sports Plays Sawgrass Drunk...</a>
+  </div>
+  <span class="d">---</span>
+  <a class="H" href="#" onclick="openArticle('korda');return false;">KORDA: 7 STRAIGHT WINS. THEN FOUNDERS CUP.</a>
+  <span class="src">LPGA.com · 5h ago</span>
+  <span class="aside">*"Streaks end. I'm proud of the last four months."*</span>
+  <a class="L" href="#" onclick="openArticle('womensgrowth');return false;">Women's Golf: Biggest Growth Decade Ever...</a>
+  <a class="L" href="#" onclick="openArticle('rosezhang');return false;">Rose Zhang 22 With More Wins Than Most Vets...</a>
+  <a class="L" href="#" onclick="openArticle('womensclubs');return false;">Women's Clubs Cost Same but Perform Worse...</a>
+  <a class="L" href="#">Lydia Ko Returns From Maternity Leave. Shot 67...</a>
+  <a class="L" href="#" style="color:#c0392b;">ANNIKA: $5M SCHOLARSHIP FUND FOR WOMEN IN GOLF...</a>
+  <span class="d">---</span>
+  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306733/4f9b0e4f-d0b5-4101-9694-2d6f01c55058_dectqz.jpg" style="width:220px;height:220px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
+  <span class="d">---</span>
+  <span class="sl">↻ MULLIGAN OF THE WEEK</span>
+  <a class="B" href="#">HE SHOT 92. CAME BACK SUNDAY. SHOT 71. WON BY 4.</a>
+  <span class="aside">*Wife told him to quit. Then he stripped it to basics...*</span>
+  <span class="src">Reddit r/golf · u/desertfairway</span>
+  <span class="d">---</span>
+  <span class="sl">🔥 19TH HOLE — HOT TAKES</span>
+  <div class="ht"><span class="tag">ON SCHEFFLER:</span>Best ball-striker alive. Can't make a 5-footer. That's a design flaw.</div>
+  <div class="ht"><span class="tag">ON LIV MERGER:</span>Two divorced parents at a Chili's. Kids just want to play golf.</div>
+  <div class="ht"><span class="tag">ON KIRKLAND BALL:</span>$28 performs within 3% of $52. The Pro V1 is a status symbol.</div>
+  <div class="ht"><span class="tag">ON TIGER:</span>50 years old, rebuilt leg, and the world stops when he posts on Instagram.</div>
+  <div class="ht"><span class="tag">ON PACE OF PLAY:</span>USGA cut ball search to 2 min but the real problem is 4 practice swings before shot 7 on a par 3.</div>
+  <span class="d">---</span>
+  <span class="sl">✏️ THE ROUGH SKETCH</span>
+  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg" style="width:240px;height:240px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;cursor:pointer;" onclick="openSketchViewer(0)">
+  <span class="aside">"The rules say you get a free drop. The tree says otherwise."</span>
+  <span class="d">---</span>
+  <span class="sl">🏛️ TODAY IN GOLF HISTORY</span>
+  <a class="L" href="#" style="font-size:14px;">1986: Nicklaus. Augusta. 46. Greatest Sunday Ever.</a>
+  <a class="L" href="#" style="font-size:14px;">1997: Tiger. Augusta. 21. Won by 12. Changed Golf.</a>
+  <a class="L" href="#" style="font-size:14px;">2019: Tiger Again. 43. Nobody Thought Possible.</a>
+  <span class="d">---</span>
+  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306730/35d3abcc-6dc6-4a02-99c3-0dd4c00ead1d_hzhvzf.jpg" style="width:220px;height:220px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
+  <span class="d">---</span>
+  <span class="sl">🎙 GOLF CULTURE</span>
+  <a class="L" href="#">20 Best Golf Movies Ranked...</a>
+  <a class="L" href="#">Unwritten Rules Nobody Tells You...</a>
+  <a class="L" href="#">Best Golf Books of 2026...</a>
+  <span class="d">---</span>
+  <span class="sl">WHAT'S IN THE BAG</span>
+  <div class="sm"><a href="#">Åberg WITB — Sawgrass Setup</a><br><a href="#">Tiger's Augusta Bag</a><br><a href="#">Korda WITB — 7-Win Setup</a></div>
+  <span class="d">---</span>
+  <span class="sl">🎰 BETTING BOARD</span>
+  <div class="sm"><a href="#">Åberg +175 — Value or Trap?</a><br><a href="#">Schauffele Top 5 at -110</a><br><a href="#">Thomas +1200 Contrarian Play</a></div>
+  <span class="d">---</span>
+  <span class="sl">TRENDING</span>
+  <div class="sm"><a href="#">Masters 2026 Odds</a> · <a href="#">GPS Watches</a> · <a href="#">LIV vs PGA</a> · <a href="#">Tiger Timeline</a> · <a href="#">Ball Compression</a></div>
+  <span class="d">---</span>
+  <span class="sl">PODCASTS</span>
+  <div class="sm"><a href="#">NO LAYING UP</a> · <a href="#">THE FRIED EGG</a> · <a href="#">CHASING SCRATCH</a> · <a href="#">ERIK ANDERS LANG</a></div>
+  <span class="d">---</span>
+  <div class="sm"><a href="#">GOLF TWITTER TRENDING...</a><br><a href="#">REDDIT R/GOLF — HOT POSTS</a></div>
+  <span class="d">---</span>
+  <div class="sb"><div class="t">Don't miss tomorrow's round</div><div class="s">Free. Every morning.</div><input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button></div>
+  <span class="d">---</span>
+  <div class="app-promo"><strong>THE MULLIGAN REPORT 2026</strong><br>FIRST ALERTS · LEADERBOARD<br><a href="#">iPHONE</a> · <a href="#">ANDROID</a></div>
+  <span class="d">---</span>
+  <div class="vc">VISITS 3/23/2026<br><b>47,291</b> / 24H · <b>892,103</b> / 31D</div>
+  <span class="d">---</span>
+  SEND TIPS TO THE MULLIGAN REPORT
+  <div style="text-align:left;margin:4px 0;">
+    <textarea id="tipBox" placeholder="Got a tip? Drop it here..." style="font-family:Courier,monospace;font-size:14px;padding:8px;border:1px solid #c9bfa8;background:#fff;width:100%;height:100px;resize:vertical;color:#1a1a1a;"></textarea>
+    <button onclick="submitTip()" style="font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:6px 14px;border:1px solid #1b4332;background:#faf6ef;color:#1b4332;cursor:pointer;margin-top:3px;">SUBMIT</button>
+    <div id="tipConfirm" style="font-size:12px;color:#1b4332;font-weight:bold;margin-top:4px;display:none;"></div>
+  </div>
+  <span class="d">---</span>
+  EMAIL: <a href="mailto:tips@mulliganreport.com" style="font-size:12px;">TIPS@MULLIGANREPORT.COM</a>
+  <span class="d">---</span>
+  <div class="dir">
+    <a href="#">GOLF DIGEST</a> · <a href="#">ESPN GOLF</a> · <a href="#">PGA TOUR</a> · <a href="#">GOLF CHANNEL</a> · <a href="#">GOLFWRX</a> · <a href="#">MYGOLFSPY</a> · <a href="#">LPGA</a> · <a href="#">LIV GOLF</a> · <a href="#">USGA</a><br><br>
+    <a href="#">RICK SHIELS</a> · <a href="#">GOOD GOOD</a> · <a href="#">GOLF SIDEKICK</a> · <a href="#">BOB DOES SPORTS</a><br><br>
+    <a href="#">ARCHIVES</a> · <a href="#">PRIVACY</a> · <a href="#">TERMS</a> · <a href="#">ADVERTISE</a>
+  </div>
+</div>
+<div class="footer"><strong style="color:#b8860b;">THE MULLIGAN REPORT</strong> · Est. 2026<br>© 2026 The Mulligan Report</div>
+<div class="ao" id="articleOverlay" onclick="if(event.target===this)closeArticle()">
+  <div class="ai">
+    <div class="ai-mast"><div class="ai-mast-logo">THE MULLIGAN <em>REPORT</em></div><div class="ai-mast-back" onclick="closeArticle()">← BACK</div></div>
+    <div class="ai-content" id="articleBody"></div>
+    <div class="ai-cta"><div class="ai-cta-text"><strong>Like this?</strong> <em>Stories every morning.</em></div><button class="ai-cta-btn" onclick="closeArticle();openSubscribe();">SUBSCRIBE</button></div>
+    <div class="ai-nav"><a onclick="prevArticle()">← Previous</a><a onclick="nextArticle()">Next →</a></div>
+  </div>
+</div>
+<div class="so" id="subOverlay" onclick="if(event.target===this)closeSubscribe()">
+  <div class="si">
+    <button onclick="closeSubscribe()" style="position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;">✕</button>
+    <div style="font-family:'Times New Roman',serif;font-size:24px;font-weight:bold;color:#1b4332;">THE MULLIGAN REPORT</div>
+    <div style="font-family:Georgia,serif;font-size:12px;color:#999;font-style:italic;margin:3px 0 12px;">Every morning before your tee time.</div>
+    <input type="text" placeholder="Your email..." style="padding:10px;border:1px solid #c9bfa8;font-size:15px;width:65%;font-family:Courier,monospace;">
+    <button style="background:#1b4332;color:#d4a828;font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:10px 16px;border:none;text-transform:uppercase;cursor:pointer;">Subscribe</button>
+    <div style="font-size:12px;color:#999;margin-top:8px;">12,847 golfers · Free · Unsubscribe anytime</div>
+  </div>
+</div>
+<div class="sv" id="sketchViewer" onclick="if(event.target===this)closeSketchViewer()">
+  <button onclick="closeSketchViewer()" style="position:absolute;top:14px;right:18px;background:none;border:none;color:#faf6ef;font-size:22px;cursor:pointer;">✕</button>
+  <img id="sketchImg" src="" style="max-width:92%;max-height:75vh;border:2px solid #b8860b;">
+  <div id="sketchCap" style="font-family:Georgia,serif;font-size:14px;font-style:italic;color:#d4cbb5;margin-top:12px;text-align:center;max-width:90%;padding:0 10px;"></div>
+  <div id="sketchDate" style="font-size:12px;color:#b8860b;margin-top:4px;"></div>
+</div>
+<script>
+const articles=[
+  {id:'tiger',cat:'⛳ Masters · Tiger',title:"He's Back. Tiger Told Augusta to Set an Extra Place.",source:'Golf Digest',url:'https://www.golfdigest.com',time:'2h ago',body:`<p>Fourteen months of silence. Then at 6:47 AM, Tiger posted his green jacket on a locker at Augusta. Caption: "Fitting still fits."</p><p>4 million likes in 90 minutes. Every sportsbook adjusted Masters odds.</p><p>Woods has been practicing at Medalist for six weeks. Confirmed for all four Masters rounds.</p><p>"I've still got a few shots left that nobody's seen yet."</p>`},
+  {id:'scheffler',cat:'⛳ The Players · Stats',title:"Scheffler Left $3.6 Million on the Putting Green.",source:'ESPN Golf',url:'https://www.espn.com/golf/',time:'4h ago',body:`<p>Lost $3.6M this season to putting alone. 178th in SG: Putting. +2.1 tee-to-green — best in golf.</p><p>Converting 28% from 10-15ft (avg: 33%). 51% from 5-8ft (avg: 58%).</p>`},
+  {id:'rahm',cat:'⛳ LIV Golf',title:"Rahm Might Be Done With LIV.",source:'Golf Channel',url:'https://www.golfchannel.com',time:'6h ago',body:`<p>$300M deal has exit window if conditions not met by end of 2026.</p>`},
+  {id:'usga',cat:'⛳ Rules',title:"USGA Changed 3 Rules.",source:'USGA.org',url:'https://www.usga.org/rules',time:'8h ago',body:`<p><strong>1: Ball search 2 min.</strong></p><p><strong>2: Stroke-and-distance permanent.</strong></p><p><strong>3: Bunker rake modified.</strong></p>`},
+  {id:'slice',cat:'🏌️ Trending',title:"3-Second Drill Killed My Slice.",source:'Rick Shiels',url:'https://www.youtube.com/@RickShielsPGAGolf',time:'890K views',body:`<p>Close stance, grip lighter, one slow rehearsal. 12 amateurs: 14-yard avg slice reduction.</p>`},
+  {id:'qi35',cat:'🏷 Pro Pick',title:"TaylorMade Qi35 — Most Accurate Driver Tested.",source:'Golf Monthly',url:'https://www.golfmonthly.com/reviews/driver-reviews',time:'Review',body:`<p>26-yard dispersion. 168+ mph. $599. If accuracy is your priority, this is the one.</p><p style="font-size:13px;color:#999;font-style:italic;border-top:1px solid #ddd;padding-top:10px;margin-top:10px;">Pro Pick from The Mulligan Report.</p>`},
+  {id:'callaway',cat:'🏷 Pro Pick',title:"Callaway AI Smoke Max.",source:'Golf Monthly',url:'https://www.golfmonthly.com/reviews/driver-reviews',time:'Review',body:`<p>95% ball speed on mishits. 238 yds carry. $549. Most forgiving driver in 2026.</p>`},
+  {id:'schauffele',cat:'⛳ The Players',title:"Schauffele's 65 Was Best Round of Saturday.",source:'PGA Tour',url:'https://www.pgatour.com',time:'5h ago',body:`<p>14/14 fairways. 16/18 greens. 28 putts. "The course does not care about headlines."</p>`},
+  {id:'mcilroy',cat:'⛳ Injury',title:"McIlroy Pulls Out. Back Issues.",source:'Sky Sports',url:'https://www.skysports.com/golf',time:'3h ago',body:`<p>Withdrew citing back pain. Masters four weeks away. "Precautionary."</p>`},
+  {id:'jt',cat:'⛳ Comeback',title:"Thomas Contending After Surgery.",source:'Golf Digest',url:'https://www.golfdigest.com',time:'6h ago',body:`<p>Friday 66, Saturday 68, top 10. "Not saying I'm back. That's a jinx."</p>`},
+  {id:'morikawa',cat:'⛳ Injury',title:"Morikawa Pop on Range. Withdrew.",source:'Golf Week',url:'https://golfweek.usatoday.com',time:'5h ago',body:`<p>Back injury on range. MRI next week. Muscle strain.</p>`},
+  {id:'livfox',cat:'⛳ Business',title:"LIV Fox TV Deal. $800M.",source:'Front Office Sports',url:'https://frontofficesports.com',time:'2h ago',body:`<p>$800M over 5 years. Fox has NFL, MLB, FIFA. Real league now.</p>`},
+  {id:'grip',cat:'🏌️',title:"Your Grip Is Too Tight.",source:'GolfWRX',url:'https://www.golfwrx.com',time:'5h ago',body:`<p>Tour: 4/10 pressure. Amateur: 7/10. Two-finger test.</p>`},
+  {id:'gravity',cat:'🏌️',title:"Gravity Drop Hit 4M Views.",source:'Danny Maude',url:'https://www.youtube.com/@DannyMaudeGolf',time:'4M views',body:`<p>Lift, drop, turn. Mental reset for overthinking golfers.</p>`},
+  {id:'flop',cat:'🏌️',title:"Flop Shot in 60 Seconds.",source:'Golf Sidekick',url:'https://www.youtube.com/@GolfSidekick',time:'1.2M views',body:`<p>Open face. Feet left. Swing along foot line. Fear is the enemy.</p>`},
+  {id:'arccos',cat:'🏌️',title:"10,000 Drives. Aim Problem.",source:'Arccos',url:'https://www.arccosgolf.com',time:'1 day',body:`<p>Avg amateur aligns 7 yds right. Aim left edge. Fairways +18%.</p>`},
+  {id:'putting',cat:'🏌️',title:"Pros Miss 40% of 8-Footers.",source:'GolfWRX',url:'https://www.golfwrx.com',time:'12h ago',body:`<p>15ft: 25%. 20ft: 15%. 30ft: 7%. Proximity game.</p>`},
+  {id:'drivers2026',cat:'🏷',title:"Every 2026 Driver Tested.",source:'MyGolfSpy',url:'https://mygolfspy.com/best-drivers/',time:'3h ago',body:`<p>Ping G440 Max won. 267 yds, 28-yd dispersion.</p>`},
+  {id:'training',cat:'🏷',title:"$29 Aid Outselling Clubs.",source:'Amazon',url:'https://www.amazon.com/s?k=hackmotion+golf',time:'Affiliate',body:`<p>HackMotion Lite. Best $29 on your game.</p>`},
+  {id:'kirkland',cat:'🏷',title:"Kirkland $28 vs Pro V1.",source:'GolfWRX',url:'https://www.golfwrx.com',time:'1 day',body:`<p>Within 3%. More wedge spin. $28 vs $52.</p>`},
+  {id:'callaway-deal',cat:'🏷',title:"Callaway Irons $499.",source:'Golf.com',url:'https://www.golf.com',time:'2h ago',body:`<p>$999 to $499. Won't last.</p>`},
+  {id:'garmin',cat:'🏷',title:"Garmin S72. $700.",source:'MyGolfSpy',url:'https://mygolfspy.com',time:'8h ago',body:`<p>Green reading. 80% accurate. S42 does 80% at half price.</p>`},
+  {id:'scotty',cat:'🏷',title:"Scotty $600 Putter. 11 Min.",source:'Titleist',url:'https://www.titleist.com/scotty-cameron',time:'4h ago',body:`<p>2,000 putters. $1.2M in 11 min. eBay: $900+.</p>`},
+  {id:'korda',cat:'⛳ LPGA',title:"Korda: 7 Wins Then Founders Cup.",source:'LPGA.com',url:'https://www.lpga.com',time:'5h ago',body:`<p>T-37. "Streaks end. I'm proud."</p>`},
+  {id:'womensgrowth',cat:"⛳ Women's Golf",title:"Biggest Growth Decade.",source:'NGF',url:'https://www.ngf.org',time:'1 day',body:`<p>7.2M women. Up 42%. $2.1B equipment.</p>`},
+  {id:'rosezhang',cat:'⛳ LPGA',title:"Rose Zhang: 22, 5 Wins.",source:'Golf Channel',url:'https://www.golfchannel.com',time:'6h ago',body:`<p>Data scientist approach. 12 bpm above resting under pressure.</p>`},
+  {id:'womensclubs',cat:'⛳',title:"Women's Clubs Perform Worse.",source:'MyGolfSpy',url:'https://mygolfspy.com',time:'2 days',body:`<p>4.2% less speed. 6.8% less forgiveness. Same price.</p>`}
+];
+let cIdx=0;
+function openArticle(id){const i=articles.findIndex(a=>a.id===id);if(i===-1)return;cIdx=i;renderA(i);document.getElementById('articleOverlay').classList.add('active');document.body.style.overflow='hidden';}
+function closeArticle(){document.getElementById('articleOverlay').classList.remove('active');document.body.style.overflow='';}
+function renderA(i){const a=articles[i];const urlBtn=a.url?`<a href="${a.url}" target="_blank" rel="noopener" class="asl">READ ORIGINAL →</a>`:`<span class="asl" style="opacity:.4">READ ORIGINAL →</span>`;document.getElementById('articleBody').innerHTML=`<div class="acat">${a.cat}</div><div class="atit">${a.title}</div><div class="asb"><span class="asb-source"><strong>${a.source}</strong> · ${a.time}</span>${urlBtn}</div><div class="atx">${a.body}</div>`;document.getElementById('articleOverlay').scrollTop=0;}
+function prevArticle(){cIdx=(cIdx-1+articles.length)%articles.length;renderA(cIdx);}
+function nextArticle(){cIdx=(cIdx+1)%articles.length;renderA(cIdx);}
+function openSubscribe(){document.getElementById('subOverlay').classList.add('active');document.body.style.overflow='hidden';}
+function closeSubscribe(){document.getElementById('subOverlay').classList.remove('active');document.body.style.overflow='';}
+const sketches=[{src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg',cap:'The rules say you get a free drop. The tree says otherwise.',date:'March 15, 2026'}];
+function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
+function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
+function searchStories(){const q=document.getElementById('searchInput').value.trim().toLowerCase();const r=document.getElementById('searchResults');if(!q){r.style.display='none';return;}const m=articles.filter(a=>(a.title+' '+a.cat+' '+a.body).toLowerCase().includes(q));r.style.display='block';if(m.length>0){r.innerHTML=`<strong style="color:#1b4332;">${m.length} match${m.length>1?'es':''}</strong>`+m.slice(0,5).map(a=>`<a href="#" onclick="openArticle('${a.id}');return false;" style="display:block;padding:3px 0;font-size:13px;">${a.title}</a>`).join('');}else{r.innerHTML=`No results. Try: tiger, driver, LIV...`;}}
+function submitTip(){const t=document.getElementById('tipBox').value.trim();const c=document.getElementById('tipConfirm');if(!t){c.style.display='block';c.style.color='#c0392b';c.textContent='Write something first.';return;}c.style.display='block';c.style.color='#1b4332';c.textContent='⛳ TIP RECEIVED. The caddie is on it.';document.getElementById('tipBox').value='';setTimeout(()=>{c.style.display='none';},5000);}
+document.addEventListener('keydown',function(e){if(document.getElementById('articleOverlay').classList.contains('active')){if(e.key==='Escape')closeArticle();if(e.key==='ArrowLeft')prevArticle();if(e.key==='ArrowRight')nextArticle();}if(document.getElementById('sketchViewer').style.display==='flex'){if(e.key==='Escape')closeSketchViewer();}if(document.getElementById('subOverlay').classList.contains('active')){if(e.key==='Escape')closeSubscribe();}});
+</script>
+</body>
+</html>
