@@ -213,15 +213,11 @@
 <div class="cols" id="colsWrap">
 
 <!-- ═══ LINKPULSE LIVE FEED (dynamic, top of page) ═══ -->
-<div id="linkpulse-zone" style="grid-column:1/-1;display:none;padding:10px 10px 0;border-bottom:2px solid #b8860b;">
-  <div style="text-align:center;margin-bottom:8px;">
-    <span style="font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#b8860b;letter-spacing:.15em;text-transform:uppercase;">⛳ TODAY'S CURATED PICKS</span>
-    <span id="lp-time" style="font-family:Courier,monospace;font-size:11px;color:#999;margin-left:8px;"></span>
-  </div>
-  <!-- Hero article (first pick) -->
-  <div id="lp-hero" style="text-align:center;padding-bottom:8px;"></div>
-  <!-- Remaining picks in 3-column grid -->
-  <div id="lp-grid" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;text-align:center;border-top:1px solid #c9bfa8;"></div>
+<div id="linkpulse-zone" style="grid-column:1/-1;display:none;">
+  <!-- Hero section -->
+  <div id="lp-hero" class="hero" style="border-bottom:2px solid #b8860b;"></div>
+  <!-- Three-column grid for remaining picks -->
+  <div id="lp-grid" class="cols" style="border-bottom:2px solid #b8860b;"></div>
 </div>
 
 <!-- ═══ LEFT — Front 9: Pro Tour + Tips ═══ -->
@@ -790,7 +786,6 @@ document.addEventListener('keydown',function(e){
 });
 
 // ═══ LINKPULSE INTEGRATION ═══
-// Fetches published articles from LinkPulse Golf and renders them dynamically
 const LINKPULSE_API = 'https://linkpulse-tmr.vercel.app/api/published';
 
 function timeAgo(dateStr) {
@@ -801,7 +796,7 @@ function timeAgo(dateStr) {
   return Math.floor(diff / 86400000) + 'd ago';
 }
 
-function truncateText(s, n) {
+function truncDesc(s, n) {
   if (!s) return '';
   const c = s.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
   return c.length > n ? c.slice(0, n) + '…' : c;
@@ -817,57 +812,58 @@ async function loadLinkPulseEdition() {
     const zone = document.getElementById('linkpulse-zone');
     const heroDiv = document.getElementById('lp-hero');
     const gridDiv = document.getElementById('lp-grid');
-    const timeSpan = document.getElementById('lp-time');
-
-    // Show publish time
-    if (data.publishedAt) {
-      timeSpan.textContent = '· Updated ' + timeAgo(data.publishedAt);
-    }
-
     const arts = data.articles;
 
-    // Hero: first article
+    // ═══ HERO: first article — big red headline, Drudge-style ═══
     const a0 = arts[0];
-    let heroHtml = '';
+    let hh = '';
     if (a0.image && a0.image.startsWith('http')) {
-      heroHtml += '<img src="' + a0.image + '" style="max-width:600px;width:100%;margin:0 auto 8px;display:block;border:2px solid #1b4332;object-fit:cover;max-height:300px;" onerror="this.style.display=\'none\'" alt="">';
+      hh += '<img class="hero-img" src="' + a0.image + '" onerror="this.style.display=\'none\'" alt="">';
     }
-    heroHtml += '<a href="' + a0.link + '" target="_blank" rel="noopener" class="H" style="font-size:28px;">' + a0.title.toUpperCase() + '</a>';
-    heroHtml += '<span class="src">' + a0.source + ' · ' + timeAgo(a0.pubDate) + '</span>';
+    hh += '<a class="hero-hl" href="' + a0.link + '" target="_blank" rel="noopener">' + a0.title.toUpperCase() + '</a>';
+    hh += '<div class="hero-cluster">';
     if (a0.description) {
-      heroHtml += '<span class="aside">*' + truncateText(a0.description, 120) + '*</span>';
+      hh += '<em>*' + truncDesc(a0.description, 140) + '*</em><br>';
     }
-    heroDiv.innerHTML = heroHtml;
+    hh += '<em>' + a0.source + ' · ' + timeAgo(a0.pubDate) + '</em>';
+    hh += '</div>';
+    heroDiv.innerHTML = hh;
 
-    // Remaining articles split across three columns
+    // ═══ REMAINING: three Drudge-style columns ═══
     if (arts.length > 1) {
       const remaining = arts.slice(1);
-      const colCount = 3;
+      // Split into 3 columns
       const cols = [[], [], []];
-      remaining.forEach(function(a, i) { cols[i % colCount].push(a); });
+      remaining.forEach(function(a, i) { cols[i % 3].push(a); });
 
-      let gridHtml = '';
+      let gh = '';
       cols.forEach(function(col, ci) {
-        gridHtml += '<div class="col" style="padding:8px 10px;' + (ci < 2 ? 'border-right:1px solid #c9bfa8;' : '') + '">';
-        col.forEach(function(a) {
-          gridHtml += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-          gridHtml += '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
+        gh += '<div class="col"' + (ci === 2 ? ' style="border-right:none;"' : '') + '>';
+        gh += '<span class="sl">⛳ CURATED PICKS</span>';
+        col.forEach(function(a, ai) {
+          // First article in each column gets bigger treatment
+          if (ai === 0) {
+            gh += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+          } else {
+            gh += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+          }
+          if (a.description && ai === 0) {
+            gh += '<span class="aside">*' + truncDesc(a.description, 100) + '*</span>';
+          }
+          gh += '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
         });
-        gridHtml += '</div>';
+        gh += '</div>';
       });
-      gridDiv.innerHTML = gridHtml;
+      gridDiv.innerHTML = gh;
     }
 
-    // Show the zone
     zone.style.display = 'block';
 
   } catch (err) {
-    // Silent fail — hardcoded content remains as fallback
     console.log('LinkPulse fetch skipped:', err.message);
   }
 }
 
-// Load on page open and auto-refresh every 5 minutes
 loadLinkPulseEdition();
 setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
 </script>
