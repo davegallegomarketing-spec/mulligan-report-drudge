@@ -12,14 +12,71 @@
   .siren{display:inline-block;animation:pulse .5s infinite alternate;}
   @keyframes pulse{from{opacity:1}to{opacity:.2}}
 
-  /* ═══ CRAWL ═══ */
-  .crawl{background:#0f2b1f;overflow:hidden;border-bottom:2px solid #b8860b;height:26px;}
-  .crawl-inner{display:flex;align-items:center;height:100%;animation:cr 85s linear infinite;width:max-content;white-space:nowrap;}
-  .crawl-inner:hover{animation-play-state:paused;}
+  /* ═══ CRAWL / TICKER SYSTEM ═══ */
   @keyframes cr{to{transform:translateX(-50%)}}
-  .ci{font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#d4cbb5;padding:0 6px;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;}
-  .ci .g{color:#4ade80;}.ci .r{color:#c0392b;}.ci .y{color:#d4a828;}
-  .csp{color:#2d6a4f;padding:0 5px;font-size:10px;}
+  @keyframes pulse{from{opacity:1}to{opacity:.2}}
+  @keyframes tickerGlow{0%,100%{text-shadow:0 0 4px rgba(74,222,128,.3)}50%{text-shadow:0 0 8px rgba(74,222,128,.6)}}
+  @keyframes liveDot{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 4px rgba(74,222,128,0)}}
+
+  .ticker-wrap{overflow:hidden;position:relative;}
+  .ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;}
+  .ticker-wrap::before{left:0;}
+  .ticker-wrap::after{right:0;}
+
+  /* T1 — Today's Card */
+  .t1-wrap{background:linear-gradient(180deg,#1b4332 0%,#0f2b1f 100%);height:34px;border-bottom:1px solid #2d6a4f;}
+  .t1-wrap::before{background:linear-gradient(90deg,#1b4332,transparent);}
+  .t1-wrap::after{background:linear-gradient(270deg,#0f2b1f,transparent);}
+  .t1-inner{display:flex;align-items:center;height:100%;animation:cr 120s linear infinite;width:max-content;white-space:nowrap;}
+  .t1-inner:hover{animation-play-state:paused;}
+  .t1-badge{background:linear-gradient(135deg,#c0392b,#a93226);color:#fff;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:4px 14px;margin:0 14px 0 0;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;border-radius:2px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .t1-item{font-family:Arial,sans-serif;font-size:11.5px;font-weight:700;color:#c8c0ad;padding:0 4px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+  .t1-sep{color:rgba(255,255,255,.12);padding:0 8px;font-size:8px;display:inline-flex;align-items:center;}
+  .t1-sep::before{content:'';display:block;width:3px;height:3px;background:rgba(255,255,255,.2);border-radius:50%;}
+  .t1-item.t1-tourney{font-size:13px;color:#fff;letter-spacing:.06em;}
+  .t1-item.t1-score{color:#4ade80;animation:tickerGlow 2s ease-in-out infinite;}
+  .t1-item.t1-out{color:#e74c3c;font-weight:900;background:rgba(231,76,60,.12);padding:2px 8px;border-radius:2px;}
+  .t1-item.t1-money{color:#d4a828;font-weight:900;}
+  .t1-item.t1-money::before{content:'';display:inline-block;width:6px;height:6px;background:#d4a828;border-radius:1px;margin-right:4px;transform:rotate(45deg);}
+  .t1-item.t1-players{color:#8ecae6;}
+
+  /* T2 — Course Intel */
+  .t2-wrap{background:linear-gradient(180deg,#f5f0e1,#ece5d3);height:34px;border-bottom:1px solid #c9bfa8;}
+  .t2-wrap::before{background:linear-gradient(90deg,#f5f0e1,transparent);}
+  .t2-wrap::after{background:linear-gradient(270deg,#ece5d3,transparent);}
+  .t2-inner{display:flex;align-items:center;height:100%;animation:cr 100s linear infinite;width:max-content;white-space:nowrap;}
+  .t2-inner:hover{animation-play-state:paused;}
+  .t2-badge{background:linear-gradient(135deg,#1b4332,#14352a);color:#fff;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:4px 14px;margin:0 14px 0 0;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;border-radius:2px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+  .t2-item{font-family:Arial,sans-serif;font-size:11.5px;font-weight:700;color:#3d3929;padding:0 4px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+  .t2-sep{color:rgba(0,0,0,.1);padding:0 8px;font-size:8px;display:inline-flex;align-items:center;}
+  .t2-sep::before{content:'';display:block;width:3px;height:3px;background:rgba(0,0,0,.15);border-radius:50%;}
+  .t2-item.t2-weather{color:#c0392b;font-weight:900;background:rgba(192,57,43,.08);padding:2px 8px;border-radius:2px;}
+  .t2-item.t2-greens{color:#1b4332;font-weight:900;}
+  .t2-item.t2-greens::before{content:'';display:inline-block;width:7px;height:7px;background:#27ae60;border-radius:50%;margin-right:3px;}
+  .t2-item.t2-money{color:#8b6914;font-weight:900;}
+  .t2-item.t2-yardage{color:#1b4332;font-weight:900;font-size:12px;}
+  .t2-item.t2-wind{color:#5b7a9c;}
+  .t2-item.t2-absent{color:#c0392b;font-weight:900;font-style:italic;}
+
+  /* T3 — Live TV */
+  .t3-wrap{background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);height:34px;border-bottom:2px solid #b8860b;}
+  .t3-wrap::before{background:linear-gradient(90deg,#0a0a0a,transparent);}
+  .t3-wrap::after{background:linear-gradient(270deg,#0a0a0a,transparent);}
+  .t3-inner{display:flex;align-items:center;height:100%;animation:cr 90s linear infinite;width:max-content;white-space:nowrap;}
+  .t3-inner:hover{animation-play-state:paused;}
+  .t3-badge{display:inline-flex;align-items:center;gap:6px;margin:0 14px 0 0;flex-shrink:0;}
+  .t3-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:liveDot 1.5s ease-in-out infinite;}
+  .t3-badge-label{background:linear-gradient(135deg,#1b4332,#14352a);color:#4ade80;font-family:'Arial Black',Arial,sans-serif;font-weight:900;padding:4px 12px;font-size:10px;letter-spacing:.1em;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+  .t3-item{font-family:Arial,sans-serif;font-size:11.5px;font-weight:700;color:#999;padding:0 4px;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+  .t3-sep{color:rgba(255,255,255,.06);padding:0 8px;font-size:8px;display:inline-flex;align-items:center;}
+  .t3-sep::before{content:'';display:block;width:3px;height:3px;background:rgba(255,255,255,.1);border-radius:50%;}
+  .t3-ch-golf{color:#2ecc71;font-weight:900;text-shadow:0 0 6px rgba(46,204,113,.3);}
+  .t3-ch-cbs{color:#3498db;font-weight:900;text-shadow:0 0 6px rgba(52,152,219,.3);}
+  .t3-ch-espn{color:#ef4444;font-weight:900;text-shadow:0 0 6px rgba(239,68,68,.3);}
+  .t3-ch-nbc{color:#f39c12;font-weight:900;text-shadow:0 0 6px rgba(243,156,18,.3);}
+  .t3-ch-fox{color:#00b4d8;font-weight:900;text-shadow:0 0 6px rgba(0,180,216,.3);}
+  .t3-ch-pga{color:#ef4444;font-weight:900;text-shadow:0 0 6px rgba(239,68,68,.3);}
+  .t3-time{color:#d4cbb5;font-weight:900;background:rgba(255,255,255,.06);padding:2px 7px;border-radius:2px;font-size:11px;}
 
   /* ═══ TOP AD ═══ */
   .top-ad{background:#ebe4d6;border-bottom:1px solid #c9bfa8;padding:6px 12px;font-family:Arial,sans-serif;font-size:13px;color:#999;}
@@ -153,22 +210,22 @@
 <body>
 
 <!-- CRAWL — T1: TODAY'S CARD -->
-<div style="background:#1b4332;overflow:hidden;height:30px;border-bottom:1px solid #2d6a4f;">
-<div style="display:flex;align-items:center;height:100%;animation:cr 120s linear infinite;width:max-content;white-space:nowrap;" id="ticker-1">
-  <span style="background:#c0392b;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">TODAY'S CARD</span>
-  <span class="ci" style="color:#d4cbb5;">Loading ticker data...</span>
+<div class="ticker-wrap t1-wrap">
+<div class="t1-inner" id="ticker-1">
+  <span class="t1-badge">TODAY'S CARD</span>
+  <span class="t1-item" style="color:#d4cbb5;">Loading ticker data...</span>
 </div></div>
 
 <!-- T2: COURSE INTEL -->
-<div id="ticker-2-wrap" style="background:#f5f0e1;overflow:hidden;height:30px;border-bottom:1px solid #c9bfa8;display:none;">
-<div style="display:flex;align-items:center;height:100%;animation:cr 100s linear infinite;width:max-content;white-space:nowrap;" id="ticker-2">
-  <span style="background:#1b4332;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">COURSE INTEL</span>
+<div class="ticker-wrap t2-wrap" id="ticker-2-wrap" style="display:none;">
+<div class="t2-inner" id="ticker-2">
+  <span class="t2-badge">COURSE INTEL</span>
 </div></div>
 
 <!-- T3: LIVE TV -->
-<div id="ticker-3-wrap" style="background:#0a0a0a;overflow:hidden;height:30px;border-bottom:2px solid #b8860b;display:none;">
-<div style="display:flex;align-items:center;height:100%;animation:cr 90s linear infinite;width:max-content;white-space:nowrap;" id="ticker-3">
-  <span style="font-family:Arial,sans-serif;font-size:10px;padding:0 6px;display:flex;align-items:center;gap:4px;white-space:nowrap;"><span style="display:inline-block;width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse .8s infinite alternate;"></span><span style="background:#1b4332;color:#4ade80;font-weight:900;padding:3px 10px;font-size:11px;letter-spacing:.08em;">LIVE TV</span></span>
+<div class="ticker-wrap t3-wrap" id="ticker-3-wrap" style="display:none;">
+<div class="t3-inner" id="ticker-3">
+  <span class="t3-badge"><span class="t3-dot"></span><span class="t3-badge-label">LIVE TV</span></span>
 </div></div>
 
 <!-- TOP AD -->
@@ -770,27 +827,51 @@ document.addEventListener('keydown',function(e){
   if(document.getElementById('subOverlay').classList.contains('active')){if(e.key==='Escape')closeSubscribe();}
 });
 
-// ═══ TICKER INTEGRATION ═══
+// ═══ TICKER INTEGRATION (Broadcast-Quality) ═══
 const TICKER_API = 'https://linkpulse-tmr.vercel.app/api/tickers';
+var SEP1 = '<span class="t1-sep"></span>';
+var SEP2 = '<span class="t2-sep"></span>';
+var SEP3 = '<span class="t3-sep"></span>';
 
-function tickerItem(text, color) {
-  return '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:' + color + ';padding:0 10px;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;">' + text + '</span><span style="color:rgba(255,255,255,0.15);padding:0 2px;font-size:10px;">|</span>';
+function t1Item(text, cls) {
+  return '<span class="t1-item' + (cls ? ' ' + cls : '') + '">' + text + '</span>' + SEP1;
 }
 
-function courseItem(text) {
-  return '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#1b4332;padding:0 10px;white-space:nowrap;">' + text + '</span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
+function classifyT1(p) {
+  // Tournament name — first item or contains "Championship/Open/Invitational/Players/Masters/PGA"
+  if (/championship|open\b|invitational|players|masters|pga\b|memorial|genesis|arnold palmer/i.test(p)) return 't1-tourney';
+  if (/^-\d|^\+\d|leads|lead\b|T\d/i.test(p)) return 't1-score';
+  if (/OUT|WD|WITHDRAW|ABSENT/i.test(p)) return 't1-out';
+  if (/\$/.test(p)) return 't1-money';
+  if (/field|players|man field|golfers/i.test(p)) return 't1-players';
+  return '';
 }
 
-function tvItem(text) {
-  // Color channel names
-  var styled = text
-    .replace(/Golf Ch\./gi, '<span style="color:#2ecc71;font-weight:900;">GOLF CH.</span>')
-    .replace(/Golf Channel/gi, '<span style="color:#2ecc71;font-weight:900;">GOLF CH.</span>')
-    .replace(/CBS/g, '<span style="color:#3498db;font-weight:900;">CBS</span>')
-    .replace(/ESPN\+/g, '<span style="color:#ef4444;font-weight:900;">ESPN+</span>')
-    .replace(/PGA Tour Live/gi, '<span style="color:#ef4444;font-weight:900;">PGA TOUR LIVE</span>')
-    .replace(/NBC/g, '<span style="color:#f39c12;font-weight:900;">NBC</span>');
-  return '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#ccc;padding:0 10px;white-space:nowrap;">' + styled + '</span><span style="color:rgba(255,255,255,0.1);padding:0 2px;font-size:10px;">|</span>';
+function classifyT2(p) {
+  if (/°F|°C|rain|storm|thunder|lightning|wind.*mph|gusts/i.test(p)) return 't2-weather';
+  if (/stimp|greens|green speed|bent|bermuda|poa/i.test(p)) return 't2-greens';
+  if (/\$/.test(p)) return 't2-money';
+  if (/yard|par\s?\d/i.test(p)) return 't2-yardage';
+  if (/mph|wind/i.test(p)) return 't2-wind';
+  if (/OUT|WD|WITHDRAW|absent|notable/i.test(p)) return 't2-absent';
+  return '';
+}
+
+function tvItemNew(text) {
+  var s = text;
+  // Highlight time patterns
+  s = s.replace(/(\d{1,2}:\d{2}\s*(?:AM|PM|ET|EST|CT|CST|PT|PST)\s*(?:-\s*\d{1,2}:\d{2}\s*(?:AM|PM|ET|EST|CT|CST|PT|PST))?)/gi, '<span class="t3-time">$1</span>');
+  // Color channel names with glow
+  s = s.replace(/Golf Ch\./gi, '<span class="t3-ch-golf">GOLF CH.</span>');
+  s = s.replace(/Golf Channel/gi, '<span class="t3-ch-golf">GOLF CHANNEL</span>');
+  s = s.replace(/CBS/g, '<span class="t3-ch-cbs">CBS</span>');
+  s = s.replace(/ESPN\+/g, '<span class="t3-ch-espn">ESPN+</span>');
+  s = s.replace(/ESPN/g, '<span class="t3-ch-espn">ESPN</span>');
+  s = s.replace(/PGA Tour Live/gi, '<span class="t3-ch-pga">PGA TOUR LIVE</span>');
+  s = s.replace(/NBC/g, '<span class="t3-ch-nbc">NBC</span>');
+  s = s.replace(/FOX/gi, '<span class="t3-ch-fox">FOX</span>');
+  s = s.replace(/Peacock/gi, '<span class="t3-ch-nbc">PEACOCK</span>');
+  return '<span class="t3-item">' + s + '</span>' + SEP3;
 }
 
 async function loadTickers() {
@@ -804,17 +885,17 @@ async function loadTickers() {
     if (data.ticker1 && data.ticker1.text) {
       var t1el = document.getElementById('ticker-1');
       var parts = data.ticker1.text.split(/\s*·\s*/);
-      var label = '<span style="background:#c0392b;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">TODAY\'S CARD</span>';
+      var badge = '<span class="t1-badge">TODAY\'S CARD</span>';
       var h = '';
       for (var r = 0; r < 4; r++) {
-        h += label;
+        h += badge;
         for (var i = 0; i < parts.length; i++) {
           var p = parts[i].trim();
-          // Highlight scores in green, OUT/WD in red, money in gold
-          if (/^-\d|^\+\d/.test(p) || /leads/i.test(p)) h += tickerItem(p, '#4ade80');
-          else if (/OUT|WD|WITHDRAW/i.test(p)) h += tickerItem(p, '#c0392b');
-          else if (/\$/.test(p)) h += tickerItem(p, '#d4a828');
-          else h += tickerItem(p, '#d4cbb5');
+          if (!p) continue;
+          var cls = classifyT1(p);
+          // First item (tournament name) gets tourney class if no other match
+          if (i === 0 && !cls) cls = 't1-tourney';
+          h += t1Item(p, cls);
         }
       }
       t1el.innerHTML = h;
@@ -825,17 +906,15 @@ async function loadTickers() {
       var t2wrap = document.getElementById('ticker-2-wrap');
       var t2el = document.getElementById('ticker-2');
       var parts2 = data.ticker2.text.split(/\s*·\s*/);
-      var label2 = '<span style="background:#1b4332;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">COURSE INTEL</span>';
+      var badge2 = '<span class="t2-badge">COURSE INTEL</span>';
       var h2 = '';
       for (var r2 = 0; r2 < 4; r2++) {
-        h2 += label2;
+        h2 += badge2;
         for (var j = 0; j < parts2.length; j++) {
           var p2 = parts2[j].trim();
-          // Highlight temps, rain, wind
-          if (/°F|°C|rain/i.test(p2)) h2 += '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#c0392b;padding:0 10px;white-space:nowrap;">' + p2 + '</span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
-          else if (/stimp/i.test(p2)) h2 += '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;padding:0 10px;white-space:nowrap;"><span style="color:#1b4332;">🟢</span> <span style="color:#1b4332;">' + p2 + '</span></span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
-          else if (/\$/.test(p2)) h2 += '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#b8860b;padding:0 10px;white-space:nowrap;">💰 ' + p2 + '</span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
-          else h2 += courseItem(p2);
+          if (!p2) continue;
+          var cls2 = classifyT2(p2);
+          h2 += '<span class="t2-item' + (cls2 ? ' ' + cls2 : '') + '">' + p2 + '</span>' + SEP2;
         }
       }
       t2el.innerHTML = h2;
@@ -847,12 +926,12 @@ async function loadTickers() {
       var t3wrap = document.getElementById('ticker-3-wrap');
       var t3el = document.getElementById('ticker-3');
       var parts3 = data.ticker3.text.split(/\s*·\s*/);
-      var label3 = '<span style="font-family:Arial,sans-serif;font-size:10px;padding:0 6px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;margin-right:8px;"><span style="display:inline-block;width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse .8s infinite alternate;"></span><span style="background:#1b4332;color:#4ade80;font-weight:900;padding:3px 10px;font-size:11px;letter-spacing:.08em;">LIVE TV</span></span>';
+      var badge3 = '<span class="t3-badge"><span class="t3-dot"></span><span class="t3-badge-label">LIVE TV</span></span>';
       var h3 = '';
       for (var r3 = 0; r3 < 4; r3++) {
-        h3 += label3;
+        h3 += badge3;
         for (var k = 0; k < parts3.length; k++) {
-          h3 += tvItem(parts3[k].trim());
+          h3 += tvItemNew(parts3[k].trim());
         }
       }
       t3el.innerHTML = h3;
