@@ -152,30 +152,22 @@
 </head>
 <body>
 
-<!-- CRAWL -->
-<div class="crawl"><div class="crawl-inner">
-  <span class="ci"><span class="y">⛳ PLAYERS R3</span></span><span class="csp">|</span>
-  <span class="ci">ÅBERG <span class="g">-12</span> LEADS</span><span class="csp">|</span>
-  <span class="ci">SCHAUFFELE <span class="g">-10</span></span><span class="csp">|</span>
-  <span class="ci">THOMAS <span class="g">-8</span> SURGERY COMEBACK</span><span class="csp">|</span>
-  <span class="ci">McILROY <span class="r">WD</span></span><span class="csp">|</span>
-  <span class="ci">MORIKAWA <span class="r">WD</span></span><span class="csp">|</span>
-  <span class="ci"><span class="y">ODDS: ÅBERG +175</span></span><span class="csp">|</span>
-  <span class="ci">70°F · STIMP 13.5 · 42% RAIN</span><span class="csp">|</span>
-  <span class="ci">#17: 14 BALLS IN WATER</span><span class="csp">|</span>
-  <span class="ci"><span class="y">MASTERS 27 DAYS</span></span><span class="csp">|</span>
-  <span class="ci">$25M PURSE</span><span class="csp">|</span>
-  <span class="ci"><span class="y">⛳ PLAYERS R3</span></span><span class="csp">|</span>
-  <span class="ci">ÅBERG <span class="g">-12</span> LEADS</span><span class="csp">|</span>
-  <span class="ci">SCHAUFFELE <span class="g">-10</span></span><span class="csp">|</span>
-  <span class="ci">THOMAS <span class="g">-8</span> SURGERY COMEBACK</span><span class="csp">|</span>
-  <span class="ci">McILROY <span class="r">WD</span></span><span class="csp">|</span>
-  <span class="ci">MORIKAWA <span class="r">WD</span></span><span class="csp">|</span>
-  <span class="ci"><span class="y">ODDS: ÅBERG +175</span></span><span class="csp">|</span>
-  <span class="ci">70°F · STIMP 13.5 · 42% RAIN</span><span class="csp">|</span>
-  <span class="ci">#17: 14 BALLS IN WATER</span><span class="csp">|</span>
-  <span class="ci"><span class="y">MASTERS 27 DAYS</span></span><span class="csp">|</span>
-  <span class="ci">$25M PURSE</span><span class="csp">|</span>
+<!-- CRAWL — T1: TODAY'S CARD (dynamic from /api/tickers) -->
+<div class="crawl"><div class="crawl-inner" id="ticker-1">
+  <span class="ci"><span class="y">⛳ TODAY'S CARD</span></span><span class="csp">|</span>
+  <span class="ci">Loading ticker data...</span><span class="csp">|</span>
+</div></div>
+
+<!-- T2: COURSE INTEL -->
+<div id="ticker-2-wrap" style="background:#f5f0e1;border-bottom:1px solid #c9bfa8;height:26px;overflow:hidden;display:none;">
+<div style="display:flex;align-items:center;height:100%;animation:cr 60s linear infinite;width:max-content;white-space:nowrap;" id="ticker-2">
+  <span style="font-family:Courier,monospace;font-size:12px;color:#1b4332;font-weight:bold;padding:0 16px;"><span style="color:#b8860b;">⛳ COURSE INTEL</span></span>
+</div></div>
+
+<!-- T3: LIVE TV -->
+<div id="ticker-3-wrap" style="background:#0f2b1f;border-bottom:2px solid #b8860b;height:26px;overflow:hidden;display:none;">
+<div style="display:flex;align-items:center;height:100%;animation:cr 50s linear infinite;width:max-content;white-space:nowrap;" id="ticker-3">
+  <span style="font-family:Courier,monospace;font-size:12px;color:#4ade80;font-weight:bold;padding:0 16px;"><span style="color:#ef4444;">📺 LIVE TV</span></span>
 </div></div>
 
 <!-- TOP AD -->
@@ -776,6 +768,81 @@ document.addEventListener('keydown',function(e){
   if(document.getElementById('sketchViewer').style.display==='flex'){if(e.key==='Escape')closeSketchViewer();}
   if(document.getElementById('subOverlay').classList.contains('active')){if(e.key==='Escape')closeSubscribe();}
 });
+
+// ═══ TICKER INTEGRATION ═══
+// Fetches ticker data from LinkPulse Broadcast Station
+const TICKER_API = 'https://linkpulse-tmr.vercel.app/api/tickers';
+
+function buildTickerHTML(text, label, repeat) {
+  if (!text) return '';
+  // Split by · and build ticker spans, repeat for seamless scroll
+  var parts = text.split(/\s*·\s*/);
+  var html = '';
+  for (var r = 0; r < (repeat || 3); r++) {
+    for (var i = 0; i < parts.length; i++) {
+      html += '<span class="ci">' + parts[i].trim() + '</span><span class="csp">|</span>';
+    }
+  }
+  return html;
+}
+
+async function loadTickers() {
+  try {
+    var res = await fetch(TICKER_API + '?t=' + Date.now());
+    if (!res.ok) return;
+    var data = await res.json();
+    if (!data || data.error) return;
+
+    // T1: Today's Card
+    if (data.ticker1 && data.ticker1.text) {
+      var t1el = document.getElementById('ticker-1');
+      var t1text = data.ticker1.text;
+      var t1html = '<span class="ci"><span class="y">⛳ TODAY\'S CARD</span></span><span class="csp">|</span>';
+      t1html += buildTickerHTML(t1text, 'TODAY\'S CARD', 4);
+      t1el.innerHTML = t1html;
+    }
+
+    // T2: Course Intel
+    if (data.ticker2 && data.ticker2.text) {
+      var t2wrap = document.getElementById('ticker-2-wrap');
+      var t2el = document.getElementById('ticker-2');
+      var t2text = data.ticker2.text;
+      var t2html = '<span style="font-family:Courier,monospace;font-size:12px;color:#1b4332;font-weight:bold;padding:0 12px;"><span style="color:#b8860b;">⛳ COURSE INTEL</span> · </span>';
+      var parts2 = t2text.split(/\s*·\s*/);
+      for (var r = 0; r < 4; r++) {
+        for (var i = 0; i < parts2.length; i++) {
+          t2html += '<span style="font-family:Courier,monospace;font-size:12px;color:#1b4332;padding:0 12px;">' + parts2[i].trim() + '</span>';
+          t2html += '<span style="color:#c9bfa8;padding:0 4px;">|</span>';
+        }
+      }
+      t2el.innerHTML = t2html;
+      t2wrap.style.display = 'block';
+    }
+
+    // T3: Live TV
+    if (data.ticker3 && data.ticker3.text) {
+      var t3wrap = document.getElementById('ticker-3-wrap');
+      var t3el = document.getElementById('ticker-3');
+      var t3text = data.ticker3.text;
+      var t3html = '<span style="font-family:Courier,monospace;font-size:12px;color:#4ade80;font-weight:bold;padding:0 12px;"><span style="color:#ef4444;">📺 LIVE TV</span> · </span>';
+      var parts3 = t3text.split(/\s*·\s*/);
+      for (var r2 = 0; r2 < 4; r2++) {
+        for (var j = 0; j < parts3.length; j++) {
+          t3html += '<span style="font-family:Courier,monospace;font-size:12px;color:#4ade80;padding:0 12px;">' + parts3[j].trim() + '</span>';
+          t3html += '<span style="color:#0f4a2f;padding:0 4px;">|</span>';
+        }
+      }
+      t3el.innerHTML = t3html;
+      t3wrap.style.display = 'block';
+    }
+
+  } catch (err) {
+    console.log('Ticker fetch skipped:', err.message);
+  }
+}
+
+loadTickers();
+setInterval(loadTickers, 5 * 60 * 1000);
 
 // ═══ LINKPULSE INTEGRATION ═══
 const LINKPULSE_API = 'https://linkpulse-tmr.vercel.app/api/published';
