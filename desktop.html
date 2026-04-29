@@ -152,22 +152,23 @@
 </head>
 <body>
 
-<!-- CRAWL — T1: TODAY'S CARD (dynamic from /api/tickers) -->
-<div class="crawl"><div class="crawl-inner" id="ticker-1">
-  <span class="ci"><span class="y">⛳ TODAY'S CARD</span></span><span class="csp">|</span>
-  <span class="ci">Loading ticker data...</span><span class="csp">|</span>
+<!-- CRAWL — T1: TODAY'S CARD -->
+<div style="background:#1b4332;overflow:hidden;height:30px;border-bottom:1px solid #2d6a4f;">
+<div style="display:flex;align-items:center;height:100%;animation:cr 80s linear infinite;width:max-content;white-space:nowrap;" id="ticker-1">
+  <span style="background:#c0392b;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">TODAY'S CARD</span>
+  <span class="ci" style="color:#d4cbb5;">Loading ticker data...</span>
 </div></div>
 
 <!-- T2: COURSE INTEL -->
-<div id="ticker-2-wrap" style="background:#f5f0e1;border-bottom:1px solid #c9bfa8;height:26px;overflow:hidden;display:none;">
-<div style="display:flex;align-items:center;height:100%;animation:cr 60s linear infinite;width:max-content;white-space:nowrap;" id="ticker-2">
-  <span style="font-family:Courier,monospace;font-size:12px;color:#1b4332;font-weight:bold;padding:0 16px;"><span style="color:#b8860b;">⛳ COURSE INTEL</span></span>
+<div id="ticker-2-wrap" style="background:#f5f0e1;overflow:hidden;height:30px;border-bottom:1px solid #c9bfa8;display:none;">
+<div style="display:flex;align-items:center;height:100%;animation:cr 65s linear infinite;width:max-content;white-space:nowrap;" id="ticker-2">
+  <span style="background:#1b4332;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">COURSE INTEL</span>
 </div></div>
 
 <!-- T3: LIVE TV -->
-<div id="ticker-3-wrap" style="background:#0f2b1f;border-bottom:2px solid #b8860b;height:26px;overflow:hidden;display:none;">
-<div style="display:flex;align-items:center;height:100%;animation:cr 50s linear infinite;width:max-content;white-space:nowrap;" id="ticker-3">
-  <span style="font-family:Courier,monospace;font-size:12px;color:#4ade80;font-weight:bold;padding:0 16px;"><span style="color:#ef4444;">📺 LIVE TV</span></span>
+<div id="ticker-3-wrap" style="background:#0a0a0a;overflow:hidden;height:30px;border-bottom:2px solid #b8860b;display:none;">
+<div style="display:flex;align-items:center;height:100%;animation:cr 55s linear infinite;width:max-content;white-space:nowrap;" id="ticker-3">
+  <span style="font-family:Arial,sans-serif;font-size:10px;padding:0 6px;display:flex;align-items:center;gap:4px;white-space:nowrap;"><span style="display:inline-block;width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse .8s infinite alternate;"></span><span style="background:#1b4332;color:#4ade80;font-weight:900;padding:3px 10px;font-size:11px;letter-spacing:.08em;">LIVE TV</span></span>
 </div></div>
 
 <!-- TOP AD -->
@@ -770,20 +771,26 @@ document.addEventListener('keydown',function(e){
 });
 
 // ═══ TICKER INTEGRATION ═══
-// Fetches ticker data from LinkPulse Broadcast Station
 const TICKER_API = 'https://linkpulse-tmr.vercel.app/api/tickers';
 
-function buildTickerHTML(text, label, repeat) {
-  if (!text) return '';
-  // Split by · and build ticker spans, repeat for seamless scroll
-  var parts = text.split(/\s*·\s*/);
-  var html = '';
-  for (var r = 0; r < (repeat || 3); r++) {
-    for (var i = 0; i < parts.length; i++) {
-      html += '<span class="ci">' + parts[i].trim() + '</span><span class="csp">|</span>';
-    }
-  }
-  return html;
+function tickerItem(text, color) {
+  return '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:' + color + ';padding:0 10px;text-transform:uppercase;letter-spacing:.02em;white-space:nowrap;">' + text + '</span><span style="color:rgba(255,255,255,0.15);padding:0 2px;font-size:10px;">|</span>';
+}
+
+function courseItem(text) {
+  return '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#1b4332;padding:0 10px;white-space:nowrap;">' + text + '</span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
+}
+
+function tvItem(text) {
+  // Color channel names
+  var styled = text
+    .replace(/Golf Ch\./gi, '<span style="color:#2ecc71;font-weight:900;">GOLF CH.</span>')
+    .replace(/Golf Channel/gi, '<span style="color:#2ecc71;font-weight:900;">GOLF CH.</span>')
+    .replace(/CBS/g, '<span style="color:#3498db;font-weight:900;">CBS</span>')
+    .replace(/ESPN\+/g, '<span style="color:#ef4444;font-weight:900;">ESPN+</span>')
+    .replace(/PGA Tour Live/gi, '<span style="color:#ef4444;font-weight:900;">PGA TOUR LIVE</span>')
+    .replace(/NBC/g, '<span style="color:#f39c12;font-weight:900;">NBC</span>');
+  return '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#ccc;padding:0 10px;white-space:nowrap;">' + styled + '</span><span style="color:rgba(255,255,255,0.1);padding:0 2px;font-size:10px;">|</span>';
 }
 
 async function loadTickers() {
@@ -796,26 +803,42 @@ async function loadTickers() {
     // T1: Today's Card
     if (data.ticker1 && data.ticker1.text) {
       var t1el = document.getElementById('ticker-1');
-      var t1text = data.ticker1.text;
-      var t1html = '<span class="ci"><span class="y">⛳ TODAY\'S CARD</span></span><span class="csp">|</span>';
-      t1html += buildTickerHTML(t1text, 'TODAY\'S CARD', 4);
-      t1el.innerHTML = t1html;
+      var parts = data.ticker1.text.split(/\s*·\s*/);
+      var label = '<span style="background:#c0392b;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">TODAY\'S CARD</span>';
+      var h = '';
+      for (var r = 0; r < 4; r++) {
+        h += label;
+        for (var i = 0; i < parts.length; i++) {
+          var p = parts[i].trim();
+          // Highlight scores in green, OUT/WD in red, money in gold
+          if (/^-\d|^\+\d/.test(p) || /leads/i.test(p)) h += tickerItem(p, '#4ade80');
+          else if (/OUT|WD|WITHDRAW/i.test(p)) h += tickerItem(p, '#c0392b');
+          else if (/\$/.test(p)) h += tickerItem(p, '#d4a828');
+          else h += tickerItem(p, '#d4cbb5');
+        }
+      }
+      t1el.innerHTML = h;
     }
 
     // T2: Course Intel
     if (data.ticker2 && data.ticker2.text) {
       var t2wrap = document.getElementById('ticker-2-wrap');
       var t2el = document.getElementById('ticker-2');
-      var t2text = data.ticker2.text;
-      var t2html = '<span style="font-family:Courier,monospace;font-size:12px;color:#1b4332;font-weight:bold;padding:0 12px;"><span style="color:#b8860b;">⛳ COURSE INTEL</span> · </span>';
-      var parts2 = t2text.split(/\s*·\s*/);
-      for (var r = 0; r < 4; r++) {
-        for (var i = 0; i < parts2.length; i++) {
-          t2html += '<span style="font-family:Courier,monospace;font-size:12px;color:#1b4332;padding:0 12px;">' + parts2[i].trim() + '</span>';
-          t2html += '<span style="color:#c9bfa8;padding:0 4px;">|</span>';
+      var parts2 = data.ticker2.text.split(/\s*·\s*/);
+      var label2 = '<span style="background:#1b4332;color:#fff;font-family:Arial,sans-serif;font-size:11px;font-weight:900;padding:3px 12px;margin:0 10px 0 0;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;">COURSE INTEL</span>';
+      var h2 = '';
+      for (var r2 = 0; r2 < 4; r2++) {
+        h2 += label2;
+        for (var j = 0; j < parts2.length; j++) {
+          var p2 = parts2[j].trim();
+          // Highlight temps, rain, wind
+          if (/°F|°C|rain/i.test(p2)) h2 += '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#c0392b;padding:0 10px;white-space:nowrap;">' + p2 + '</span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
+          else if (/stimp/i.test(p2)) h2 += '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;padding:0 10px;white-space:nowrap;"><span style="color:#1b4332;">🟢</span> <span style="color:#1b4332;">' + p2 + '</span></span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
+          else if (/\$/.test(p2)) h2 += '<span style="font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#b8860b;padding:0 10px;white-space:nowrap;">💰 ' + p2 + '</span><span style="color:#c9bfa8;padding:0 2px;font-size:10px;">|</span>';
+          else h2 += courseItem(p2);
         }
       }
-      t2el.innerHTML = t2html;
+      t2el.innerHTML = h2;
       t2wrap.style.display = 'block';
     }
 
@@ -823,16 +846,16 @@ async function loadTickers() {
     if (data.ticker3 && data.ticker3.text) {
       var t3wrap = document.getElementById('ticker-3-wrap');
       var t3el = document.getElementById('ticker-3');
-      var t3text = data.ticker3.text;
-      var t3html = '<span style="font-family:Courier,monospace;font-size:12px;color:#4ade80;font-weight:bold;padding:0 12px;"><span style="color:#ef4444;">📺 LIVE TV</span> · </span>';
-      var parts3 = t3text.split(/\s*·\s*/);
-      for (var r2 = 0; r2 < 4; r2++) {
-        for (var j = 0; j < parts3.length; j++) {
-          t3html += '<span style="font-family:Courier,monospace;font-size:12px;color:#4ade80;padding:0 12px;">' + parts3[j].trim() + '</span>';
-          t3html += '<span style="color:#0f4a2f;padding:0 4px;">|</span>';
+      var parts3 = data.ticker3.text.split(/\s*·\s*/);
+      var label3 = '<span style="font-family:Arial,sans-serif;font-size:10px;padding:0 6px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;margin-right:8px;"><span style="display:inline-block;width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse .8s infinite alternate;"></span><span style="background:#1b4332;color:#4ade80;font-weight:900;padding:3px 10px;font-size:11px;letter-spacing:.08em;">LIVE TV</span></span>';
+      var h3 = '';
+      for (var r3 = 0; r3 < 4; r3++) {
+        h3 += label3;
+        for (var k = 0; k < parts3.length; k++) {
+          h3 += tvItem(parts3[k].trim());
         }
       }
-      t3el.innerHTML = t3html;
+      t3el.innerHTML = h3;
       t3wrap.style.display = 'block';
     }
 
