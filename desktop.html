@@ -85,13 +85,26 @@
   .t3-ch-pga{color:#ef4444;font-weight:900;text-shadow:0 0 6px rgba(239,68,68,.3);}
   .t3-time{color:#d4cbb5;font-weight:900;background:rgba(255,255,255,.06);padding:2px 7px;border-radius:2px;font-size:11px;}
 
-  /* ═══ TOP AD ═══ */
-  .top-ad{background:#ebe4d6;border-bottom:1px solid #c9bfa8;padding:6px 12px;font-family:Arial,sans-serif;font-size:13px;color:#999;}
-  .top-ad a{color:#1b4332;text-decoration:underline;font-size:13px;}
+  /* ═══ TOP AD — PRO PICK (simple) ═══ */
+  .top-ad{background:#ebe4d6;border-bottom:1px solid #c9bfa8;padding:0;font-family:Arial,sans-serif;font-size:13px;color:#999;display:flex;align-items:stretch;overflow:hidden;}
+  .top-ad .pa-badge{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:8px 14px;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;}
+  .top-ad .pa-body{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 16px;color:#666;font-size:13px;}
+  .top-ad .pa-body strong{color:#1b4332;font-weight:700;}
+  .top-ad .pa-body a{color:#1b4332;text-decoration:underline;font-size:13px;font-weight:900;}
 
-  /* ═══ OPTIN ═══ */
-  .optin{background:#1b4332;padding:8px 16px;font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.55);border-bottom:1px solid #2d6a4f;}
-  .optin strong{color:#faf6ef;}.optin a{color:#d4a828;text-decoration:underline;cursor:pointer;}
+  /* ═══ OPTIN — PRIMARY EMAIL CAPTURE ═══ */
+  .optin{background:linear-gradient(135deg,#1b4332,#0f2b1f);padding:12px 20px;border-bottom:2px solid #b8860b;border-top:1px solid #2d6a4f;}
+  .optin .optin-inner{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;max-width:900px;margin:0 auto;}
+  .optin .optin-text{font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);}
+  .optin .optin-text strong{color:#faf6ef;font-size:15px;font-weight:900;letter-spacing:.02em;}
+  .optin .optin-text .optin-sub{font-size:12px;color:rgba(255,255,255,.45);display:block;margin-top:1px;}
+  .optin .optin-cta{display:flex;align-items:center;gap:0;flex-shrink:0;}
+  .optin .optin-cta input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-right:none;padding:9px 14px;color:#fff;font-size:13px;font-family:Courier,monospace;width:210px;outline:none;border-radius:2px 0 0 2px;}
+  .optin .optin-cta input::placeholder{color:rgba(255,255,255,.3);}
+  .optin .optin-cta input:focus{border-color:#b8860b;background:rgba(255,255,255,.12);}
+  .optin .optin-cta button{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:11px;font-weight:900;padding:10px 18px;border:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;border-radius:0 2px 2px 0;}
+  .optin .optin-cta button:hover{background:#d4a828;}
+  .optin .optin-proof{font-family:Georgia,serif;font-size:11px;color:rgba(255,255,255,.3);font-style:italic;}
 
   /* ═══ HERO ═══ */
   .hero{padding:14px 16px 10px;border-bottom:1px solid #c9bfa8;}
@@ -235,11 +248,23 @@
   <span class="t3-badge"><span class="t3-dot"></span><span class="t3-badge-label">LIVE TV</span></span>
 </div></div>
 
-<!-- TOP AD -->
-<div class="top-ad">/// PRO PICK /// TaylorMade Qi35 — "Best driver since the M2." <a href="#" onclick="openArticle('qi35');return false;">FULL REVIEW →</a></div>
+<!-- PRO PICK -->
+<div class="top-ad">
+  <div class="pa-badge">/// PRO PICK ///</div>
+  <div class="pa-body"><strong>TaylorMade Qi35</strong> — "Best driver since the M2." <a href="#" onclick="openArticle('qi35');return false;">FULL REVIEW →</a></div>
+</div>
 
 <!-- OPTIN -->
-<div class="optin"><strong>Get inside the ropes.</strong> Free daily golf briefing. 12,847 subscribers. <a onclick="openSubscribe()">SUBSCRIBE →</a></div>
+<div class="optin">
+  <div class="optin-inner">
+    <div class="optin-text"><strong>Get inside the ropes.</strong> <span class="optin-sub">Free daily golf briefing — scores, gear, hot takes. Before your tee time.</span></div>
+    <div class="optin-cta">
+      <input type="email" id="optinEmail" placeholder="Your email...">
+      <button onclick="optinCapture()">SUBSCRIBE FREE</button>
+    </div>
+    <div class="optin-proof">12,847 golfers · Free · Unsubscribe anytime</div>
+  </div>
+</div>
 
 <!-- ═══ LINKPULSE FEATURED #1 (dynamic, above hero) ═══ -->
 <div id="lp-featured-1" class="hero" style="display:none;"></div>
@@ -757,6 +782,21 @@ const sketches=[
 ];
 function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
 function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
+
+// ═══ OPTIN BAR CAPTURE ═══
+function optinCapture() {
+  var input = document.getElementById('optinEmail');
+  var email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    input.style.border = '1px solid #c0392b';
+    input.setAttribute('placeholder', 'Enter a valid email...');
+    return;
+  }
+  // In production: POST to your email API / Substack / ConvertKit
+  console.log('Optin capture:', email);
+  var inner = document.querySelector('.optin-inner');
+  inner.innerHTML = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#4ade80;font-weight:900;letter-spacing:.03em;text-align:center;padding:4px 0;">⛳ YOU\'RE IN — TOMORROW\'S ROUND HITS YOUR INBOX BEFORE YOUR TEE TIME</div>';
+}
 
 // ═══ SEARCH ═══
 function searchStories(){
