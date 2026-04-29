@@ -184,6 +184,9 @@
 <!-- OPTIN -->
 <div class="optin"><strong>Get inside the ropes.</strong> Free daily golf briefing. 12,847 subscribers. <a onclick="openSubscribe()">SUBSCRIBE →</a></div>
 
+<!-- ═══ LINKPULSE FEATURED #1 (dynamic, above hero) ═══ -->
+<div id="lp-featured-1" class="hero" style="display:none;"></div>
+
 <!-- HERO -->
 <div class="hero">
   <img class="hero-img" src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774301136/05e3c737-b9ea-4018-b8b6-0c1b64dd531e_lk7yn1.jpg" alt="Tiger Woods">
@@ -209,15 +212,18 @@
   <a href="#">LIVE LEADERBOARD</a><span class="sep"> | </span><a href="#">TEE TIMES</a><span class="sep"> | </span><a href="#">BETTING ODDS</a><span class="sep"> | </span><a href="#">WHAT'S IN THE BAG</a><span class="sep"> | </span><a href="#">TV SCHEDULE</a><span class="sep"> | </span><a href="#">COURSE FLYOVER</a><span class="sep"> | </span><a href="#">WEATHER</a><span class="sep"> | </span><a href="#">FANTASY</a><span class="sep"> | </span><a href="#">DRAFTKINGS</a><span class="sep"> | </span><a href="#">HOLE #17</a>
 </div>
 
+<!-- ═══ LINKPULSE FEATURED #2 (dynamic, below nav) ═══ -->
+<div id="lp-featured-2" class="hero" style="display:none;border-bottom:2px solid #b8860b;"></div>
+
 <!-- ═══ THREE COLUMNS ═══ -->
 <div class="cols" id="colsWrap">
 
-<!-- ═══ LINKPULSE LIVE FEED (dynamic, top of page) ═══ -->
+<!-- ═══ LINKPULSE CURATED PICKS (dynamic, 3-column grid) ═══ -->
 <div id="linkpulse-zone" style="grid-column:1/-1;display:none;">
-  <!-- Hero section -->
-  <div id="lp-hero" class="hero" style="border-bottom:2px solid #b8860b;"></div>
-  <!-- Three-column grid for remaining picks -->
-  <div id="lp-grid" class="cols" style="border-bottom:2px solid #b8860b;"></div>
+  <div style="text-align:center;padding:10px 0 4px;border-bottom:1px solid #c9bfa8;">
+    <span class="sl" style="font-size:14px;letter-spacing:.2em;">⛳ TODAY'S CURATED PICKS</span>
+  </div>
+  <div id="lp-grid" class="cols"></div>
 </div>
 
 <!-- ═══ LEFT — Front 9: Pro Tour + Tips ═══ -->
@@ -802,6 +808,22 @@ function truncDesc(s, n) {
   return c.length > n ? c.slice(0, n) + '…' : c;
 }
 
+function renderFeatured(el, article) {
+  let h = '';
+  if (article.image && article.image.startsWith('http')) {
+    h += '<img class="hero-img" src="' + article.image + '" onerror="this.style.display=\'none\'" alt="">';
+  }
+  h += '<a class="hero-hl" href="' + article.link + '" target="_blank" rel="noopener">' + article.title.toUpperCase() + '</a>';
+  h += '<div class="hero-cluster">';
+  if (article.description) {
+    h += '<em>*' + truncDesc(article.description, 140) + '*</em><br>';
+  }
+  h += '<em>' + article.source + ' · ' + timeAgo(article.pubDate) + '</em>';
+  h += '</div>';
+  el.innerHTML = h;
+  el.style.display = 'block';
+}
+
 async function loadLinkPulseEdition() {
   try {
     const res = await fetch(LINKPULSE_API + '?t=' + Date.now());
@@ -809,55 +831,56 @@ async function loadLinkPulseEdition() {
     const data = await res.json();
     if (!data || !data.articles || data.articles.length === 0) return;
 
+    const feat1 = document.getElementById('lp-featured-1');
+    const feat2 = document.getElementById('lp-featured-2');
     const zone = document.getElementById('linkpulse-zone');
-    const heroDiv = document.getElementById('lp-hero');
     const gridDiv = document.getElementById('lp-grid');
     const arts = data.articles;
 
-    // ═══ HERO: first article — big red headline, Drudge-style ═══
-    const a0 = arts[0];
-    let hh = '';
-    if (a0.image && a0.image.startsWith('http')) {
-      hh += '<img class="hero-img" src="' + a0.image + '" onerror="this.style.display=\'none\'" alt="">';
-    }
-    hh += '<a class="hero-hl" href="' + a0.link + '" target="_blank" rel="noopener">' + a0.title.toUpperCase() + '</a>';
-    hh += '<div class="hero-cluster">';
-    if (a0.description) {
-      hh += '<em>*' + truncDesc(a0.description, 140) + '*</em><br>';
-    }
-    hh += '<em>' + a0.source + ' · ' + timeAgo(a0.pubDate) + '</em>';
-    hh += '</div>';
-    heroDiv.innerHTML = hh;
+    // ═══ FEATURED #1 — above the hardcoded hero ═══
+    // Pick first article with an image, fall back to first article
+    let f1 = arts.find(function(a) { return a.image && a.image.startsWith('http'); }) || arts[0];
+    renderFeatured(feat1, f1);
 
-    // ═══ REMAINING: three Drudge-style columns ═══
-    if (arts.length > 1) {
-      const remaining = arts.slice(1);
-      // Split into 3 columns
+    // ═══ FEATURED #2 — below nav bar ═══
+    // Pick second article with an image, or second article
+    let usedLink = f1.link;
+    let f2 = arts.find(function(a) { return a.link !== usedLink && a.image && a.image.startsWith('http'); });
+    if (!f2) f2 = arts.find(function(a) { return a.link !== usedLink; });
+    if (f2) {
+      renderFeatured(feat2, f2);
+    }
+
+    // ═══ CURATED PICKS — remaining articles in 3 columns ═══
+    let usedLinks = {};
+    usedLinks[f1.link] = true;
+    if (f2) usedLinks[f2.link] = true;
+
+    let remaining = arts.filter(function(a) { return !usedLinks[a.link]; });
+
+    if (remaining.length > 0) {
       const cols = [[], [], []];
       remaining.forEach(function(a, i) { cols[i % 3].push(a); });
 
       let gh = '';
       cols.forEach(function(col, ci) {
         gh += '<div class="col"' + (ci === 2 ? ' style="border-right:none;"' : '') + '>';
-        gh += '<span class="sl">⛳ CURATED PICKS</span>';
         col.forEach(function(a, ai) {
-          // First article in each column gets bigger treatment
           if (ai === 0) {
             gh += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+            if (a.description) {
+              gh += '<span class="aside">*' + truncDesc(a.description, 100) + '*</span>';
+            }
           } else {
             gh += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-          }
-          if (a.description && ai === 0) {
-            gh += '<span class="aside">*' + truncDesc(a.description, 100) + '*</span>';
           }
           gh += '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
         });
         gh += '</div>';
       });
       gridDiv.innerHTML = gh;
+      zone.style.display = 'block';
     }
-
-    zone.style.display = 'block';
 
   } catch (err) {
     console.log('LinkPulse fetch skipped:', err.message);
