@@ -861,37 +861,47 @@ async function loadLinkPulseEdition() {
           var titleUp = a.title.toUpperCase();
           var srcLine = '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
 
-          // First article: BIG red headline with image if available
+          // Show image on 1st, 4th, and every 5th article that has one
+          var showImg = hasImg && (ai === 0 || ai === 3 || ai % 5 === 0);
+
+          if (showImg) {
+            gh += '<span class="d">---</span>';
+            gh += '<a href="' + a.link + '" target="_blank" rel="noopener"><img src="' + a.image + '" style="width:240px;height:180px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" onerror="this.style.display=\'none\'" alt=""></a>';
+            gh += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
+          }
+
+          // First article: BIG red headline
           if (ai === 0) {
-            if (hasImg) {
-              gh += '<a href="' + a.link + '" target="_blank" rel="noopener"><img src="' + a.image + '" style="width:240px;height:180px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" onerror="this.style.display=\'none\'" alt=""></a>';
-              gh += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
-            }
             gh += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
             if (desc) gh += '<span class="aside">*' + desc + '*</span>';
             gh += srcLine;
 
-          // Second article: bold green uppercase with description
+          // Second: bold green uppercase
           } else if (ai === 1) {
             gh += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
             if (desc) gh += '<span class="aside">*' + desc + '*</span>';
             gh += srcLine;
 
-          // Third article: red/hot style for urgency
+          // Third: red urgent style
           } else if (ai === 2) {
             gh += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener" style="color:#c0392b;">' + titleUp + '</a>';
             gh += srcLine;
 
-          // Fourth: gold hot take style
-          } else if (ai === 3) {
-            gh += '<span class="d">---</span>';
-            gh += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+          // Every 4th: divider + description
+          } else if (ai % 4 === 3) {
+            if (!showImg) gh += '<span class="d">---</span>';
+            gh += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
             if (desc) gh += '<span class="aside">*' + desc + '*</span>';
             gh += srcLine;
 
-          // Rest: standard links with occasional descriptions
+          // Every 5th: red uppercase for variety
+          } else if (ai % 5 === 0) {
+            gh += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
+            if (desc) gh += '<span class="aside">*' + desc + '*</span>';
+            gh += srcLine;
+
+          // Rest: standard links, descriptions on every other
           } else {
-            if (ai % 3 === 0) gh += '<span class="d">---</span>';
             gh += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
             if (desc && ai % 2 === 0) gh += '<span class="aside">*' + desc + '*</span>';
             gh += srcLine;
