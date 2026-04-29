@@ -797,7 +797,10 @@ function truncDesc(s, n) {
 function renderFeatured(el, article) {
   let h = '';
   if (article.image && article.image.startsWith('http')) {
-    h += '<img class="hero-img" src="' + article.image + '" onerror="this.style.display=\'none\'" alt="">';
+    h += '<a href="' + article.link + '" target="_blank" rel="noopener">';
+    h += '<img class="hero-img" src="' + article.image + '" onerror="this.parentElement.style.display=\'none\'" alt="" style="cursor:pointer;">';
+    h += '</a>';
+    h += '<div style="text-align:center;margin-top:2px;margin-bottom:4px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + article.source + '</em></div>';
   }
   h += '<a class="hero-hl" href="' + article.link + '" target="_blank" rel="noopener">' + article.title.toUpperCase() + '</a>';
   h += '<div class="hero-cluster">';
