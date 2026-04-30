@@ -304,10 +304,6 @@
 
   <span class="d"></span>
 
-  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306732/0341222c-b14d-403b-a9a8-ceebe55d32ed_edzbnt.jpg" style="width:240px;height:240px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
-
-  <span class="d"></span>
-
   <div class="sb">
     <div class="t">Enjoying the Front 9?</div>
     <div class="s">Tomorrow's round, before your tee time.</div>
@@ -343,10 +339,6 @@
 
   <!-- Dynamic Equipment/Reviews articles -->
   <div id="sec-gear"></div>
-
-  <span class="d"></span>
-
-  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306734/9394050e-e9b9-47a9-a845-f7fb505e05b3_m0ijlx.jpg" style="width:240px;height:240px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
 
   <span class="d"></span>
 
@@ -407,10 +399,6 @@
 
   <span class="d"></span>
 
-  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306733/4f9b0e4f-d0b5-4101-9694-2d6f01c55058_dectqz.jpg" style="width:240px;height:240px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
-
-  <span class="d"></span>
-
   <span class="sl">🔥 19TH HOLE — HOT TAKES</span>
 
   <div class="ht">
@@ -450,10 +438,6 @@
 
   <span class="d"></span>
 
-  <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1774306730/35d3abcc-6dc6-4a02-99c3-0dd4c00ead1d_hzhvzf.jpg" style="width:240px;height:240px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" alt="">
-
-  <span class="d"></span>
-
   <span class="sl">TRENDING THIS WEEK</span>
   <div class="sm">
     <a href="#">Masters 2026 Odds</a> · <a href="#">Best GPS Watches</a> · <a href="#">LIV vs PGA</a> · <a href="#">Beginner Clubs</a> · <a href="#">Ball Compression</a> · <a href="#">Tiger Timeline</a> · <a href="#">Augusta Moments</a> · <a href="#">Best Public Courses</a> · <a href="#">Golf Fitness</a> · <a href="#">Swing Speed Training</a>
@@ -488,6 +472,26 @@
   <span class="d"></span>
 
   SEND TIPS TO THE MULLIGAN REPORT
+
+  <!-- TIPS BOX -->
+  <div style="text-align:left;margin:4px 0;">
+    <textarea id="tipBox" placeholder="Got a story? A hot take? A tip we should know about? Drop it here..." style="font-family:Courier,monospace;font-size:13px;padding:8px;border:1px solid #c9bfa8;background:#fff;width:100%;height:120px;resize:vertical;color:#1a1a1a;"></textarea>
+    <button onclick="submitTip()" style="font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:6px 14px;border:1px solid #1b4332;background:#faf6ef;color:#1b4332;cursor:pointer;margin-top:3px;">SUBMIT</button>
+    <div id="tipConfirm" style="font-size:12px;color:#1b4332;font-weight:bold;margin-top:4px;display:none;"></div>
+  </div>
+
+  <span class="d"></span>
+
+  EMAIL: <a href="mailto:tips@mulliganreport.com" style="font-size:12px;">TIPS@MULLIGANREPORT.COM</a>
+
+  <span class="d"></span>
+
+  <div class="dir">
+    <a href="#">LPGA</a> · <a href="#">GOLF CHANNEL</a> · <a href="#">NATL GOLF FOUNDATION</a> · <a href="#">R&amp;A</a> · <a href="#">USGA</a> · <a href="#">PGA OF AMERICA</a> · <a href="#">DP WORLD TOUR</a> · <a href="#">LIV GOLF</a> · <a href="#">ASIAN TOUR</a> · <a href="#">KORN FERRY</a><br><br>
+    <a href="#">ARCHIVES</a> · <a href="#">RECENT HEADLINES...</a>
+    <br><br>
+    <a href="#">PRIVACY POLICY</a> · <a href="#">TERMS</a> · <a href="#">ADVERTISE</a>
+  </div>
 
 
 </div>
@@ -845,7 +849,6 @@ function renderFeatured(el, article) {
 }
 
 // ═══ SECTION-BASED ARTICLE ROUTING ═══
-// Maps feed categories to TMR sections
 function categorizeArticle(a) {
   var cat = (a.category || '').toLowerCase();
   var src = (a.source || '').toLowerCase();
@@ -855,14 +858,23 @@ function categorizeArticle(a) {
   if (cat === 'lifestyle' || cat === 'travel' || cat === 'senior golf') return 'lifestyle';
   if (cat === 'community') return 'caddies';
   if (cat === 'industry' || cat === 'european tour') return 'industry';
-  // Default: Tour News goes to front9
   return 'front9';
 }
 
-// Render a list of articles into a section div with Drudge-style formatting
+// Render articles into a section, hide parent label if empty
 function renderSection(elId, articles) {
   var el = document.getElementById(elId);
-  if (!el || articles.length === 0) return;
+  if (!el) return;
+  if (articles.length === 0) {
+    // Hide the section label above this div
+    var prev = el.previousElementSibling;
+    while (prev) {
+      if (prev.classList && prev.classList.contains('sl')) { prev.style.display = 'none'; break; }
+      if (prev.classList && prev.classList.contains('d')) { prev.style.display = 'none'; }
+      prev = prev.previousElementSibling;
+    }
+    return;
+  }
 
   var h = '';
   articles.forEach(function(a, i) {
@@ -871,38 +883,30 @@ function renderSection(elId, articles) {
     var titleUp = a.title.toUpperCase();
     var srcLine = '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
 
-    // Divider between articles
     if (i > 0) h += '<span class="d"></span>';
 
-    // Show image on 1st article and every 4th with image
     var showImg = hasImg && (i === 0 || i % 4 === 0);
     if (showImg) {
       h += '<a href="' + a.link + '" target="_blank" rel="noopener"><img src="' + a.image + '" style="width:240px;height:180px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" onerror="this.style.display=\'none\'" alt=""></a>';
       h += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
     }
 
-    // Alternate headline styles for visual variety
     if (i === 0) {
-      // First: BIG red headline
       h += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
       if (desc) h += '<span class="aside">*' + desc + '*</span>';
       h += srcLine;
     } else if (i % 5 === 0) {
-      // Every 5th: red uppercase
       h += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
       if (desc) h += '<span class="aside">*' + desc + '*</span>';
       h += srcLine;
     } else if (i % 3 === 1) {
-      // Bold green uppercase
       h += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
       if (desc) h += '<span class="aside">*' + desc + '*</span>';
       h += srcLine;
     } else if (i % 4 === 2) {
-      // Red urgent
       h += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener" style="color:#c0392b;">' + titleUp + '</a>';
       h += srcLine;
     } else {
-      // Standard link
       h += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
       if (desc && i % 2 === 0) h += '<span class="aside">*' + desc + '*</span>';
       h += srcLine;
@@ -955,8 +959,30 @@ async function loadLinkPulseEdition() {
     remaining.forEach(function(a) {
       var sec = categorizeArticle(a);
       if (sections[sec]) sections[sec].push(a);
-      else sections.front9.push(a); // fallback
+      else sections.front9.push(a);
     });
+
+    // ═══ SMART DISTRIBUTION ═══
+    // If front9 has lots of articles and other sections are sparse,
+    // redistribute overflow to fill the center and right columns
+    var leftArticles = sections.front9;
+    var centerArticles = sections.gear;
+    var rightArticles = sections.thew;
+
+    // If center column sections are empty, give them some front9 overflow
+    if (centerArticles.length === 0 && leftArticles.length > 8) {
+      var overflow = leftArticles.splice(8);
+      var half = Math.ceil(overflow.length / 2);
+      centerArticles = overflow.slice(0, half);
+      // If right is also thin, feed it too
+      if (rightArticles.length < 3) {
+        rightArticles = rightArticles.concat(overflow.slice(half));
+      } else {
+        centerArticles = centerArticles.concat(overflow.slice(half));
+      }
+      sections.gear = centerArticles;
+      sections.thew = rightArticles;
+    }
 
     // ═══ RENDER EACH SECTION ═══
     renderSection('sec-front9', sections.front9);
