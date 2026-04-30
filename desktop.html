@@ -93,18 +93,18 @@
   .top-ad .pa-body a{color:#1b4332;text-decoration:underline;font-size:13px;font-weight:900;}
 
   /* ═══ OPTIN — PRIMARY EMAIL CAPTURE ═══ */
-  .optin{background:linear-gradient(135deg,#1b4332,#0f2b1f);padding:12px 20px;border-bottom:2px solid #b8860b;border-top:1px solid #2d6a4f;}
-  .optin .optin-inner{display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;max-width:900px;margin:0 auto;}
-  .optin .optin-text{font-family:Arial,sans-serif;font-size:14px;color:rgba(255,255,255,.7);}
-  .optin .optin-text strong{color:#faf6ef;font-size:15px;font-weight:900;letter-spacing:.02em;}
-  .optin .optin-text .optin-sub{font-size:12px;color:rgba(255,255,255,.45);display:block;margin-top:1px;}
+  .optin{background:linear-gradient(135deg,#1b4332,#0f2b1f);padding:6px 20px;border-bottom:2px solid #b8860b;border-top:1px solid #2d6a4f;}
+  .optin .optin-inner{display:flex;align-items:center;justify-content:center;gap:14px;max-width:900px;margin:0 auto;}
+  .optin .optin-text{font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.7);white-space:nowrap;}
+  .optin .optin-text strong{color:#faf6ef;font-size:13px;font-weight:900;}
+  .optin .optin-text .optin-sub{font-size:12px;color:rgba(255,255,255,.4);display:inline;margin-left:6px;}
   .optin .optin-cta{display:flex;align-items:center;gap:0;flex-shrink:0;}
-  .optin .optin-cta input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-right:none;padding:9px 14px;color:#fff;font-size:13px;font-family:Courier,monospace;width:210px;outline:none;border-radius:2px 0 0 2px;}
+  .optin .optin-cta input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-right:none;padding:6px 12px;color:#fff;font-size:12px;font-family:Courier,monospace;width:170px;outline:none;border-radius:2px 0 0 2px;}
   .optin .optin-cta input::placeholder{color:rgba(255,255,255,.3);}
   .optin .optin-cta input:focus{border-color:#b8860b;background:rgba(255,255,255,.12);}
-  .optin .optin-cta button{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:11px;font-weight:900;padding:10px 18px;border:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;border-radius:0 2px 2px 0;}
+  .optin .optin-cta button{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:7px 14px;border:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;border-radius:0 2px 2px 0;}
   .optin .optin-cta button:hover{background:#d4a828;}
-  .optin .optin-proof{font-family:Georgia,serif;font-size:11px;color:rgba(255,255,255,.3);font-style:italic;}
+  .optin .optin-proof{font-family:Georgia,serif;font-size:10px;color:rgba(255,255,255,.25);font-style:italic;white-space:nowrap;}
 
   /* ═══ HERO ═══ */
   .hero{padding:14px 16px 10px;border-bottom:1px solid #c9bfa8;}
@@ -251,18 +251,15 @@
 <!-- PRO PICK -->
 <div class="top-ad">
   <div class="pa-badge">/// PRO PICK ///</div>
-  <div class="pa-body"><strong>TaylorMade Qi35</strong> — "Best driver since the M2." <a href="#" onclick="openArticle('qi35');return false;">FULL REVIEW →</a></div>
+  <div class="pa-body"><strong>TaylorMade Qi35</strong> — "Best driver since the M2." <a href="https://mulligan-report-drudge.vercel.app" target="_self">FULL REVIEW →</a></div>
 </div>
 
 <!-- OPTIN -->
 <div class="optin">
   <div class="optin-inner">
-    <div class="optin-text"><strong>Get inside the ropes.</strong> <span class="optin-sub">Free daily golf briefing — scores, gear, hot takes. Before your tee time.</span></div>
-    <div class="optin-cta">
-      <input type="email" id="optinEmail" placeholder="Your email...">
-      <button onclick="optinCapture()">SUBSCRIBE FREE</button>
-    </div>
-    <div class="optin-proof">12,847 golfers · Free · Unsubscribe anytime</div>
+    <div class="optin-text"><strong>Get inside the ropes.</strong><span class="optin-sub">Free daily golf briefing — scores, gear, hot takes.</span></div>
+    <div class="optin-cta"><input type="email" id="optinEmail" placeholder="Your email..."><button onclick="optinCapture()">SUBSCRIBE FREE</button></div>
+    <div class="optin-proof">12,847 golfers</div>
   </div>
 </div>
 
@@ -403,7 +400,7 @@
 <!-- ═══ CENTER — Back 9: Gear + Caddie's Pick + Mulligan ═══ -->
 <div class="col" id="col-1">
 
-  <a class="H" href="#" onclick="openArticle('drivers2026');return false;">EVERY 2026 DRIVER TESTED. ONE BLEW THE OTHERS AWAY.</a>
+  <a class="H" href="https://mulligan-report-drudge.vercel.app" target="_self">EVERY 2026 DRIVER TESTED. ONE BLEW THE OTHERS AWAY.</a>
   <span class="src">MyGolfSpy · 3h ago</span>
   <span class="aside">*Ping G440 Max. 267 yds. 28-yd dispersion. Not TaylorMade. Not Callaway.*</span>
 
@@ -443,15 +440,15 @@
 
   <div class="ps">
     <div class="badge">/// PRO PICK ///</div>
-    TaylorMade Qi35 — "Best since the M2." 15% more accurate. <a href="#" onclick="openArticle('qi35');return false;">REVIEW →</a>
+    TaylorMade Qi35 — "Best since the M2." 15% more accurate. <a href="https://mulligan-report-drudge.vercel.app" target="_self">REVIEW →</a>
   </div>
   <div class="ps">
     <div class="badge">/// PRO PICK ///</div>
-    Callaway AI Smoke Max — Stunningly forgiving. $549. <a href="#" onclick="openArticle('callaway');return false;">REVIEW →</a>
+    Callaway AI Smoke Max — Stunningly forgiving. $549. <a href="https://mulligan-report-drudge.vercel.app" target="_self">REVIEW →</a>
   </div>
   <div class="ps">
     <div class="badge">/// PRO PICK ///</div>
-    Ping G440 Max — MyGolfSpy's #1 Driver 2026. $599. <a href="#" onclick="openArticle('drivers2026');return false;">REVIEW →</a>
+    Ping G440 Max — MyGolfSpy's #1 Driver 2026. $599. <a href="https://mulligan-report-drudge.vercel.app" target="_self">REVIEW →</a>
   </div>
 
   <span class="d">---</span>
