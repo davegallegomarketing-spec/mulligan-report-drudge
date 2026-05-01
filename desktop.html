@@ -225,6 +225,154 @@
   /* ═══ SKETCH VIEWER ═══ */
   .sv{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,43,31,.95);z-index:10000;justify-content:center;align-items:center;flex-direction:column;}
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     MOBILE — modern saturated Drudge for phones.
+     Strategy: single dense column, keep all 3 tickers, shrink masthead,
+     scale typography, beef up touch targets. Additive only — desktop intact.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    body{font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+
+    /* ── TICKERS: keep all 3, shrink height/font, faster scroll ── */
+    .t1-wrap{height:28px;}
+    .t2-wrap{height:30px;}
+    .t3-wrap{height:30px;}
+    .t1-inner{animation-duration:80s;}
+    .t2-inner{animation-duration:70s;}
+    .t3-inner{animation-duration:70s;}
+    .t1-badge,.t2-badge,.t3-badge{font-size:9px;padding:3px 9px;margin:0 10px 0 0;letter-spacing:.08em;}
+    .t1-item,.t2-item,.t3-item{font-size:10.5px;letter-spacing:.02em;}
+    .t1-item.t1-tourney{font-size:11.5px;}
+    .t3-time{font-size:10px;padding:1px 5px;}
+    .ticker-wrap::before,.ticker-wrap::after{width:24px;}
+
+    /* ── PRO PICK TOP BAR: stack badge above body ── */
+    .top-ad{flex-direction:column;}
+    .top-ad .pa-badge{padding:6px 14px;justify-content:center;}
+    .top-ad .pa-body{padding:8px 14px;font-size:13px;flex-wrap:wrap;justify-content:center;line-height:1.4;}
+
+    /* ── OPTIN: wrap gracefully so email input doesn't overflow ── */
+    .optin{padding:10px 14px;}
+    .optin .optin-inner{flex-wrap:wrap;gap:8px 12px;}
+    .optin .optin-text{white-space:normal;text-align:center;flex:1 1 100%;font-size:13px;line-height:1.35;}
+    .optin .optin-text .optin-sub{display:block;margin-left:0;margin-top:2px;font-size:11.5px;}
+    .optin .optin-cta{flex:1 1 100%;justify-content:center;}
+    .optin .optin-cta input{flex:1;width:auto;min-width:0;padding:10px 12px;font-size:14px;}
+    .optin .optin-cta button{padding:10px 14px;font-size:11px;}
+    .optin .optin-proof{flex:1 1 100%;text-align:center;font-size:10.5px;}
+
+    /* ── LOGO BAR: shrink the masthead so it doesn't eat the screen ── */
+    .logo-bar{padding:14px 10px 8px;}
+    .logo-bar .logo{font-size:38px;letter-spacing:.04em;text-shadow:2px 2px 0 #c9bfa8,3px 3px 0 rgba(15,43,31,.15);}
+    .logo-bar .tagline{font-size:11.5px;line-height:1.4;padding:0 14px;}
+
+    /* ── UTILITY BAR: bigger tap targets, comfortable scroll ── */
+    .util-bar{padding:10px 8px;}
+    .util-bar a{font-size:12px;padding:6px 6px;}
+    .util-bar .sep{padding:0 2px;}
+
+    /* ── HERO: scale headline, cap image height, keep impact ── */
+    .hero{padding:14px 14px 12px;}
+    .hero-img{min-height:0;max-height:240px;width:100%;border-width:2px;}
+    .hero-hl{font-size:28px;line-height:1.08;}
+    .hero-cluster{font-size:14px;line-height:1.7;}
+    .hero-cluster em{font-size:12px;}
+
+    /* ── COLUMNS: collapse to single saturated stream ── */
+    .cols{grid-template-columns:1fr;}
+    .col{padding:14px 14px;border-right:none;border-bottom:1px solid #c9bfa8;text-align:left;}
+    .col:last-child{border-bottom:none;}
+
+    /* Add a section divider/label feel between stacked columns */
+    .col + .col{border-top:3px double #b8860b;}
+
+    /* Headlines: keep punch, fit width, add breathing room */
+    .col a.H{font-size:19px;line-height:1.2;padding:6px 0;}
+    .col a.B{font-size:16px;line-height:1.25;padding:5px 0;}
+    .col a.L{font-size:15px;line-height:1.4;padding:5px 0;}
+    .col .src{font-size:11.5px;}
+    .col .aside{font-size:12.5px;line-height:1.5;}
+    .col .sm{font-size:14px;line-height:1.7;}
+    .col .sm a{font-size:14px;}
+    .sl{font-size:12px;margin:10px 0 4px;}
+
+    /* Hot take: more readable on small screens */
+    .ht{padding:10px 12px;font-size:14px;line-height:1.5;}
+    .ht .tag{font-size:11px;}
+
+    /* Pro Pick / Proshop block: more padding for readability */
+    .ps{padding:10px 12px;font-size:13px;line-height:1.5;}
+    .ps a{display:inline-block;padding:4px 0;}
+
+    /* Subscribe inline boxes: stack input + button ── */
+    .sb{padding:12px 14px;}
+    .sb .t{font-size:14px;}
+    .sb .s{font-size:12px;}
+    .sb input{width:100%;padding:10px 12px;font-size:14px;margin-top:8px;display:block;box-sizing:border-box;}
+    .sb button{width:100%;padding:11px 14px;font-size:12px;margin-top:6px;}
+
+    /* Search bar (right column): fill width, comfortable tap ── */
+    #searchInput{width:100% !important;padding:10px 12px !important;font-size:14px !important;box-sizing:border-box;display:block;}
+    #searchInput + button{width:100% !important;padding:11px 14px !important;font-size:12px !important;margin-top:6px;display:block;}
+    #searchResults{font-size:12px !important;}
+
+    /* Directories (text-link bricks): tighter line-height, taller taps */
+    .dir{font-size:12px;line-height:1.9;}
+    .dir a{font-size:12px;padding:2px 0;display:inline-block;}
+
+    /* App promo */
+    .app-promo{padding:12px;font-size:13px;line-height:1.55;}
+
+    /* Visit counter */
+    .vc{font-size:12px;line-height:1.6;}
+
+    /* ── FOOTER ── */
+    .footer{padding:18px 14px;font-size:12px;line-height:1.6;}
+
+    /* ── ARTICLE OVERLAY: full-bleed, larger body text ── */
+    .ai{max-width:100%;}
+    .ai-mast{padding:10px 14px;}
+    .ai-mast-logo{font-size:14px;}
+    .ai-mast-back{font-size:11px;}
+    .ai-content{padding:18px 16px 14px;}
+    .ai .acat{font-size:11px;}
+    .ai .atit{font-size:22px;line-height:1.18;}
+    .ai .asb{flex-wrap:wrap;gap:6px;padding:8px 0;}
+    .ai .asb-source{font-size:12px;}
+    .ai .asl{font-size:11px;padding:6px 10px;}
+    .ai .atx{font-size:16px;line-height:1.7;}
+    .ai .atx p{margin-bottom:14px;}
+    .ai-cta{flex-direction:column;gap:10px;padding:14px 16px;text-align:center;}
+    .ai-cta-text{font-size:13px;}
+    .ai-cta-btn{width:100%;padding:11px 14px;}
+    .ai-nav{padding:14px 16px;}
+    .ai-nav a{font-size:12px;padding:4px 0;}
+
+    /* Subscribe modal: better width, larger inputs */
+    .si{padding:22px 18px;width:94%;}
+    .si input{width:100% !important;padding:10px 12px !important;font-size:14px !important;margin:6px 0 8px !important;box-sizing:border-box;}
+    .si button{width:100% !important;padding:11px 14px !important;font-size:12px !important;}
+
+    /* Universal: bigger tap targets on inline links inside columns */
+    .col a{min-height:24px;}
+
+    /* Sketch viewer: full-screen comfort */
+    #sketchImg{max-width:96% !important;max-height:70vh !important;}
+    #sketchCap{font-size:13px !important;padding:0 14px;}
+  }
+
+  /* Extra-small phones (<380px) — squeeze a bit more ── */
+  @media (max-width: 380px) {
+    .logo-bar .logo{font-size:32px;}
+    .hero-hl{font-size:24px;}
+    .col a.H{font-size:17px;}
+    .col a.B{font-size:15px;}
+    .col a.L{font-size:14px;}
+    .t1-badge,.t2-badge,.t3-badge{padding:3px 7px;font-size:8.5px;}
+    .t1-item,.t2-item,.t3-item{font-size:10px;}
+  }
+
 </style>
 </head>
 <body>
