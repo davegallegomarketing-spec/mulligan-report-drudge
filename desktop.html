@@ -238,9 +238,9 @@
     .t1-wrap{height:28px;}
     .t2-wrap{height:30px;}
     .t3-wrap{height:30px;}
-    .t1-inner{animation-duration:80s;}
-    .t2-inner{animation-duration:70s;}
-    .t3-inner{animation-duration:70s;}
+    .t1-inner{animation-duration:200s;}
+    .t2-inner{animation-duration:170s;}
+    .t3-inner{animation-duration:150s;}
     .t1-badge,.t2-badge,.t3-badge{font-size:9px;padding:3px 9px;margin:0 10px 0 0;letter-spacing:.08em;}
     .t1-item,.t2-item,.t3-item{font-size:10.5px;letter-spacing:.02em;}
     .t1-item.t1-tourney{font-size:11.5px;}
@@ -1310,9 +1310,52 @@ async function loadLinkPulseEdition() {
     renderColumn('sec-gear', col1, 1);
     renderColumn('sec-thew', col2, 2);
 
+    // After articles render, fix link behavior for mobile (back button works)
+    applyMobileLinkBehavior();
+
   } catch (err) {
     console.log('LinkPulse fetch skipped:', err.message);
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// MOBILE LINK BEHAVIOR
+// On mobile (≤768px), article links should open in the SAME tab so the
+// back button returns the user to TMR (Aaron + Jess feedback).
+// On desktop, links keep target="_blank" — desktop users expect new-tab
+// behavior and have easy keyboard shortcuts (Cmd-click) for either choice.
+// ═══════════════════════════════════════════════════════════════════════
+function applyMobileLinkBehavior() {
+  if (window.innerWidth > 768) return; // desktop — leave alone
+
+  // Strip target="_blank" from every article link on the page.
+  // We target links that point to external URLs (article content),
+  // NOT internal navigation (popup, search, anchor jumps).
+  var links = document.querySelectorAll('a[target="_blank"]');
+  links.forEach(function(a){
+    var href = a.getAttribute('href') || '';
+    // Keep target=_blank for: legal pages, official rules, mailto, tel,
+    // anchor links, and JS-only (#) handlers. Strip from real article URLs.
+    if (
+      href.indexOf('mailto:') === 0 ||
+      href.indexOf('tel:') === 0 ||
+      href === '#' ||
+      href.indexOf('#') === 0 ||
+      href.indexOf('themulliganreport.com/legal') !== -1 ||
+      href.indexOf('themulliganreport.com/giveaway') !== -1
+    ) {
+      return;
+    }
+    a.removeAttribute('target');
+  });
+}
+
+// Run once on initial load to fix any static article links (hero, etc.)
+// that exist before LinkPulse data fetches.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applyMobileLinkBehavior);
+} else {
+  applyMobileLinkBehavior();
 }
 
 loadLinkPulseEdition();
@@ -1326,14 +1369,14 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     <button class="gv-close" onclick="gvClose()" aria-label="Close">✕</button>
 
     <div class="gv-img">
-      <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1777646963/a49490ec-c48a-4236-8a5b-3b4dec69f6c9_hlip4j.jpg" alt="Three dozen Titleist Pro V1 golf balls stacked in a pyramid" loading="lazy">
+      <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1777646963/a49490ec-c48a-4236-8a5b-3b4dec69f6c9_hlip4j.jpg" alt="Three dozen Titleist golf balls stacked in a pyramid" loading="lazy">
     </div>
 
     <div class="gv-body" id="gvBody">
 
       <div class="gv-banner">★ The Mulligan Report Sweepstakes ★</div>
 
-      <h2 class="gv-headline" id="gvHeadline">Win 3 Dozen<br><em>Titleist Pro V1s</em></h2>
+      <h2 class="gv-headline" id="gvHeadline">Win 3 Dozen<br><em>Titleist Golf Balls</em></h2>
 
       <p class="gv-sub">
         We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model — every quarter in 2026.<br>
