@@ -283,13 +283,6 @@
 <!-- ═══ THREE COLUMNS ═══ -->
 <div class="cols" id="colsWrap">
 
-<!-- ═══ LINKPULSE CURATED PICKS (dynamic, 3-column grid) ═══ -->
-<div id="linkpulse-zone" style="grid-column:1/-1;display:none;">
-  <div style="text-align:center;padding:10px 0 4px;border-bottom:1px solid #c9bfa8;">
-    <span class="sl" style="font-size:14px;letter-spacing:.2em;">⛳ TODAY'S CURATED PICKS</span>
-  </div>
-  <div id="lp-grid" class="cols"></div>
-</div>
 
 <!-- ═══ LEFT — Front 9: Tour News + Tips ═══ -->
 <div class="col" id="col-0">
@@ -993,48 +986,6 @@ async function loadLinkPulseEdition() {
     renderSection('sec-thew', sections.thew);
     renderSection('sec-industry', sections.industry);
     renderSection('sec-culture', sections.culture);
-
-    // ═══ CURATED PICKS GRID (all articles) ═══
-    const zone = document.getElementById('linkpulse-zone');
-    const gridDiv = document.getElementById('lp-grid');
-
-    if (remaining.length > 0) {
-      const cols = [[], [], []];
-      remaining.forEach(function(a, i) { cols[i % 3].push(a); });
-
-      let gh = '';
-      cols.forEach(function(col, ci) {
-        gh += '<div class="col"' + (ci === 2 ? ' style="border-right:none;"' : '') + '>';
-        col.forEach(function(a, ai) {
-          var desc = truncDesc(a.description, 120);
-          var hasImg = a.image && a.image.startsWith('http');
-          var titleUp = a.title.toUpperCase();
-          var srcLine = '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
-          if (ai > 0) gh += '<span class="d"></span>';
-          var showImg = hasImg && (ai === 0 || ai % 4 === 0);
-          if (showImg) {
-            gh += '<a href="' + a.link + '" target="_blank" rel="noopener"><img src="' + a.image + '" style="width:240px;height:180px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" onerror="this.style.display=\'none\'" alt=""></a>';
-            gh += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
-          }
-          if (ai === 0) {
-            gh += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
-            if (desc) gh += '<span class="aside">*' + desc + '*</span>';
-            gh += srcLine;
-          } else if (ai % 3 === 1) {
-            gh += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-            if (desc) gh += '<span class="aside">*' + desc + '*</span>';
-            gh += srcLine;
-          } else {
-            gh += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-            if (desc && ai % 2 === 0) gh += '<span class="aside">*' + desc + '*</span>';
-            gh += srcLine;
-          }
-        });
-        gh += '</div>';
-      });
-      gridDiv.innerHTML = gh;
-      zone.style.display = 'block';
-    }
 
   } catch (err) {
     console.log('LinkPulse fetch skipped:', err.message);
