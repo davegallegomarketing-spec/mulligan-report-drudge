@@ -362,15 +362,212 @@
     #sketchCap{font-size:13px !important;padding:0 14px;}
   }
 
-  /* Extra-small phones (<380px) — squeeze a bit more ── */
-  @media (max-width: 380px) {
-    .logo-bar .logo{font-size:32px;}
-    .hero-hl{font-size:24px;}
-    .col a.H{font-size:17px;}
-    .col a.B{font-size:15px;}
-    .col a.L{font-size:14px;}
-    .t1-badge,.t2-badge,.t3-badge{padding:3px 7px;font-size:8.5px;}
-    .t1-item,.t2-item,.t3-item{font-size:10px;}
+  /* ═══════════════════════════════════════════════════════════════════════
+     GIVEAWAY POPUP — quarterly Titleist sweepstakes
+     Triggers 3s after page load, once per session.
+     Drudge-style: translucent backdrop so the page shows through.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .gv-back{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,43,31,0.78);
+    z-index:9998;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    animation:gvFadeIn 0.4s ease-out;
+  }
+  .gv-back.show{display:flex;}
+  @keyframes gvFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes gvSlideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+  .gv-modal{
+    background:#f4ecd8;
+    border:3px solid #1b4332;
+    box-shadow:0 0 0 1px #b8860b, 8px 8px 0 rgba(0,0,0,0.15);
+    max-width:780px;
+    width:100%;
+    max-height:92vh;
+    overflow:auto;
+    display:flex;
+    flex-direction:row;
+    position:relative;
+    animation:gvSlideUp 0.45s ease-out;
+    font-family:Georgia,'Times New Roman',serif;
+  }
+  .gv-close{
+    position:absolute;
+    top:8px;
+    right:10px;
+    background:transparent;
+    border:none;
+    color:#1b4332;
+    font-size:22px;
+    font-weight:bold;
+    cursor:pointer;
+    line-height:1;
+    padding:4px 8px;
+    font-family:Arial,sans-serif;
+    z-index:2;
+  }
+  .gv-close:hover{color:#b8860b;}
+
+  .gv-img{
+    flex:0 0 42%;
+    background:#1b4332;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .gv-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .gv-body{
+    flex:1 1 58%;
+    padding:28px 28px 22px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  .gv-banner{
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    color:#b8860b;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    text-align:center;
+    border-bottom:1px solid #c9bfa8;
+    border-top:1px solid #c9bfa8;
+    padding:5px 0;
+    margin-bottom:14px;
+    font-weight:bold;
+  }
+
+  .gv-headline{
+    font-family:Courier,'Courier New',monospace;
+    font-size:26px;
+    font-weight:bold;
+    color:#c0392b;
+    text-align:center;
+    line-height:1.1;
+    margin:0 0 10px;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+  }
+  .gv-headline em{
+    font-style:italic;
+    color:#1b4332;
+    font-weight:normal;
+  }
+
+  .gv-sub{
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:#1b4332;
+    text-align:center;
+    line-height:1.45;
+    margin:0 0 16px;
+  }
+  .gv-sub strong{color:#c0392b;}
+
+  .gv-form{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .gv-form input[type="email"]{
+    padding:11px 12px;
+    border:2px solid #1b4332;
+    background:#fff;
+    font-family:Georgia,serif;
+    font-size:15px;
+    color:#222;
+    box-sizing:border-box;
+    width:100%;
+  }
+  .gv-form input[type="email"]:focus{
+    outline:none;
+    border-color:#b8860b;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2);
+  }
+  .gv-form button{
+    padding:12px 18px;
+    background:#1b4332;
+    color:#f4ecd8;
+    border:none;
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    cursor:pointer;
+    transition:background 0.15s;
+  }
+  .gv-form button:hover{background:#0f2b1f;}
+  .gv-form button:disabled{background:#888;cursor:wait;}
+
+  .gv-fine{
+    font-family:Arial,sans-serif;
+    font-size:10.5px;
+    color:#666;
+    text-align:center;
+    line-height:1.5;
+    margin-top:6px;
+  }
+  .gv-fine a{color:#1b4332;text-decoration:underline;}
+  .gv-fine a:hover{color:#b8860b;}
+  .gv-fine .gv-no{
+    display:block;
+    margin-top:6px;
+    color:#888;
+    cursor:pointer;
+    background:none;
+    border:none;
+    font-family:Arial,sans-serif;
+    font-size:10.5px;
+    text-decoration:underline;
+  }
+  .gv-fine .gv-no:hover{color:#666;}
+
+  .gv-success{
+    text-align:center;
+    padding:20px 0;
+  }
+  .gv-success .gv-check{
+    font-size:36px;
+    color:#1b4332;
+    margin-bottom:6px;
+  }
+  .gv-success h3{
+    font-family:Courier,monospace;
+    color:#1b4332;
+    font-size:20px;
+    margin:0 0 6px;
+  }
+  .gv-success p{
+    font-family:Georgia,serif;
+    color:#444;
+    font-size:13px;
+    margin:0;
+  }
+
+  /* Mobile: stack image on top, body below */
+  @media (max-width:640px){
+    .gv-modal{flex-direction:column;max-height:88vh;}
+    .gv-img{flex:0 0 200px;width:100%;}
+    .gv-img img{height:200px;}
+    .gv-body{padding:20px 20px 18px;}
+    .gv-headline{font-size:20px;}
+    .gv-sub{font-size:13px;}
+    .gv-banner{font-size:9px;letter-spacing:.14em;}
   }
 
 </style>
@@ -1121,5 +1318,222 @@ async function loadLinkPulseEdition() {
 loadLinkPulseEdition();
 setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
 </script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     GIVEAWAY POPUP — quarterly Titleist sweepstakes
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="gv-back" id="gvBack" role="dialog" aria-modal="true" aria-labelledby="gvHeadline">
+  <div class="gv-modal" onclick="event.stopPropagation();">
+    <button class="gv-close" onclick="gvClose()" aria-label="Close">✕</button>
+
+    <div class="gv-img">
+      <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1777646963/a49490ec-c48a-4236-8a5b-3b4dec69f6c9_hlip4j.jpg" alt="Three dozen Titleist Pro V1 golf balls stacked in a pyramid" loading="lazy">
+    </div>
+
+    <div class="gv-body" id="gvBody">
+
+      <div class="gv-banner">★ The Mulligan Report Sweepstakes ★</div>
+
+      <h2 class="gv-headline" id="gvHeadline">Win 3 Dozen<br><em>Titleist Pro V1s</em></h2>
+
+      <p class="gv-sub">
+        We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model — every quarter in 2026.<br>
+        <strong>4 winners. 4 chances.</strong> Every reader wins the daily golf briefing.
+      </p>
+
+      <form class="gv-form" id="gvForm" onsubmit="return gvSubmit(event);">
+        <input
+          type="email"
+          name="email"
+          id="gvEmail"
+          placeholder="Your email address"
+          required
+          autocomplete="email"
+        >
+        <button type="submit" id="gvBtn">Enter to Win &amp; Subscribe</button>
+      </form>
+
+      <div class="gv-fine">
+        No purchase necessary · One entry per person per quarter · 18+ U.S. residents only<br>
+        <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
+        &nbsp;·&nbsp;
+        <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy</a>
+        <button class="gv-no" type="button" onclick="gvClose()">No thanks, just the news</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ─── Trigger settings ──────────────────────────────────────────────────
+  // Three triggers run in parallel. Whichever fires first wins.
+  //   1. Timer:        5 seconds elapsed (catches cold traffic before bounce)
+  //   2. Exit-intent:  mouse leaves top of viewport (desktop only)
+  //   3. Scroll-50%:   user scrolls past half the page (mobile only)
+  // After any trigger fires, all others shut off. Once-per-session flag.
+  var SESSION_KEY = 'tmr_gv_seen_v1';   // bump _v1 to _v2 to re-show after dismissal
+  var MOBILE_BREAKPOINT = 768;
+  var SCROLL_THRESHOLD = 0.5;           // 50% of page
+  var TIMER_DELAY_MS = 5000;            // 5 seconds
+  var EXIT_ARM_DELAY_MS = 1500;         // wait before arming exit-intent
+
+  function alreadySeen(){
+    try { return !!sessionStorage.getItem(SESSION_KEY); }
+    catch(e) { return false; }
+  }
+
+  // Cleanup pointers — populated when listeners attach so we can detach all
+  var cleanups = [];
+  function detachAll(){
+    cleanups.forEach(function(fn){ try { fn(); } catch(e){} });
+    cleanups = [];
+  }
+
+  function gvShow(){
+    if (alreadySeen()) return;
+    var back = document.getElementById('gvBack');
+    if (!back) return;
+    back.classList.add('show');
+    document.body.style.overflow = 'hidden'; // prevent scroll behind modal
+    // Mark seen as soon as it shows so close-during-render doesn't double-fire
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+    detachAll(); // shut off remaining triggers
+  }
+
+  window.gvClose = function(){
+    var back = document.getElementById('gvBack');
+    if (!back) return;
+    back.classList.remove('show');
+    document.body.style.overflow = '';
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+  };
+
+  // Click backdrop closes (but not clicks on modal)
+  document.addEventListener('click', function(e){
+    var back = document.getElementById('gvBack');
+    if (back && back.classList.contains('show') && e.target === back) {
+      gvClose();
+    }
+  });
+
+  // ESC key closes
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      var back = document.getElementById('gvBack');
+      if (back && back.classList.contains('show')) gvClose();
+    }
+  });
+
+  // ─── Form submit (placeholder — wire to AWeber later) ───────────────────
+  window.gvSubmit = function(ev){
+    ev.preventDefault();
+    var emailEl = document.getElementById('gvEmail');
+    var btn = document.getElementById('gvBtn');
+    var body = document.getElementById('gvBody');
+    var email = (emailEl.value || '').trim();
+
+    // Basic validation
+    if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 0) {
+      emailEl.focus();
+      return false;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    // ───────────────────────────────────────────────────────────────────────
+    // TODO: Replace this fake submission with real AWeber endpoint when ready.
+    //
+    // AWeber's hosted form action looks like:
+    //   POST https://www.aweber.com/scripts/addlead.pl
+    //   Form fields: meta_web_form_id, meta_split_id, listname, redirect, email
+    //
+    // Or use AWeber's API: https://api.aweber.com/1.0/accounts/{id}/lists/{id}/subscribers
+    // (requires OAuth token, server-side only — recommend a Vercel /api/subscribe route)
+    //
+    // For now: simulate success after 600ms.
+    // ───────────────────────────────────────────────────────────────────────
+    setTimeout(function(){
+      body.innerHTML =
+        '<div class="gv-success">' +
+          '<div class="gv-check">✓</div>' +
+          '<h3>You\'re entered.</h3>' +
+          '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
+        '</div>';
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+      // Auto-close after success
+      setTimeout(gvClose, 2800);
+    }, 600);
+
+    return false;
+  };
+
+  // ─── Boot — attach all triggers; first to fire wins ─────────────────────
+  function isMobile(){
+    return window.innerWidth <= MOBILE_BREAKPOINT;
+  }
+
+  function setupTriggers(){
+    if (alreadySeen()) return; // don't bother attaching listeners
+
+    // ── Trigger 1: 5-second timer (works on all devices) ─────────────────
+    var timerId = setTimeout(function(){
+      gvShow();
+    }, TIMER_DELAY_MS);
+    cleanups.push(function(){ clearTimeout(timerId); });
+
+    if (isMobile()) {
+      // ── Trigger 2 (mobile): scroll past 50% of page ────────────────────
+      var scrollHandler = function(){
+        if (alreadySeen()) return;
+        var scrolled = window.scrollY || window.pageYOffset || 0;
+        var docH = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        );
+        var winH = window.innerHeight;
+        var maxScroll = docH - winH;
+        if (maxScroll <= 0) return; // page too short to measure
+        var pct = scrolled / maxScroll;
+        if (pct >= SCROLL_THRESHOLD) {
+          gvShow();
+        }
+      };
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      cleanups.push(function(){
+        window.removeEventListener('scroll', scrollHandler);
+      });
+
+    } else {
+      // ── Trigger 2 (desktop): exit-intent (mouse leaves top of viewport) ─
+      // Wait 1.5s before arming so we don't fire on the user's initial
+      // mouse path from the address bar to the page content.
+      var armId = setTimeout(function(){
+        var exitHandler = function(e){
+          if (alreadySeen()) return;
+          // Fire only when leaving toward the top (cursor heading for
+          // the close button / URL bar / browser tab), not the sides/bottom.
+          if (e.clientY <= 0) {
+            gvShow();
+          }
+        };
+        document.addEventListener('mouseleave', exitHandler);
+        cleanups.push(function(){
+          document.removeEventListener('mouseleave', exitHandler);
+        });
+      }, EXIT_ARM_DELAY_MS);
+      cleanups.push(function(){ clearTimeout(armId); });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTriggers);
+  } else {
+    setupTriggers();
+  }
+})();
+</script>
+
 </body>
 </html>
