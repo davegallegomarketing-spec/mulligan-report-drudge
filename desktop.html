@@ -284,16 +284,10 @@
 <div class="cols" id="colsWrap">
 
 
-<!-- ═══ LEFT — Front 9: Tour News + Tips ═══ -->
+<!-- ═══ LEFT COLUMN ═══ -->
 <div class="col" id="col-0">
 
-  <!-- Dynamic Tour News articles injected here -->
   <div id="sec-front9"></div>
-
-  <span class="d"></span>
-
-  <span class="sl">⛳ PRO TIPS + SWING</span>
-  <div id="sec-protips"></div>
 
   <span class="d"></span>
 
@@ -301,14 +295,6 @@
     <div class="t">Enjoying the Front 9?</div>
     <div class="s">Tomorrow's round, before your tee time.</div>
     <input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button>
-  </div>
-
-  <span class="d"></span>
-
-  <div class="sm">
-    <a href="#">LIVE: GOLF TWITTER TRENDING...</a><br>
-    <a href="#">REDDIT R/GOLF — HOT POSTS</a><br>
-    <a href="#">GOOGLE TRENDS: GOLF</a>
   </div>
 
   <span class="d"></span>
@@ -327,10 +313,9 @@
 
 </div>
 
-<!-- ═══ CENTER — Back 9: Gear + Culture ═══ -->
+<!-- ═══ CENTER COLUMN ═══ -->
 <div class="col" id="col-1">
 
-  <!-- Dynamic Equipment/Reviews articles -->
   <div id="sec-gear"></div>
 
   <span class="d"></span>
@@ -350,16 +335,6 @@
 
   <span class="d"></span>
 
-  <span class="sl">▶ CADDIE'S PICK</span>
-  <div id="sec-caddies"></div>
-
-  <span class="d"></span>
-
-  <span class="sl">⛳ LIFESTYLE + TRAVEL</span>
-  <div id="sec-lifestyle"></div>
-
-  <span class="d"></span>
-
   <div class="sb">
     <div class="t">The Back 9 is where deals live.</div>
     <div class="s">Gear drops, deal alerts, reviews — free daily.</div>
@@ -375,7 +350,7 @@
 
 </div>
 
-<!-- ═══ RIGHT — 19th Hole: Women's + Hot Takes + Archives ═══ -->
+<!-- ═══ RIGHT COLUMN ═══ -->
 <div class="col" id="col-2">
 
   <!-- SEARCH -->
@@ -387,7 +362,6 @@
 
   <span class="d"></span>
 
-  <span class="sl">🏌️ THE W — WOMEN'S GOLF</span>
   <div id="sec-thew"></div>
 
   <span class="d"></span>
@@ -413,10 +387,6 @@
 
   <span class="d"></span>
 
-  <span class="sl">🌍 AROUND THE GAME</span>
-  <div id="sec-industry"></div>
-
-  <span class="d"></span>
   <span class="sl">✏️ THE ROUGH SKETCH</span>
 
   <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg" style="width:85%;max-width:220px;border:2px solid #1b4332;cursor:pointer;margin:4px auto;display:block;" onclick="openSketchViewer(0)">
@@ -841,33 +811,11 @@ function renderFeatured(el, article) {
   el.style.display = 'block';
 }
 
-// ═══ SECTION-BASED ARTICLE ROUTING ═══
-function categorizeArticle(a) {
-  var cat = (a.category || '').toLowerCase();
-  var src = (a.source || '').toLowerCase();
-  if (cat === 'instruction' || cat === 'mental game') return 'protips';
-  if (cat === 'equipment' || cat === 'reviews' || cat === 'fashion') return 'gear';
-  if (cat === 'lpga') return 'thew';
-  if (cat === 'lifestyle' || cat === 'travel' || cat === 'senior golf') return 'lifestyle';
-  if (cat === 'community') return 'caddies';
-  if (cat === 'industry' || cat === 'european tour') return 'industry';
-  return 'front9';
-}
-
-// Render articles into a section, hide parent label if empty
-function renderSection(elId, articles) {
+// ═══ SIMPLE 3-COLUMN DISTRIBUTION (Drudge-style) ═══
+// All articles go into the 3 columns evenly, no category routing
+function renderColumn(elId, articles) {
   var el = document.getElementById(elId);
-  if (!el) return;
-  if (articles.length === 0) {
-    // Hide the section label above this div
-    var prev = el.previousElementSibling;
-    while (prev) {
-      if (prev.classList && prev.classList.contains('sl')) { prev.style.display = 'none'; break; }
-      if (prev.classList && prev.classList.contains('d')) { prev.style.display = 'none'; }
-      prev = prev.previousElementSibling;
-    }
-    return;
-  }
+  if (!el || articles.length === 0) return;
 
   var h = '';
   articles.forEach(function(a, i) {
@@ -878,12 +826,14 @@ function renderSection(elId, articles) {
 
     if (i > 0) h += '<span class="d"></span>';
 
+    // Show image on 1st article and every 4th
     var showImg = hasImg && (i === 0 || i % 4 === 0);
     if (showImg) {
       h += '<a href="' + a.link + '" target="_blank" rel="noopener"><img src="' + a.image + '" style="width:240px;height:180px;object-fit:cover;display:block;margin:6px auto;border:2px solid #1b4332;" onerror="this.style.display=\'none\'" alt=""></a>';
       h += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
     }
 
+    // Alternate headline styles for visual variety
     if (i === 0) {
       h += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
       if (desc) h += '<span class="aside">*' + desc + '*</span>';
@@ -935,57 +885,21 @@ async function loadLinkPulseEdition() {
       usedLinks[f2.link] = true;
     }
 
-    // ═══ SORT REMAINING INTO SECTIONS ═══
+    // ═══ SPLIT ALL ARTICLES INTO 3 COLUMNS ═══
     var remaining = arts.filter(function(a) { return !usedLinks[a.link]; });
 
-    var sections = {
-      front9: [],
-      protips: [],
-      gear: [],
-      caddies: [],
-      lifestyle: [],
-      thew: [],
-      industry: [],
-      culture: []
-    };
-
-    remaining.forEach(function(a) {
-      var sec = categorizeArticle(a);
-      if (sections[sec]) sections[sec].push(a);
-      else sections.front9.push(a);
+    // Round-robin into 3 columns
+    var col0 = [], col1 = [], col2 = [];
+    remaining.forEach(function(a, i) {
+      if (i % 3 === 0) col0.push(a);
+      else if (i % 3 === 1) col1.push(a);
+      else col2.push(a);
     });
 
-    // ═══ SMART DISTRIBUTION ═══
-    // If front9 has lots of articles and other sections are sparse,
-    // redistribute overflow to fill the center and right columns
-    var leftArticles = sections.front9;
-    var centerArticles = sections.gear;
-    var rightArticles = sections.thew;
-
-    // If center column sections are empty, give them some front9 overflow
-    if (centerArticles.length === 0 && leftArticles.length > 8) {
-      var overflow = leftArticles.splice(8);
-      var half = Math.ceil(overflow.length / 2);
-      centerArticles = overflow.slice(0, half);
-      // If right is also thin, feed it too
-      if (rightArticles.length < 3) {
-        rightArticles = rightArticles.concat(overflow.slice(half));
-      } else {
-        centerArticles = centerArticles.concat(overflow.slice(half));
-      }
-      sections.gear = centerArticles;
-      sections.thew = rightArticles;
-    }
-
-    // ═══ RENDER EACH SECTION ═══
-    renderSection('sec-front9', sections.front9);
-    renderSection('sec-protips', sections.protips);
-    renderSection('sec-gear', sections.gear);
-    renderSection('sec-caddies', sections.caddies);
-    renderSection('sec-lifestyle', sections.lifestyle);
-    renderSection('sec-thew', sections.thew);
-    renderSection('sec-industry', sections.industry);
-    renderSection('sec-culture', sections.culture);
+    // Render into the first div inside each column
+    renderColumn('sec-front9', col0);
+    renderColumn('sec-gear', col1);
+    renderColumn('sec-thew', col2);
 
   } catch (err) {
     console.log('LinkPulse fetch skipped:', err.message);
