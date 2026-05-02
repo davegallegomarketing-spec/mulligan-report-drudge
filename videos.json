@@ -1,0 +1,40 @@
+{
+  "hero": {
+    "youtube_id": "dQw4w9WgXcQ",
+    "title": "Why the Pros Make Driver Look Effortless (And Most Golfers Don't)",
+    "channel": "Me and My Golf",
+    "duration": "25:44",
+    "views": "35K",
+    "caddie_quote": "Finally someone explains why your driver swing looks like you're swatting flies while Rory's looks like pure silk."
+  },
+  "carousel": [
+    {
+      "youtube_id": "abc123XYZ45",
+      "title": "The All Pro Tournament Finale @ TPC Sawgrass",
+      "channel": "The Lads",
+      "duration": "1:09:45",
+      "views": "340K"
+    },
+    {
+      "youtube_id": "def456ABC78",
+      "title": "How to Play Lazy Low Effort Golf and Beat Everyone",
+      "channel": "Golf Sidekick",
+      "duration": "17:29",
+      "views": "62K"
+    },
+    {
+      "youtube_id": "ghi789DEF01",
+      "title": "We Chased a PGA Tour Course Record",
+      "channel": "Good Good Pros",
+      "duration": "1:07:29",
+      "views": "138K"
+    },
+    {
+      "youtube_id": "jkl012GHI34",
+      "title": "Rick Shiels Vs Jimmy Bullard | Match Play",
+      "channel": "Rick Shiels",
+      "duration": "1:05:53",
+      "views": "367K"
+    }
+  ]
+}
