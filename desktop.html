@@ -570,6 +570,158 @@
     .gv-banner{font-size:9px;letter-spacing:.14em;}
   }
 
+  /* ════════════════════════════════════════════════════════════════
+     CADDIE'S PICK / CLUBHOUSE TV — full-width dark band
+     ════════════════════════════════════════════════════════════════ */
+  .cp-section{
+    background:#0f2b1f;
+    padding:32px 24px 28px;
+    border-top:3px solid #b8860b;
+    border-bottom:3px solid #b8860b;
+    font-family:Georgia,'Times New Roman',serif;
+    color:#f4ecd8;
+    margin:0;
+  }
+  .cp-header{text-align:center;margin-bottom:20px;padding:0 16px;}
+  .cp-wordmark{display:inline-flex;align-items:center;gap:10px;justify-content:center;}
+  .cp-logo{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:32px;height:32px;background:#b8860b;border-radius:4px;
+  }
+  .cp-logo::after{
+    content:"";width:0;height:0;
+    border-left:11px solid #0f2b1f;
+    border-top:7px solid transparent;border-bottom:7px solid transparent;
+    margin-left:3px;
+  }
+  .cp-wordmark-text{
+    font-family:Arial,sans-serif;font-size:22px;font-weight:bold;
+    color:#f4ecd8;letter-spacing:.18em;
+  }
+  .cp-sub{
+    font-family:Georgia,serif;font-style:italic;font-size:13px;
+    color:#b8860b;margin-top:6px;
+  }
+  .cp-sub::before,.cp-sub::after{content:" \2501\2501 ";color:#5f6e5f;font-style:normal;}
+
+  .cp-hero{max-width:600px;margin:0 auto;padding:0 16px;}
+  .cp-card{
+    position:relative;display:block;border:2px solid #b8860b;background:#1a1a1a;
+    aspect-ratio:16/9;overflow:hidden;cursor:pointer;text-decoration:none;
+  }
+  .cp-card img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cp-badge{
+    position:absolute;top:10px;left:10px;background:#b8860b;color:#0f2b1f;
+    font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;
+    padding:5px 9px;letter-spacing:.1em;text-transform:uppercase;z-index:2;
+  }
+  .cp-views{
+    position:absolute;top:10px;right:10px;background:rgba(15,43,31,0.85);
+    color:#f4ecd8;font-family:Courier,monospace;font-size:11px;font-weight:bold;
+    padding:4px 9px;letter-spacing:.05em;z-index:2;
+  }
+  .cp-views::before{content:"\25B6 ";color:#b8860b;}
+  .cp-play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:64px;height:64px;background:#c0392b;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;z-index:2;
+    border:3px solid #f4ecd8;box-shadow:0 4px 16px rgba(0,0,0,.3);
+    transition:transform .15s,background .15s;
+  }
+  .cp-card:hover .cp-play{transform:translate(-50%,-50%) scale(1.08);background:#a93226;}
+  .cp-play::after{
+    content:"";width:0;height:0;
+    border-left:18px solid #fff;
+    border-top:12px solid transparent;border-bottom:12px solid transparent;
+    margin-left:5px;
+  }
+  .cp-overlay{
+    position:absolute;bottom:0;left:0;right:0;padding:14px 14px 12px;z-index:1;
+    background:linear-gradient(to top,rgba(15,43,31,0.95) 0%,rgba(15,43,31,0.75) 60%,rgba(15,43,31,0) 100%);
+  }
+  .cp-overlay-title{
+    font-family:Arial,sans-serif;font-size:15px;font-weight:bold;color:#fff;
+    line-height:1.2;margin:0 0 4px;
+  }
+  .cp-overlay-meta{font-family:Courier,monospace;font-size:11px;color:#d4cbb5;letter-spacing:.04em;}
+  .cp-overlay-meta .cp-channel{color:#d4a828;font-weight:bold;}
+  .cp-overlay-meta .cp-dur{background:rgba(0,0,0,0.6);color:#fff;padding:1px 6px;margin-left:6px;}
+
+  .cp-headline{text-align:center;margin:18px auto 6px;max-width:600px;padding:0 16px;}
+  .cp-headline a{
+    font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:bold;
+    color:#f4ecd8;text-transform:uppercase;line-height:1.15;
+    text-decoration:none;letter-spacing:.005em;
+  }
+  .cp-headline a:hover{color:#fff;text-decoration:underline;}
+  .cp-meta-line{font-family:Courier,monospace;font-size:12px;color:#9fa897;margin-top:6px;letter-spacing:.04em;}
+  .cp-meta-line .cp-channel{color:#d4a828;font-weight:bold;}
+  .cp-meta-line .sep{color:#5f6e5f;margin:0 6px;}
+
+  .cp-quote{max-width:560px;margin:18px auto 4px;padding:14px 30px 4px;text-align:left;position:relative;}
+  .cp-quote::before{
+    content:"\201C";position:absolute;left:0;top:0;
+    font-family:Georgia,serif;font-size:54px;color:#b8860b;line-height:1;
+  }
+  .cp-quote p{font-family:Georgia,serif;font-style:italic;font-size:14px;color:#f4ecd8;line-height:1.55;margin:0;}
+  .cp-quote .cp-attr{
+    display:block;margin-top:10px;
+    font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-style:normal;
+    color:#b8860b;letter-spacing:.16em;text-transform:uppercase;
+  }
+
+  .cp-more{margin-top:22px;padding:14px 8px 0;border-top:1px solid rgba(184,134,11,0.3);}
+  .cp-more-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+  .cp-more-label{
+    font-family:Courier,monospace;font-size:11px;font-weight:bold;color:#d4a828;
+    text-transform:uppercase;letter-spacing:.16em;
+  }
+  .cp-more-label::before{content:"\25B6 ";color:#b8860b;}
+  .cp-more-curated{font-family:Georgia,serif;font-style:italic;font-size:11px;color:#9fa897;}
+
+  .cp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .cp-card-mini{cursor:pointer;text-decoration:none;display:block;}
+  .cp-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#1a1a1a;border:1px solid #b8860b;}
+  .cp-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s;}
+  .cp-card-mini:hover .cp-thumb img{transform:scale(1.04);}
+  .cp-thumb-dur{
+    position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,.85);color:#fff;
+    font-family:Courier,monospace;font-size:10px;font-weight:bold;padding:1px 5px;
+  }
+  .cp-mini-title{
+    font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#f4ecd8;
+    line-height:1.3;margin:6px 0 3px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .cp-card-mini:hover .cp-mini-title{color:#fff;}
+  .cp-mini-meta{font-family:Courier,monospace;font-size:10px;color:#9fa897;letter-spacing:.04em;}
+  .cp-mini-meta .cp-channel{color:#d4a828;font-weight:bold;}
+
+  .cp-cta{text-align:center;margin:24px 0 4px;}
+  .cp-cta a{
+    display:inline-block;font-family:Courier,monospace;font-size:13px;font-weight:bold;
+    color:#b8860b;text-transform:uppercase;letter-spacing:.1em;text-decoration:none;
+    padding:9px 24px;border:1px solid #b8860b;background:transparent;transition:all .15s;
+  }
+  .cp-cta a:hover{background:#b8860b;color:#0f2b1f;}
+
+  @media (max-width:768px){
+    .cp-section{padding:24px 14px 20px;}
+    .cp-wordmark-text{font-size:18px;letter-spacing:.14em;}
+    .cp-logo{width:28px;height:28px;}
+    .cp-logo::after{border-left-width:9px;border-top-width:6px;border-bottom-width:6px;}
+    .cp-sub{font-size:12px;}
+    .cp-headline a{font-size:18px;}
+    .cp-overlay-title{font-size:13px;}
+    .cp-play{width:54px;height:54px;}
+    .cp-play::after{border-left-width:16px;border-top-width:10px;border-bottom-width:10px;}
+    .cp-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .cp-quote{padding:14px 24px 4px;}
+    .cp-quote::before{font-size:46px;}
+    .cp-quote p{font-size:13px;}
+    .cp-mini-title{font-size:11px;}
+  }
+
 </style>
 </head>
 <body>
@@ -847,6 +999,9 @@
 
 
 </div>
+
+<!-- ═══ THE CADDIE'S PICK / CLUBHOUSE TV — populated by caddie-pick-loader.js ═══ -->
+<div id="caddiesPickRoot"></div>
 
 <!-- FOOTER -->
 <div class="footer">
@@ -1577,6 +1732,9 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
   }
 })();
 </script>
+
+<!-- Caddie's Pick / Clubhouse TV loader -->
+<script src="caddie-pick-loader.js"></script>
 
 </body>
 </html>
