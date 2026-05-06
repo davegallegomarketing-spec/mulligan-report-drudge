@@ -1766,10 +1766,10 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
 (function(){
   'use strict';
   var ROOT_ID    = 'caddiesPickRoot';
-  var DATA_URL   = '/api/save-picks';
+  var DATA_URL   = 'https://mulligan-report-clubhouse.vercel.app/api/save-picks';
   var YT_WATCH   = 'https://www.youtube.com/watch?v=';
   var YT_THUMB   = 'https://i.ytimg.com/vi/';
-  var ARCHIVE_URL = 'archives.html';
+  var ARCHIVE_URL = 'https://mulligan-report-clubhouse.vercel.app/archives.html';
 
   function esc(s){
     return String(s == null ? '' : s)
