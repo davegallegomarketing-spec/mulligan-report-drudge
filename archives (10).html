@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Archives — The Mulligan Report</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/icon-192.png">
+<meta name="theme-color" content="#0a1a0f">
+<meta property="og:title" content="Clubhouse TV Archives — The Mulligan Report">
+<meta property="og:description" content="Every video the Caddie's picked. The best of golf YouTube, curated daily.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --bg-deep:       #0a1a0f;
+    --bg-section:    #0f2218;
+    --bg-card:       #132b1b;
+    --gold:          #b8860b;
+    --gold-light:    #d4a828;
+    --gold-glow:     rgba(184,134,11,0.12);
+    --green-border:  #2d5a40;
+    --cream:         #f5f0e8;
+    --cream-dim:     #c8c0b0;
+    --text-body:     #d4cfc4;
+    --text-muted:    #8a8478;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #0f2218;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* ── TARTAN BACKGROUND ── */
+  .tartan-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body > *:not(.tartan-bg) {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  .arc-header {
+    background: var(--bg-section);
+    border-bottom: 1px solid var(--green-border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .arc-header a { text-decoration: none; }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--cream);
+    letter-spacing: 1px;
+  }
+  .header-brand em { font-style: italic; color: var(--gold-light); }
+  .header-back {
+    font-size: 13px;
+    color: var(--gold-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .header-back:hover { color: var(--gold); }
+  .header-back svg { width: 14px; height: 14px; }
+
+  /* ── HERO / TITLE ── */
+  .arc-hero {
+    text-align: center;
+    padding: 52px 20px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .arc-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center top, rgba(184,134,11,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .arc-hero-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+  .arc-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .arc-hero h1 span { color: var(--gold-light); }
+  .arc-hero p {
+    font-size: 15px;
+    color: var(--text-muted);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* ── FILTER CHIPS ── */
+  .arc-filters {
+    max-width: 1100px;
+    margin: 0 auto 8px;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .arc-chip {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--cream-dim);
+    background: var(--bg-card);
+    border: 1px solid var(--green-border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .arc-chip:hover { border-color: var(--gold); color: var(--cream); }
+  .arc-chip.active {
+    background: var(--gold);
+    color: #1a1a0f;
+    border-color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* ── COUNT LINE ── */
+  .arc-count {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 0 0 20px;
+    border-bottom: 1px solid rgba(45, 90, 64, 0.3);
+    margin-bottom: 24px;
+  }
+
+  /* ── VIDEO GRID ── */
+  .arc-grid-wrap {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+  }
+  .arc-grid-frame {
+    background: rgba(10, 26, 15, 0.65);
+    border: 1.5px solid rgba(45, 90, 64, 0.5);
+    border-radius: 12px;
+    padding: 28px 24px 32px;
+    box-shadow: inset 0 2px 12px rgba(0,0,0,0.3), 0 1px 0 rgba(184,134,11,0.06);
+  }
+  .arc-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 22px;
+  }
+  .arc-card {
+    text-decoration: none;
+    color: inherit;
+    border: 1.5px solid var(--green-border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-card);
+    transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25), 0 0 0 1px rgba(45,90,64,0.15);
+  }
+  .arc-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.4), 0 0 50px var(--gold-glow), 0 0 0 1px rgba(184,134,11,0.2);
+  }
+  .arc-card-thumb {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: #000;
+    border-bottom: 1px solid rgba(184,134,11,0.15);
+  }
+  .arc-card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .arc-card:hover .arc-card-thumb img { transform: scale(1.04); }
+  .arc-card-thumb::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 44px;
+    height: 44px;
+    background: rgba(0,0,0,0.6);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.25s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpolygon points='9.5,7.5 16.5,12 9.5,16.5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 22px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .arc-card:hover .arc-card-thumb::after { opacity: 1; }
+  .arc-card-duration {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    background: rgba(0,0,0,0.8);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+  .arc-card-featured {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: var(--gold);
+    color: #1a1a0f;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .arc-card-info {
+    padding: 12px 14px 16px;
+  }
+  .arc-card-channel {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--gold-light);
+    margin-bottom: 4px;
+  }
+  .arc-card-title {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--cream);
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .arc-card-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 10px;
+  }
+
+  /* ── EMPTY STATE ── */
+  .arc-empty {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .arc-empty h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--cream);
+    margin-bottom: 10px;
+  }
+  .arc-empty p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+  }
+  .arc-empty a {
+    color: var(--gold-light);
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    padding: 10px 28px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* ── SUBSCRIBE CTA ── */
+  .arc-subscribe {
+    max-width: 600px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+  }
+  .arc-sub-card {
+    background: var(--bg-section);
+    border: 1.5px solid var(--green-border);
+    border-radius: 10px;
+    padding: 28px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .arc-sub-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+  .arc-sub-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 6px;
+  }
+  .arc-sub-card p {
+    font-size: 13px;
+    color: var(--text-body);
+    margin-bottom: 16px;
+  }
+  .arc-sub-form {
+    display: flex;
+    gap: 10px;
+    max-width: 400px;
+    margin: 0 auto;
+  }
+  .arc-sub-form input[type="email"] {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--green-border);
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .arc-sub-form input::placeholder { color: var(--text-muted); }
+  .arc-sub-form input:focus { border-color: var(--gold); }
+  .arc-sub-form button {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gold);
+    color: #1a1a0f;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .arc-sub-form button:hover { background: var(--gold-light); }
+  .arc-sub-success {
+    display: none;
+    padding: 14px;
+    color: var(--gold-light);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* ── TOP OPT-IN BAR ── */
+  .arc-optin-bar {
+    background: rgba(184,134,11,0.08);
+    border-bottom: 1px solid rgba(184,134,11,0.2);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .arc-optin-bar-text {
+    font-family: 'Source Serif 4', serif;
+    font-size: 13px;
+    color: var(--cream-dim);
+  }
+  .arc-optin-bar-text strong {
+    color: var(--cream);
+    font-weight: 600;
+  }
+  .arc-optin-bar-form {
+    display: flex;
+    gap: 8px;
+  }
+  .arc-optin-bar-form input[type="email"] {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid rgba(184,134,11,0.3);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.3);
+    color: var(--cream);
+    outline: none;
+    width: 200px;
+    transition: border-color 0.2s;
+  }
+  .arc-optin-bar-form input::placeholder { color: var(--text-muted); }
+  .arc-optin-bar-form input:focus { border-color: var(--gold); }
+  .arc-optin-bar-form button {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gold);
+    color: #1a1a0f;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .arc-optin-bar-form button:hover { background: var(--gold-light); }
+  .arc-optin-bar-success {
+    font-size: 12px;
+    color: var(--gold-light);
+    font-weight: 600;
+    display: none;
+  }
+
+  /* ── PAGINATION ── */
+  .arc-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(45,90,64,0.3);
+  }
+  .arc-page-btn {
+    padding: 6px 14px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--cream-dim);
+    background: var(--bg-card);
+    border: 1px solid var(--green-border);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .arc-page-btn:hover { border-color: var(--gold); color: var(--cream); }
+  .arc-page-btn.active {
+    background: var(--gold);
+    color: #1a1a0f;
+    border-color: var(--gold);
+  }
+  .arc-page-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .arc-page-info {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: 0 8px;
+  }
+
+  /* ── FOOTER ── */
+  .arc-footer {
+    text-align: center;
+    padding: 0 20px 40px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .arc-footer a { color: var(--gold-light); text-decoration: none; }
+  .arc-footer a:hover { text-decoration: underline; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .arc-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 640px) {
+    .arc-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .arc-grid-frame { padding: 20px 16px 24px; }
+    .arc-hero h1 { font-size: 28px; }
+    .arc-hero { padding: 36px 16px 28px; }
+    .arc-card-title { font-size: 13px; }
+  }
+  @media (max-width: 400px) {
+    .arc-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── TARTAN PATTERN BACKGROUND ── -->
+<svg class="tartan-bg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="tartan" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="#1b3a2a"/>
+      <rect x="0" y="0" width="80" height="6" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="8" width="80" height="1.5" fill="#b8860b" opacity="0.45"/>
+      <rect x="0" y="18" width="80" height="3" fill="#1b4332" opacity="0.7"/>
+      <rect x="0" y="24" width="80" height="1" fill="#d4a828" opacity="0.25"/>
+      <rect x="0" y="36" width="80" height="10" fill="#2d6a4f" opacity="0.35"/>
+      <rect x="0" y="48" width="80" height="1" fill="#d4a828" opacity="0.25"/>
+      <rect x="0" y="56" width="80" height="3" fill="#1b4332" opacity="0.7"/>
+      <rect x="0" y="62" width="80" height="1.5" fill="#b8860b" opacity="0.45"/>
+      <rect x="0" y="72" width="80" height="6" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="0" width="6" height="80" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="8" y="0" width="1.5" height="80" fill="#b8860b" opacity="0.45"/>
+      <rect x="18" y="0" width="3" height="80" fill="#1b4332" opacity="0.7"/>
+      <rect x="24" y="0" width="1" height="80" fill="#d4a828" opacity="0.25"/>
+      <rect x="36" y="0" width="10" height="80" fill="#2d6a4f" opacity="0.35"/>
+      <rect x="48" y="0" width="1" height="80" fill="#d4a828" opacity="0.25"/>
+      <rect x="56" y="0" width="3" height="80" fill="#1b4332" opacity="0.7"/>
+      <rect x="62" y="0" width="1.5" height="80" fill="#b8860b" opacity="0.45"/>
+      <rect x="72" y="0" width="6" height="80" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="0" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="36" y="0" width="10" height="6" fill="#8B4513" opacity="0.15"/>
+      <rect x="72" y="0" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="0" y="36" width="6" height="10" fill="#8B4513" opacity="0.15"/>
+      <rect x="36" y="36" width="10" height="10" fill="#8B4513" opacity="0.1"/>
+      <rect x="72" y="36" width="6" height="10" fill="#8B4513" opacity="0.15"/>
+      <rect x="0" y="72" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="36" y="72" width="10" height="6" fill="#8B4513" opacity="0.15"/>
+      <rect x="72" y="72" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="8" y="8" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="62" y="8" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="8" y="62" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="62" y="62" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#tartan)"/>
+</svg>
+
+<!-- ── HEADER ── -->
+<header class="arc-header">
+  <a href="/">
+    <div class="header-brand">THE MULLIGAN <em>REPORT</em></div>
+  </a>
+  <a href="/" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Today's Round
+  </a>
+</header>
+
+<!-- ── TOP OPT-IN BAR ── -->
+<div class="arc-optin-bar" id="topOptinBar">
+  <div class="arc-optin-bar-text"><strong>Never miss a pick.</strong> Get the Caddie's best, every morning.</div>
+  <div onclick="openSubscribe()" style="background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:9px 24px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;white-space:nowrap;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe</div>
+</div>
+
+<!-- ── HERO ── -->
+<section class="arc-hero">
+  <div class="arc-hero-icon">📺</div>
+  <h1>CLUBHOUSE <span>TV</span> — The Archives</h1>
+  <p>Every video the Caddie's picked. The best of golf YouTube, curated daily by The Mulligan Report.</p>
+</section>
+
+<!-- ── FILTER CHIPS ── -->
+<div class="arc-filters" id="filterChips">
+  <div class="arc-chip active" data-channel="all">All</div>
+</div>
+
+<!-- ── GRID ── -->
+<div class="arc-grid-wrap">
+  <div class="arc-grid-frame">
+    <!-- ── COUNT ── -->
+    <div class="arc-count" id="arcCount"></div>
+    <div class="arc-grid" id="arcGrid"></div>
+    <div class="arc-pagination" id="arcPagination"></div>
+  </div>
+</div>
+
+<!-- ── EMPTY STATE ── -->
+<div class="arc-empty" id="arcEmpty" style="display:none;">
+  <h2>The Caddie Hasn't Published Yet</h2>
+  <p>Check back soon — the first picks are coming.</p>
+  <a href="/">← Back to Today's Round</a>
+</div>
+
+<!-- ── SUBSCRIBE ── -->
+<section class="arc-subscribe">
+  <div class="arc-sub-card">
+    <h3>Get the Caddie's Picks Daily</h3>
+    <p>The best golf videos and stories, delivered every morning before your tee time.</p>
+    <div onclick="openSubscribe()" style="display:inline-block;background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:12px 36px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:12px;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe Free</div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<div class="arc-footer">
+  <p>© 2026 <a href="/">The Mulligan Report</a> · All linked content belongs to its original publishers</p>
+</div>
+
+<script>
+(function() {
+
+  const PER_PAGE = 24;
+  let allVideos = [];
+  let activeChannel = 'all';
+  let currentPage = 1;
+
+  // ── Fetch ARCHIVE from API (accumulated history) ──
+  fetch('/api/save-picks?mode=archive')
+    .then(r => r.json())
+    .then(data => {
+      allVideos = data.videos || [];
+
+      if (allVideos.length === 0) {
+        document.getElementById('arcEmpty').style.display = 'block';
+        document.getElementById('arcCount').style.display = 'none';
+        return;
+      }
+
+      // Build channel filter chips
+      const channels = [...new Set(allVideos.map(v => v.channel).filter(Boolean))].sort();
+      const chipWrap = document.getElementById('filterChips');
+      channels.forEach(ch => {
+        const chip = document.createElement('div');
+        chip.className = 'arc-chip';
+        chip.setAttribute('data-channel', ch);
+        chip.textContent = ch;
+        chip.onclick = function() { filterByChannel(ch); };
+        chipWrap.appendChild(chip);
+      });
+
+      // "All" chip click
+      chipWrap.querySelector('[data-channel="all"]').onclick = function() { filterByChannel('all'); };
+
+      renderPage();
+    })
+    .catch(() => {
+      document.getElementById('arcEmpty').style.display = 'block';
+      document.getElementById('arcCount').style.display = 'none';
+    });
+
+
+  // ── Filter ──
+  window.filterByChannel = function(channel) {
+    activeChannel = channel;
+    currentPage = 1;
+
+    document.querySelectorAll('.arc-chip').forEach(c => {
+      c.classList.toggle('active', c.getAttribute('data-channel') === channel);
+    });
+
+    renderPage();
+  };
+
+
+  // ── Go to page ──
+  window.goToPage = function(page) {
+    currentPage = page;
+    renderPage();
+    // Scroll to top of grid
+    document.getElementById('arcCount').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+
+  // ── Get filtered videos ──
+  function getFiltered() {
+    return activeChannel === 'all'
+      ? allVideos
+      : allVideos.filter(v => v.channel === activeChannel);
+  }
+
+
+  // ── Render current page ──
+  function renderPage() {
+    const filtered = getFiltered();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PER_PAGE));
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * PER_PAGE;
+    const pageVideos = filtered.slice(start, start + PER_PAGE);
+
+    renderGrid(pageVideos, filtered.length);
+    renderPagination(totalPages, filtered.length);
+  }
+
+
+  // ── Render grid ──
+  function renderGrid(videos, totalCount) {
+    const grid = document.getElementById('arcGrid');
+    const countEl = document.getElementById('arcCount');
+    grid.innerHTML = '';
+
+    countEl.textContent = totalCount + ' video' + (totalCount !== 1 ? 's' : '') + ' in the archives';
+
+    videos.forEach(v => {
+      const card = document.createElement('a');
+      card.className = 'arc-card';
+      card.href = '/watch.html?v=' + v.videoId;
+
+      let badges = '';
+      if (v.featured) badges += '<div class="arc-card-featured">⭐ Caddie\'s Pick</div>';
+      let duration = '';
+      if (v.duration) duration = '<div class="arc-card-duration">' + v.duration + '</div>';
+
+      let meta = '';
+      if (v.views) meta += '<span>' + v.views + ' views</span>';
+
+      card.innerHTML =
+        '<div class="arc-card-thumb">' +
+          '<img src="' + (v.thumbnail || '') + '" alt="" loading="lazy">' +
+          badges + duration +
+        '</div>' +
+        '<div class="arc-card-info">' +
+          '<div class="arc-card-channel">' + (v.channel || '') + '</div>' +
+          '<div class="arc-card-title">' + (v.title || '') + '</div>' +
+          '<div class="arc-card-meta">' + meta + '</div>' +
+        '</div>';
+
+      grid.appendChild(card);
+    });
+  }
+
+
+  // ── Render pagination ──
+  function renderPagination(totalPages, totalCount) {
+    const el = document.getElementById('arcPagination');
+
+    if (totalPages <= 1) {
+      el.innerHTML = '';
+      return;
+    }
+
+    let html = '';
+
+    // Prev button
+    html += '<button class="arc-page-btn" onclick="goToPage(' + (currentPage - 1) + ')"' +
+      (currentPage === 1 ? ' disabled' : '') + '>&larr; Prev</button>';
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+      if (totalPages > 7) {
+        // Show: 1 ... current-1 current current+1 ... last
+        if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+          html += '<button class="arc-page-btn' + (i === currentPage ? ' active' : '') +
+            '" onclick="goToPage(' + i + ')">' + i + '</button>';
+        } else if (i === 2 || i === totalPages - 1) {
+          html += '<span class="arc-page-info">…</span>';
+        }
+      } else {
+        html += '<button class="arc-page-btn' + (i === currentPage ? ' active' : '') +
+          '" onclick="goToPage(' + i + ')">' + i + '</button>';
+      }
+    }
+
+    // Next button
+    html += '<button class="arc-page-btn" onclick="goToPage(' + (currentPage + 1) + ')"' +
+      (currentPage === totalPages ? ' disabled' : '') + '>Next &rarr;</button>';
+
+    // Page info
+    var startNum = (currentPage - 1) * PER_PAGE + 1;
+    var endNum = Math.min(currentPage * PER_PAGE, totalCount);
+    html += '<div class="arc-page-info">' + startNum + '–' + endNum + ' of ' + totalCount + '</div>';
+
+    el.innerHTML = html;
+  }
+
+})();
+
+
+// ── Subscribe Modal (matches index.html) ──
+function openSubscribe() {
+  document.getElementById('subOverlay').classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeSubscribe() {
+  document.getElementById('subOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+</script>
+
+<!-- ═══ SUBSCRIBE POPUP ═══ -->
+<style>
+  .sub-overlay { display:none; position:fixed !important; inset:0; background:rgba(0,0,0,0.65); z-index:2000 !important; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); align-items:center; justify-content:center; }
+  .sub-overlay.active { display:flex; }
+  .sub-modal { background:#0f2b1f; max-width:440px; width:90%; position:relative; overflow:hidden; }
+  .sub-modal-close { position:absolute; top:14px; right:16px; font-size:22px; color:rgba(255,255,255,0.3); cursor:pointer; z-index:2; line-height:1; transition:color 0.2s; }
+  .sub-modal-close:hover { color:var(--gold-light); }
+  .sub-modal-top { padding:36px 32px 24px; text-align:center; border-bottom:1px solid rgba(255,255,255,0.06); }
+  .sub-modal-title { font-family:'Playfair Display',Georgia,serif; font-size:24px; font-weight:700; color:#f5f0e8; margin-bottom:4px; }
+  .sub-modal-title em { color:var(--gold-light); font-style:italic; }
+  .sub-modal-sub { font-family:'Lora',serif; font-style:italic; font-size:14px; color:rgba(255,255,255,0.45); margin-top:6px; }
+  .sub-modal-body { padding:28px 32px 32px; }
+  .sub-modal-pitch { font-family:'Source Serif 4',Georgia,serif; font-size:15px; color:rgba(255,255,255,0.7); line-height:1.6; text-align:center; margin-bottom:24px; }
+  .sub-modal-pitch strong { color:rgba(255,255,255,0.9); }
+  /* AWeber form override — blend into TMR modal */
+  #af-form-499553532,
+  #af-form-499553532 .af-body {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family: 'DM Sans', sans-serif !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+  #af-form-499553532 .af-element {
+    margin-bottom: 12px !important;
+    padding: 0 !important;
+  }
+  #af-form-499553532 label.previewLabel {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: rgba(255,255,255,0.3) !important;
+    letter-spacing: 0.08em !important;
+    text-transform: uppercase !important;
+    margin-bottom: 6px !important;
+    display: block !important;
+  }
+  #af-form-499553532 .af-textWrap input,
+  #af-form-499553532 input[type="text"],
+  #af-form-499553532 input[type="email"] {
+    width: 100% !important;
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid rgba(255,255,255,0.12) !important;
+    padding: 14px 18px !important;
+    font-family: 'Source Serif 4', serif !important;
+    font-size: 16px !important;
+    color: #f5f0e8 !important;
+    outline: none !important;
+    box-sizing: border-box !important;
+    border-radius: 0 !important;
+    transition: border-color 0.2s;
+  }
+  #af-form-499553532 .af-textWrap input:focus,
+  #af-form-499553532 input[type="text"]:focus,
+  #af-form-499553532 input[type="email"]:focus {
+    border-color: var(--gold) !important;
+    background-color: rgba(255,255,255,0.06) !important;
+  }
+  #af-form-499553532 .af-textWrap {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  #af-form-499553532 .buttonContainer input[type="submit"],
+  #af-form-499553532 .af-element input[type="submit"],
+  #af-form-499553532 button {
+    width: 100% !important;
+    background: var(--gold) !important;
+    color: #0f2b1f !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    padding: 14px !important;
+    letter-spacing: 0.06em !important;
+    text-transform: uppercase !important;
+    cursor: pointer !important;
+    border: none !important;
+    border-radius: 0 !important;
+    margin-top: 4px !important;
+    transition: background 0.2s;
+  }
+  #af-form-499553532 .buttonContainer input[type="submit"]:hover,
+  #af-form-499553532 button:hover {
+    background: var(--gold-light) !important;
+  }
+  #af-form-499553532 .privacyPolicy,
+  #af-form-499553532 .af-clear {
+    display: none !important;
+  }
+  #af-form-499553532 .af-form-wrapper {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+  .sub-trust { text-align:center; font-family:'DM Sans',sans-serif; font-size:11px; color:rgba(255,255,255,0.3); margin-top:16px; letter-spacing:0.04em; }
+  .sub-count { text-align:center; font-family:'DM Sans',sans-serif; font-size:12px; color:rgba(255,255,255,0.25); margin-top:8px; }
+</style>
+
+<div class="sub-overlay" id="subOverlay" onclick="if(event.target===this)closeSubscribe()">
+  <div class="sub-modal">
+    <div class="sub-modal-close" onclick="closeSubscribe()">✕</div>
+    <div class="sub-modal-top">
+      <div style="margin-bottom:12px">
+        <svg width="28" height="32" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="10" y1="4" x2="10" y2="34" stroke="#d4a828" stroke-width="1.5"/>
+          <path d="M10 4 L26 10 L10 16 Z" fill="#c0392b"/>
+        </svg>
+      </div>
+      <div class="sub-modal-title">THE MULLIGAN <em>REPORT</em></div>
+      <div class="sub-modal-sub">Your daily golf briefing</div>
+    </div>
+    <div style="height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent)"></div>
+    <div class="sub-modal-body">
+      <div class="sub-modal-pitch">The best golf stories, curated every morning.<br><strong>Delivered before your tee time.</strong></div>
+      <!-- AWeber Signup Form -->
+      <div class="AW-Form-499553532"></div>
+      <script type="text/javascript">(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//forms.aweber.com/form/32/499553532.js";
+          fjs.parentNode.insertBefore(js, fjs);
+          }(document, "script", "aweber-wjs-tkjdh236l"));
+      </script>
+      <div class="sub-trust">Free · Daily · No spam · Unsubscribe anytime</div>
+      <div class="sub-count">Join 12,847 golfers already subscribed</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
