@@ -575,6 +575,14 @@
      Sits between hero articles and 3-column flow.
      Pulls live data from /api/save-picks.
      ════════════════════════════════════════════════════════════════ */
+  /* Force break out of parent grid/flex (the .cols 3-column layout) — section
+     and its mount must always span the full page width regardless of where
+     the mount div ends up in the DOM tree. */
+  #caddiesPickRoot{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    display:block !important;
+  }
   .cp-section{
     background:#0f2b1f;
     padding:36px 24px 32px;
