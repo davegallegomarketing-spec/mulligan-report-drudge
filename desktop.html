@@ -571,59 +571,64 @@
   }
 
   /* ════════════════════════════════════════════════════════════════
-     CADDIE'S PICK / CLUBHOUSE TV — full-width dark band
+     CLUBHOUSE TV / CADDIE'S PICK — full-width dark band
+     Sits between hero articles and 3-column flow.
+     Pulls live data from /api/save-picks.
      ════════════════════════════════════════════════════════════════ */
   .cp-section{
     background:#0f2b1f;
-    padding:32px 24px 28px;
+    padding:36px 24px 32px;
     border-top:3px solid #b8860b;
     border-bottom:3px solid #b8860b;
     font-family:Georgia,'Times New Roman',serif;
     color:#f4ecd8;
     margin:0;
   }
-  .cp-header{text-align:center;margin-bottom:20px;padding:0 16px;}
-  .cp-wordmark{display:inline-flex;align-items:center;gap:10px;justify-content:center;}
+  .cp-section.is-empty{display:none;}
+
+  .cp-header{text-align:center;margin-bottom:22px;padding:0 16px;}
+  .cp-wordmark{display:inline-flex;align-items:center;gap:12px;justify-content:center;}
   .cp-logo{
     display:inline-flex;align-items:center;justify-content:center;
-    width:32px;height:32px;background:#b8860b;border-radius:4px;
+    width:36px;height:36px;background:#b8860b;border-radius:5px;
   }
   .cp-logo::after{
     content:"";width:0;height:0;
-    border-left:11px solid #0f2b1f;
-    border-top:7px solid transparent;border-bottom:7px solid transparent;
-    margin-left:3px;
+    border-left:13px solid #0f2b1f;
+    border-top:9px solid transparent;border-bottom:9px solid transparent;
+    margin-left:4px;
   }
   .cp-wordmark-text{
-    font-family:Arial,sans-serif;font-size:22px;font-weight:bold;
+    font-family:Arial,sans-serif;font-size:26px;font-weight:bold;
     color:#f4ecd8;letter-spacing:.18em;
   }
   .cp-sub{
-    font-family:Georgia,serif;font-style:italic;font-size:13px;
-    color:#b8860b;margin-top:6px;
+    font-family:Georgia,serif;font-style:italic;font-size:14px;
+    color:#b8860b;margin-top:8px;
   }
   .cp-sub::before,.cp-sub::after{content:" \2501\2501 ";color:#5f6e5f;font-style:normal;}
 
-  .cp-hero{max-width:600px;margin:0 auto;padding:0 16px;}
+  /* Hero card — wider, fills the band */
+  .cp-hero{max-width:900px;margin:0 auto;padding:0 16px;}
   .cp-card{
     position:relative;display:block;border:2px solid #b8860b;background:#1a1a1a;
     aspect-ratio:16/9;overflow:hidden;cursor:pointer;text-decoration:none;
   }
   .cp-card img{width:100%;height:100%;object-fit:cover;display:block;}
   .cp-badge{
-    position:absolute;top:10px;left:10px;background:#b8860b;color:#0f2b1f;
-    font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;
-    padding:5px 9px;letter-spacing:.1em;text-transform:uppercase;z-index:2;
+    position:absolute;top:12px;left:12px;background:#b8860b;color:#0f2b1f;
+    font-family:'Arial Black',Arial,sans-serif;font-size:11px;font-weight:900;
+    padding:6px 10px;letter-spacing:.1em;text-transform:uppercase;z-index:2;
   }
   .cp-views{
-    position:absolute;top:10px;right:10px;background:rgba(15,43,31,0.85);
-    color:#f4ecd8;font-family:Courier,monospace;font-size:11px;font-weight:bold;
-    padding:4px 9px;letter-spacing:.05em;z-index:2;
+    position:absolute;top:12px;right:12px;background:rgba(15,43,31,0.85);
+    color:#f4ecd8;font-family:Courier,monospace;font-size:12px;font-weight:bold;
+    padding:5px 10px;letter-spacing:.05em;z-index:2;
   }
   .cp-views::before{content:"\25B6 ";color:#b8860b;}
   .cp-play{
     position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
-    width:64px;height:64px;background:#c0392b;border-radius:50%;
+    width:80px;height:80px;background:#c0392b;border-radius:50%;
     display:flex;align-items:center;justify-content:center;z-index:2;
     border:3px solid #f4ecd8;box-shadow:0 4px 16px rgba(0,0,0,.3);
     transition:transform .15s,background .15s;
@@ -631,95 +636,115 @@
   .cp-card:hover .cp-play{transform:translate(-50%,-50%) scale(1.08);background:#a93226;}
   .cp-play::after{
     content:"";width:0;height:0;
-    border-left:18px solid #fff;
-    border-top:12px solid transparent;border-bottom:12px solid transparent;
-    margin-left:5px;
+    border-left:22px solid #fff;
+    border-top:14px solid transparent;border-bottom:14px solid transparent;
+    margin-left:6px;
   }
+  /* Bottom overlay: title centered, channel-left + duration-right meta row */
   .cp-overlay{
-    position:absolute;bottom:0;left:0;right:0;padding:14px 14px 12px;z-index:1;
+    position:absolute;bottom:0;left:0;right:0;padding:16px 16px 14px;z-index:1;
     background:linear-gradient(to top,rgba(15,43,31,0.95) 0%,rgba(15,43,31,0.75) 60%,rgba(15,43,31,0) 100%);
   }
   .cp-overlay-title{
-    font-family:Arial,sans-serif;font-size:15px;font-weight:bold;color:#fff;
-    line-height:1.2;margin:0 0 4px;
+    font-family:Arial,sans-serif;font-size:17px;font-weight:bold;color:#fff;
+    line-height:1.2;margin:0 0 8px;
   }
-  .cp-overlay-meta{font-family:Courier,monospace;font-size:11px;color:#d4cbb5;letter-spacing:.04em;}
-  .cp-overlay-meta .cp-channel{color:#d4a828;font-weight:bold;}
-  .cp-overlay-meta .cp-dur{background:rgba(0,0,0,0.6);color:#fff;padding:1px 6px;margin-left:6px;}
+  .cp-overlay-meta{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:Courier,monospace;font-size:12px;color:#d4cbb5;letter-spacing:.04em;
+  }
+  .cp-overlay-meta-left{display:inline-flex;align-items:center;gap:8px;}
+  .cp-channel-dot{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;background:#c0392b;border-radius:50%;
+  }
+  .cp-channel-dot::after{
+    content:"";width:0;height:0;
+    border-left:7px solid #fff;
+    border-top:5px solid transparent;border-bottom:5px solid transparent;
+    margin-left:2px;
+  }
+  .cp-overlay-meta .cp-channel{color:#fff;font-weight:bold;}
+  .cp-overlay-meta .cp-dur{
+    background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;
+    font-family:Courier,monospace;font-size:12px;font-weight:bold;
+  }
 
-  .cp-headline{text-align:center;margin:18px auto 6px;max-width:600px;padding:0 16px;}
+  /* Headline below hero — mixed case, NOT all-caps */
+  .cp-headline{text-align:center;margin:20px auto 6px;max-width:900px;padding:0 16px;}
   .cp-headline a{
-    font-family:Arial,Helvetica,sans-serif;font-size:22px;font-weight:bold;
-    color:#f4ecd8;text-transform:uppercase;line-height:1.15;
-    text-decoration:none;letter-spacing:.005em;
+    font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:bold;
+    color:#f4ecd8;line-height:1.2;text-decoration:none;
   }
   .cp-headline a:hover{color:#fff;text-decoration:underline;}
-  .cp-meta-line{font-family:Courier,monospace;font-size:12px;color:#9fa897;margin-top:6px;letter-spacing:.04em;}
+  .cp-meta-line{font-family:Courier,monospace;font-size:12px;color:#9fa897;margin-top:8px;letter-spacing:.04em;}
   .cp-meta-line .cp-channel{color:#d4a828;font-weight:bold;}
   .cp-meta-line .sep{color:#5f6e5f;margin:0 6px;}
 
-  .cp-quote{max-width:560px;margin:18px auto 4px;padding:14px 30px 4px;text-align:left;position:relative;}
+  /* Caddie's quote */
+  .cp-quote{max-width:680px;margin:18px auto 4px;padding:14px 32px 4px;text-align:left;position:relative;}
   .cp-quote::before{
-    content:"\201C";position:absolute;left:0;top:0;
-    font-family:Georgia,serif;font-size:54px;color:#b8860b;line-height:1;
+    content:"\201C";position:absolute;left:0;top:-6px;
+    font-family:Georgia,serif;font-size:60px;color:#b8860b;line-height:1;
   }
-  .cp-quote p{font-family:Georgia,serif;font-style:italic;font-size:14px;color:#f4ecd8;line-height:1.55;margin:0;}
+  .cp-quote p{font-family:Georgia,serif;font-style:italic;font-size:15px;color:#f4ecd8;line-height:1.55;margin:0;}
   .cp-quote .cp-attr{
-    display:block;margin-top:10px;
+    display:block;margin-top:12px;
     font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-style:normal;
-    color:#b8860b;letter-spacing:.16em;text-transform:uppercase;
+    color:#b8860b;letter-spacing:.18em;text-transform:uppercase;
   }
 
-  .cp-more{margin-top:22px;padding:14px 8px 0;border-top:1px solid rgba(184,134,11,0.3);}
-  .cp-more-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;}
+  /* "More from the Caddie" — 4 thumbnails, no gold border, clean look */
+  .cp-more{margin-top:26px;padding:16px 8px 0;border-top:1px solid rgba(184,134,11,0.3);}
+  .cp-more-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;padding:0 8px;}
   .cp-more-label{
-    font-family:Courier,monospace;font-size:11px;font-weight:bold;color:#d4a828;
-    text-transform:uppercase;letter-spacing:.16em;
+    font-family:Courier,monospace;font-size:12px;font-weight:bold;color:#d4a828;
+    text-transform:uppercase;letter-spacing:.18em;
   }
   .cp-more-label::before{content:"\25B6 ";color:#b8860b;}
-  .cp-more-curated{font-family:Georgia,serif;font-style:italic;font-size:11px;color:#9fa897;}
+  .cp-more-curated{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#9fa897;}
 
-  .cp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .cp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 8px;}
   .cp-card-mini{cursor:pointer;text-decoration:none;display:block;}
-  .cp-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#1a1a1a;border:1px solid #b8860b;}
+  .cp-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#1a1a1a;}
   .cp-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s;}
   .cp-card-mini:hover .cp-thumb img{transform:scale(1.04);}
   .cp-thumb-dur{
-    position:absolute;bottom:5px;right:5px;background:rgba(0,0,0,.85);color:#fff;
-    font-family:Courier,monospace;font-size:10px;font-weight:bold;padding:1px 5px;
+    position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);color:#fff;
+    font-family:Courier,monospace;font-size:11px;font-weight:bold;padding:2px 6px;
   }
   .cp-mini-title{
-    font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#f4ecd8;
-    line-height:1.3;margin:6px 0 3px;
+    font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:#f4ecd8;
+    line-height:1.3;margin:8px 0 4px;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   }
   .cp-card-mini:hover .cp-mini-title{color:#fff;}
-  .cp-mini-meta{font-family:Courier,monospace;font-size:10px;color:#9fa897;letter-spacing:.04em;}
+  .cp-mini-meta{font-family:Courier,monospace;font-size:11px;color:#9fa897;letter-spacing:.04em;}
   .cp-mini-meta .cp-channel{color:#d4a828;font-weight:bold;}
 
-  .cp-cta{text-align:center;margin:24px 0 4px;}
+  .cp-cta{text-align:center;margin:28px 0 4px;}
   .cp-cta a{
     display:inline-block;font-family:Courier,monospace;font-size:13px;font-weight:bold;
-    color:#b8860b;text-transform:uppercase;letter-spacing:.1em;text-decoration:none;
-    padding:9px 24px;border:1px solid #b8860b;background:transparent;transition:all .15s;
+    color:#b8860b;text-transform:uppercase;letter-spacing:.12em;text-decoration:none;
+    padding:10px 28px;border:1px solid #b8860b;background:transparent;transition:all .15s;
   }
   .cp-cta a:hover{background:#b8860b;color:#0f2b1f;}
 
   @media (max-width:768px){
-    .cp-section{padding:24px 14px 20px;}
-    .cp-wordmark-text{font-size:18px;letter-spacing:.14em;}
-    .cp-logo{width:28px;height:28px;}
-    .cp-logo::after{border-left-width:9px;border-top-width:6px;border-bottom-width:6px;}
+    .cp-section{padding:24px 14px 22px;}
+    .cp-wordmark-text{font-size:20px;letter-spacing:.14em;}
+    .cp-logo{width:30px;height:30px;}
+    .cp-logo::after{border-left-width:10px;border-top-width:7px;border-bottom-width:7px;}
     .cp-sub{font-size:12px;}
-    .cp-headline a{font-size:18px;}
+    .cp-headline a{font-size:19px;}
     .cp-overlay-title{font-size:13px;}
-    .cp-play{width:54px;height:54px;}
-    .cp-play::after{border-left-width:16px;border-top-width:10px;border-bottom-width:10px;}
+    .cp-play{width:58px;height:58px;}
+    .cp-play::after{border-left-width:18px;border-top-width:11px;border-bottom-width:11px;}
     .cp-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
-    .cp-quote{padding:14px 24px 4px;}
-    .cp-quote::before{font-size:46px;}
-    .cp-quote p{font-size:13px;}
-    .cp-mini-title{font-size:11px;}
+    .cp-quote{padding:14px 26px 4px;}
+    .cp-quote::before{font-size:48px;}
+    .cp-quote p{font-size:14px;}
+    .cp-mini-title{font-size:12px;}
   }
 
 </style>
@@ -776,6 +801,9 @@
 
 <!-- ═══ LINKPULSE FEATURED #2 (dynamic, below nav) ═══ -->
 <div id="lp-featured-2" class="hero" style="display:none;border-bottom:2px solid #b8860b;"></div>
+
+<!-- ═══ CLUBHOUSE TV / CADDIE'S PICK — populated by inline loader at end of page ═══ -->
+<div id="caddiesPickRoot"></div>
 
 <!-- ═══ THREE COLUMNS ═══ -->
 <div class="cols" id="colsWrap">
@@ -999,9 +1027,6 @@
 
 
 </div>
-
-<!-- ═══ THE CADDIE'S PICK / CLUBHOUSE TV — populated by caddie-pick-loader.js ═══ -->
-<div id="caddiesPickRoot"></div>
 
 <!-- FOOTER -->
 <div class="footer">
@@ -1733,8 +1758,205 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
 })();
 </script>
 
-<!-- Caddie's Pick / Clubhouse TV loader -->
-<script src="caddie-pick-loader.js"></script>
+<!-- ═══════════════════════════════════════════════════════════════
+     CLUBHOUSE TV / CADDIE'S PICK — Loader
+     Fetches /api/save-picks and renders the dark-band section.
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  'use strict';
+  var ROOT_ID    = 'caddiesPickRoot';
+  var DATA_URL   = '/api/save-picks';
+  var YT_WATCH   = 'https://www.youtube.com/watch?v=';
+  var YT_THUMB   = 'https://i.ytimg.com/vi/';
+  var ARCHIVE_URL = 'archives.html';
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  /* Use server-supplied thumbnail if present; else build from videoId.
+     onerror falls back to hqdefault if maxres returns 404. */
+  function thumbHTML(v, alt){
+    var src;
+    if (v.thumbnail) {
+      src = v.thumbnail;
+    } else if (v.videoId) {
+      src = YT_THUMB + encodeURIComponent(v.videoId) + '/maxresdefault.jpg';
+    } else {
+      src = '';
+    }
+    var fallback = v.videoId
+      ? YT_THUMB + encodeURIComponent(v.videoId) + '/hqdefault.jpg'
+      : '';
+    return '<img src="'+esc(src)+'" alt="'+esc(alt)+'" '+
+           (fallback ? 'onerror="if(this.dataset.f!==\'1\'){this.dataset.f=\'1\';this.src=\''+fallback+'\';}"' : '')+'>';
+  }
+
+  function watchURL(v){
+    var id = v.videoId || '';
+    var url = YT_WATCH + encodeURIComponent(id);
+    /* Append ?t= for timestamp jump if set */
+    if (v.timestamp && Number.isFinite(Number(v.timestamp))) {
+      url += '&t=' + Number(v.timestamp) + 's';
+    }
+    return url;
+  }
+
+  function renderHero(h){
+    var quoteBlock = '';
+    if (h.comment && h.comment.trim()) {
+      quoteBlock =
+        '<blockquote class="cp-quote">'+
+          '<p>'+esc(h.comment)+'</p>'+
+          '<span class="cp-attr">\u2014 The Caddie</span>'+
+        '</blockquote>';
+    }
+
+    var viewsBlock = h.views
+      ? '<span class="cp-views">'+esc(h.views)+'</span>'
+      : '';
+    var durBlock = h.duration
+      ? '<span class="cp-dur">'+esc(h.duration)+'</span>'
+      : '';
+    var metaLineSep = '<span class="sep">\u00b7</span>';
+    var metaParts = [];
+    if (h.channel)  metaParts.push('<span class="cp-channel">'+esc(h.channel)+'</span>');
+    if (h.views)    metaParts.push(esc(h.views) + ' views');
+    if (h.duration) metaParts.push(esc(h.duration));
+    metaParts.push('YouTube');
+    var metaLine = metaParts.join(metaLineSep);
+
+    return ''+
+    '<div class="cp-hero">'+
+      '<a href="'+watchURL(h)+'" class="cp-card" target="_blank" rel="noopener">'+
+        thumbHTML(h, h.title)+
+        '<span class="cp-badge">Caddie\u2019s Pick</span>'+
+        viewsBlock+
+        '<span class="cp-play"></span>'+
+        '<div class="cp-overlay">'+
+          '<div class="cp-overlay-title">'+esc(h.title)+'</div>'+
+          '<div class="cp-overlay-meta">'+
+            '<span class="cp-overlay-meta-left">'+
+              '<span class="cp-channel-dot"></span>'+
+              '<span class="cp-channel">'+esc(h.channel || '')+'</span>'+
+            '</span>'+
+            durBlock+
+          '</div>'+
+        '</div>'+
+      '</a>'+
+    '</div>'+
+    '<div class="cp-headline">'+
+      '<a href="'+watchURL(h)+'" target="_blank" rel="noopener">'+esc(h.title)+'</a>'+
+      '<div class="cp-meta-line">'+metaLine+'</div>'+
+    '</div>'+
+    quoteBlock;
+  }
+
+  function renderMini(v){
+    var durBlock = v.duration
+      ? '<span class="cp-thumb-dur">'+esc(v.duration)+'</span>'
+      : '';
+    var metaParts = [];
+    if (v.channel) metaParts.push('<span class="cp-channel">'+esc(v.channel)+'</span>');
+    if (v.views)   metaParts.push(esc(v.views));
+    var meta = metaParts.join(' \u00b7 ');
+
+    return ''+
+    '<a href="'+watchURL(v)+'" class="cp-card-mini" target="_blank" rel="noopener">'+
+      '<div class="cp-thumb">'+
+        thumbHTML(v, v.title)+
+        durBlock+
+      '</div>'+
+      '<div class="cp-mini-title">'+esc(v.title)+'</div>'+
+      '<div class="cp-mini-meta">'+meta+'</div>'+
+    '</a>';
+  }
+
+  function renderSection(picks){
+    /* Find featured pick (the hero); fall back to first if none flagged */
+    var hero = null;
+    var rest = [];
+    for (var i = 0; i < picks.length; i++){
+      if (picks[i].featured && !hero) hero = picks[i];
+      else rest.push(picks[i]);
+    }
+    if (!hero && picks.length > 0){
+      hero = picks[0];
+      rest = picks.slice(1);
+    }
+    if (!hero) return ''; /* nothing to render */
+
+    /* Take up to 4 supporting picks */
+    rest = rest.slice(0, 4);
+
+    var miniHTML = '';
+    for (var j = 0; j < rest.length; j++){
+      miniHTML += renderMini(rest[j]);
+    }
+
+    var moreBlock = rest.length > 0
+      ? '<div class="cp-more">'+
+          '<div class="cp-more-head">'+
+            '<span class="cp-more-label">More from the Caddie</span>'+
+            '<span class="cp-more-curated">Curated daily</span>'+
+          '</div>'+
+          '<div class="cp-grid">'+miniHTML+'</div>'+
+          '<div class="cp-cta">'+
+            '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
+          '</div>'+
+        '</div>'
+      : '<div class="cp-cta" style="margin-top:24px;">'+
+          '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
+        '</div>';
+
+    return ''+
+    '<section class="cp-section">'+
+      '<div class="cp-header">'+
+        '<div class="cp-wordmark">'+
+          '<span class="cp-logo"></span>'+
+          '<span class="cp-wordmark-text">CLUBHOUSE TV</span>'+
+        '</div>'+
+        '<div class="cp-sub">Caddie\u2019s Pick \u00b7 Curated daily</div>'+
+      '</div>'+
+      renderHero(hero)+
+      moreBlock+
+    '</section>';
+  }
+
+  function init(){
+    var root = document.getElementById(ROOT_ID);
+    if (!root) return;
+
+    fetch(DATA_URL, { cache: 'no-store' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
+      .then(function(data){
+        var picks = (data && Array.isArray(data.picks)) ? data.picks : [];
+        if (picks.length === 0){
+          /* No picks published yet — render nothing (silent) */
+          root.innerHTML = '';
+          return;
+        }
+        root.innerHTML = renderSection(picks);
+      })
+      .catch(function(err){
+        if (window.console) console.warn('[Clubhouse TV] load failed:', err);
+        root.innerHTML = '';
+      });
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
 
 </body>
 </html>
