@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caddie's Pick Manager — The Mulligan Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="/icons/icon-192.png">
+<style>
+  :root {
+    --augusta: #1b4332;
+    --augusta-deep: #0f2b1f;
+    --augusta-light: #2d6a4f;
+    --fairway: #40916c;
+    --cream: #f5f0e8;
+    --cream-dark: #ebe4d6;
+    --parchment: #faf6ef;
+    --ink: #1a1a1a;
+    --ink-2: #3d3d3d;
+    --ink-3: #6b6b6b;
+    --ink-4: #999;
+    --gold: #b8860b;
+    --gold-light: #d4a828;
+    --red-flag: #c0392b;
+    --rule: #c9bfa8;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #e8efe5;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--augusta-deep);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 2px solid var(--gold);
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header-icon {
+    width: 36px; height: 36px;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px;
+  }
+  .header-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px; font-weight: 700; color: var(--cream);
+  }
+  .header-title em { color: var(--gold-light); font-style: italic; }
+  .header-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: rgba(255,255,255,0.35); margin-top: 2px;
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .header-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700; color: var(--gold);
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid rgba(184,134,11,0.3); padding: 4px 12px; border-radius: 3px;
+  }
+  .cache-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: rgba(255,255,255,0.45);
+  }
+  .cache-status .dot {
+    display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; margin-right: 4px; vertical-align: middle;
+  }
+  .dot.green  { background: #4ade80; }
+  .dot.yellow { background: #facc15; }
+  .dot.red    { background: #ef4444; }
+
+  /* ── Main ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  /* ── Section shared styles ── */
+  .section-box {
+    background: var(--parchment);
+    border: 1px solid var(--rule);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .section-title {
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--augusta-light);
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: var(--rule); }
+
+  /* ── Add video ── */
+  .add-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .add-input {
+    flex: 1; background: var(--white);
+    border: 2px solid var(--rule); padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; color: var(--ink); outline: none;
+    transition: border-color 0.2s;
+  }
+  .add-input::placeholder {
+    color: var(--ink-4); font-style: italic; font-family: 'Source Serif 4', serif;
+  }
+  .add-input:focus { border-color: var(--gold); }
+  .add-btn {
+    background: var(--augusta); color: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
+    padding: 12px 24px; border: none; cursor: pointer;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    transition: background 0.2s; white-space: nowrap;
+  }
+  .add-btn:hover { background: var(--augusta-light); }
+  .add-hint {
+    font-family: 'Source Serif 4', serif; font-size: 12px;
+    color: var(--ink-4); font-style: italic;
+  }
+  .add-status {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 8px 14px; margin-top: 10px; border-radius: 3px; display: none;
+  }
+  .add-status.show { display: block; }
+  .add-status.loading { background: rgba(184,134,11,0.08); color: var(--gold); border: 1px solid rgba(184,134,11,0.2); }
+  .add-status.success { background: rgba(45,106,79,0.08); color: var(--augusta-light); border: 1px solid rgba(45,106,79,0.2); }
+  .add-status.error   { background: rgba(192,57,43,0.08); color: var(--red-flag); border: 1px solid rgba(192,57,43,0.2); }
+
+  /* ── Browse ── */
+  .browse-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+  }
+  .browse-title {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--gold);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .browse-refresh {
+    background: var(--augusta); color: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700;
+    padding: 6px 16px; border: none; cursor: pointer;
+    letter-spacing: 0.06em; text-transform: uppercase; transition: background 0.2s;
+  }
+  .browse-refresh:hover { background: var(--augusta-light); }
+  .browse-refresh:disabled { opacity: 0.4; cursor: not-allowed; }
+  .browse-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; color: var(--ink-4); width: 100%;
+  }
+
+  .channel-chips {
+    display: flex; gap: 6px; margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .channel-chip {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    padding: 5px 14px; border: 1px solid var(--rule);
+    background: var(--white); cursor: pointer;
+    transition: all 0.2s; white-space: nowrap; color: var(--ink-3);
+  }
+  .channel-chip:hover { border-color: var(--gold); color: var(--ink); }
+  .channel-chip.active { background: var(--augusta); color: var(--cream); border-color: var(--augusta); }
+  .channel-chip.empty-chip { opacity: 0.45; }
+  .channel-chip.empty-chip:hover { opacity: 0.7; }
+
+  .browse-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  }
+  @media (min-width: 1100px) { .browse-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .browse-card {
+    background: var(--white); border: 1px solid var(--rule);
+    overflow: hidden; transition: all 0.2s; position: relative;
+  }
+  .browse-card:hover {
+    border-color: var(--gold);
+    box-shadow: 0 4px 12px rgba(184,134,11,0.08);
+    transform: translateY(-2px);
+  }
+  .browse-card-thumb {
+    width: 100%; height: 120px; background: #0a1f14;
+    position: relative; overflow: hidden;
+  }
+  .browse-card-thumb a { display: block; width: 100%; height: 100%; }
+  .browse-card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .browse-card-thumb:hover .browse-card-play {
+    opacity: 1;
+  }
+  .browse-card-play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 36px; height: 36px; background: rgba(0,0,0,0.7);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .browse-card-play::after {
+    content: ''; width: 0; height: 0;
+    border-style: solid; border-width: 7px 0 7px 12px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 2px;
+  }
+  .browse-card-dur {
+    position: absolute; bottom: 4px; right: 4px;
+    background: rgba(0,0,0,0.85); color: #fff;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; padding: 1px 5px;
+    z-index: 2;
+  }
+  .browse-card-add {
+    position: absolute; top: 6px; right: 6px;
+    width: 28px; height: 28px; background: var(--gold); color: var(--augusta-deep);
+    border: none; border-radius: 50%; font-size: 18px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s; line-height: 1; z-index: 2;
+  }
+  .browse-card:hover .browse-card-add { opacity: 1; }
+  .browse-card-info { padding: 10px 12px; cursor: pointer; }
+  .browse-card-channel {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700;
+    color: var(--augusta-light); letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+  .browse-card-title {
+    font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700;
+    color: var(--ink); line-height: 1.3; margin-bottom: 4px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .browse-card-meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--ink-4);
+  }
+  .browse-empty, .browse-loading {
+    grid-column: 1 / -1; text-align: center; padding: 32px 16px;
+    font-family: 'Source Serif 4', serif; font-size: 13px;
+    color: var(--ink-4); font-style: italic;
+  }
+  .browse-loading {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--gold); font-style: normal;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity:.4; } 50% { opacity:1; } }
+  .browse-card.already-added { opacity: 0.4; }
+  .browse-card.already-added .browse-card-info { pointer-events: none; }
+  .browse-card.already-added::after {
+    content: '\2713  Added'; position: absolute; top: 6px; right: 6px;
+    background: var(--augusta); color: var(--cream);
+    font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 2px; z-index: 2;
+  }
+  .browse-card.published { opacity: 0.5; }
+  .browse-card.published::before {
+    content: '✓ PUBLISHED'; position: absolute; top: 6px; left: 6px;
+    background: var(--gold); color: var(--augusta-deep);
+    font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 2px; z-index: 3;
+    letter-spacing: 0.06em;
+  }
+
+  /* ── Published toggle ── */
+  .published-toggle {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 12px 0;
+    border-top: 1px dashed var(--rule);
+    margin-top: 4px;
+  }
+  .published-toggle-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--ink-4); background: none; border: 1px solid var(--rule);
+    padding: 6px 16px; cursor: pointer; border-radius: 3px;
+    transition: all 0.2s;
+  }
+  .published-toggle-btn:hover { border-color: var(--gold); color: var(--ink-3); }
+
+  /* ── Browse Pagination ── */
+  .browse-pagination {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; padding: 14px 0 0;
+    border-top: 1px solid var(--rule); margin-top: 8px;
+  }
+  .browse-page-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600;
+    padding: 5px 12px; border: 1px solid var(--rule);
+    background: var(--white); color: var(--ink-3);
+    cursor: pointer; border-radius: 3px; transition: all 0.2s;
+  }
+  .browse-page-btn:hover { border-color: var(--gold); color: var(--ink); }
+  .browse-page-btn.active { background: var(--augusta); color: var(--cream); border-color: var(--augusta); }
+  .browse-page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .browse-page-info {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-4); margin: 0 4px;
+  }
+
+  /* ── Lineup ── */
+  .list-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .list-title {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--augusta-light);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .list-count {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink-4);
+  }
+
+  .video-card {
+    background: var(--parchment); border: 1px solid var(--rule);
+    margin-bottom: 12px; display: flex; overflow: hidden;
+    transition: box-shadow 0.2s, border-color 0.2s; position: relative;
+  }
+  .video-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+  .video-card.featured {
+    border-color: var(--gold); border-width: 2px;
+    box-shadow: 0 0 0 1px rgba(184,134,11,0.1), 0 4px 16px rgba(184,134,11,0.08);
+  }
+  .video-thumb {
+    width: 200px; min-height: 120px; background: #0a1f14;
+    flex-shrink: 0; position: relative; overflow: hidden;
+  }
+  .video-thumb a { display: block; width: 100%; height: 100%; }
+  .video-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .video-thumb:hover .video-thumb-play { opacity: 1; }
+  .video-thumb-play {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    width: 40px; height: 40px; background: rgba(0,0,0,0.7);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s; pointer-events: none;
+  }
+  .video-thumb-play::after {
+    content: ''; width: 0; height: 0;
+    border-style: solid; border-width: 8px 0 8px 14px;
+    border-color: transparent transparent transparent #fff;
+    margin-left: 2px;
+  }
+  .video-dur {
+    position: absolute; bottom: 6px; right: 6px;
+    background: rgba(0,0,0,0.85); color: #fff;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 500;
+    padding: 2px 6px; z-index: 2;
+  }
+  .video-featured-badge {
+    position: absolute; top: 6px; left: 6px;
+    background: var(--gold); color: var(--augusta-deep);
+    font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 8px;
+    z-index: 2;
+  }
+  .video-info {
+    flex: 1; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px;
+  }
+  .video-channel {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700;
+    color: var(--augusta-light); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .video-title {
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 15px;
+    font-weight: 600; color: var(--ink); line-height: 1.35;
+  }
+  .video-meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-4);
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .watch-link {
+    color: var(--gold); text-decoration: none; font-weight: 700;
+    font-size: 10px; display: inline-flex; align-items: center; gap: 3px;
+    transition: color 0.2s;
+  }
+  .watch-link:hover { color: var(--gold-light); text-decoration: underline; }
+  .video-comment-row { display: flex; gap: 8px; align-items: flex-start; margin-top: 4px; }
+  .video-comment-input {
+    flex: 1; background: var(--cream-dark); border: 1px solid var(--rule);
+    padding: 6px 10px; font-family: 'Source Serif 4', serif;
+    font-size: 12px; font-style: italic; color: var(--ink-2);
+    outline: none; resize: none; min-height: 32px;
+  }
+  .video-comment-input:focus { border-color: var(--gold); }
+  .video-ts-input {
+    width: 70px; background: var(--cream-dark); border: 1px solid var(--rule);
+    padding: 6px 8px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink); outline: none; text-align: center;
+  }
+  .video-ts-input::placeholder { color: var(--ink-4); }
+  .video-ts-input:focus { border-color: var(--gold); }
+
+  .video-actions {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 10px 12px; border-left: 1px solid var(--rule);
+    align-items: center; justify-content: center;
+  }
+  .act-btn {
+    width: 32px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--rule); background: var(--white);
+    cursor: pointer; font-size: 14px; transition: all 0.2s; border-radius: 3px;
+  }
+  .act-btn:hover { border-color: var(--gold); background: rgba(184,134,11,0.06); }
+  .act-btn.star:hover { background: rgba(184,134,11,0.15); }
+  .act-btn.star.active { background: var(--gold); border-color: var(--gold); }
+  .act-btn.del:hover { background: rgba(192,57,43,0.08); border-color: var(--red-flag); }
+
+  /* ── Empty state ── */
+  .empty-state {
+    text-align: center; padding: 48px 24px;
+    background: var(--parchment); border: 2px dashed var(--rule);
+  }
+  .empty-state-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-state-text {
+    font-family: 'Source Serif 4', serif; font-size: 15px;
+    color: var(--ink-3); font-style: italic;
+  }
+
+  /* ── Publish + Export ── */
+  .publish-section {
+    margin-top: 24px; background: var(--augusta-deep);
+    padding: 24px; border: 2px solid var(--gold);
+  }
+  .publish-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+  }
+  .publish-title {
+    font-size: 13px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold-light);
+  }
+  .publish-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pub-btn {
+    font-family: 'DM Sans', sans-serif; font-weight: 700;
+    padding: 10px 24px; border: none; cursor: pointer;
+    letter-spacing: 0.06em; text-transform: uppercase; transition: all 0.2s;
+  }
+  .pub-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pub-btn.primary {
+    background: var(--gold); color: var(--augusta-deep); font-size: 13px;
+  }
+  .pub-btn.primary:hover { background: var(--gold-light); }
+  .pub-btn.secondary {
+    background: transparent; color: var(--gold);
+    border: 1px solid rgba(184,134,11,0.3); font-size: 11px; padding: 8px 16px;
+  }
+  .pub-btn.secondary:hover { border-color: var(--gold); background: rgba(184,134,11,0.1); }
+
+  .publish-status {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: rgba(255,255,255,0.5); margin-bottom: 8px;
+  }
+  .publish-status.ok    { color: var(--gold-light); }
+  .publish-status.err   { color: #ef4444; }
+
+  .export-code {
+    background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.06);
+    padding: 16px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.6;
+    overflow-x: auto; white-space: pre-wrap; max-height: 300px;
+    overflow-y: auto; display: none;
+  }
+  .export-code.show { display: block; }
+
+  .export-copied {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--gold); margin-top: 8px; display: none;
+  }
+  .export-copied.show { display: block; }
+
+  /* ── Divider inside publish section ── */
+  .publish-divider {
+    border: none; border-top: 1px solid rgba(255,255,255,0.08);
+    margin: 16px 0;
+  }
+  .publish-sub-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: rgba(255,255,255,0.3); letter-spacing: 0.08em;
+    text-transform: uppercase; margin-bottom: 10px;
+  }
+
+  /* ── Caddie's Take AI ── */
+  .caddie-take-section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--rule);
+  }
+  .caddie-take-btn {
+    font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700;
+    padding: 6px 16px; border: 1px solid var(--gold);
+    background: rgba(184,134,11,0.08); color: var(--gold);
+    cursor: pointer; letter-spacing: 0.04em;
+    transition: all 0.2s; border-radius: 3px;
+  }
+  .caddie-take-btn:hover { background: rgba(184,134,11,0.18); }
+  .caddie-take-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .caddie-take-btn .spark { margin-right: 4px; }
+  .caddie-take-options {
+    display: flex; flex-direction: column; gap: 6px; margin-top: 10px;
+  }
+  .caddie-take-chip {
+    font-family: 'Source Serif 4', serif; font-size: 13px;
+    font-style: italic; color: var(--ink-2);
+    background: var(--cream-dark); border: 1px solid var(--rule);
+    padding: 8px 14px; cursor: pointer;
+    transition: all 0.2s; text-align: left; line-height: 1.4;
+  }
+  .caddie-take-chip:hover {
+    border-color: var(--gold); background: rgba(184,134,11,0.06);
+  }
+  .caddie-take-chip.selected {
+    border-color: var(--gold); background: rgba(184,134,11,0.12);
+    font-weight: 600;
+  }
+  .caddie-take-loading {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--gold); padding: 8px 0;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  .caddie-take-error {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--red-flag); padding: 6px 0;
+  }
+  .caddie-take-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    color: var(--ink-4); text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 700px) {
+    .video-card { flex-direction: column; }
+    .video-thumb { width: 100%; height: 180px; }
+    .video-actions {
+      flex-direction: row; border-left: none;
+      border-top: 1px solid var(--rule); padding: 8px 16px;
+    }
+    .add-row { flex-direction: column; }
+    .header { padding: 16px; flex-wrap: wrap; gap: 8px; }
+    .main { padding: 16px 12px 40px; }
+    .browse-grid { grid-template-columns: 1fr 1fr !important; }
+    .channel-chips { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#0f2b1f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    </div>
+    <div>
+      <div class="header-title">THE MULLIGAN <em>REPORT</em></div>
+      <div class="header-sub">Caddie's Pick Manager</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="cache-status" id="cacheStatus"><span class="dot yellow"></span> Connecting...</div>
+    <div class="header-badge">Internal Tool</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ═══ ADD VIDEO ═══ -->
+  <div class="section-box">
+    <div class="section-title">Add a Video</div>
+    <div class="add-row">
+      <input type="text" class="add-input" id="urlInput" placeholder="Paste a YouTube URL here...">
+      <button class="add-btn" onclick="addVideo()">+ Add</button>
+    </div>
+    <div class="add-hint">Examples: youtube.com/watch?v=abc123 · youtu.be/abc123 · just the video ID works too</div>
+    <div class="add-status" id="addStatus"></div>
+  </div>
+
+  <!-- ═══ BROWSE FRESH VIDEOS ═══ -->
+  <div class="section-box">
+    <div class="browse-header">
+      <div class="browse-title">🔥 Browse Fresh Videos</div>
+      <button class="browse-refresh" id="browseRefreshBtn" onclick="loadBrowse()">Refresh</button>
+      <div class="browse-meta" id="browseMeta"></div>
+    </div>
+    <div class="channel-chips" id="channelChips"></div>
+    <div class="browse-grid" id="browseGrid">
+      <div class="browse-loading">⛳ Loading cached videos...</div>
+    </div>
+  </div>
+
+  <!-- ═══ TODAY'S LINEUP ═══ -->
+  <div class="list-header">
+    <div class="list-title">📋 Today's Lineup</div>
+    <div class="list-count" id="listCount">0 videos</div>
+  </div>
+  <div id="videoList">
+    <div class="empty-state">
+      <div class="empty-state-icon">🎬</div>
+      <div class="empty-state-text">No videos yet. Browse above or paste a YouTube URL to get started.</div>
+    </div>
+  </div>
+
+  <!-- ═══ PUBLISH + LEGACY EXPORT ═══ -->
+  <div class="publish-section">
+
+    <!-- Primary: Publish -->
+    <div class="publish-row">
+      <div class="publish-title">⛳ Publish to TMR</div>
+      <div class="publish-btns">
+        <button class="pub-btn primary" id="publishBtn" onclick="publishToTMR()">Publish to TMR</button>
+      </div>
+    </div>
+    <div class="publish-status" id="publishStatus">Add videos above, then hit Publish to update the live site.</div>
+
+    <!-- Divider -->
+    <hr class="publish-divider">
+
+    <!-- Secondary: Legacy export -->
+    <div class="publish-sub-title">Legacy Export (copy-paste fallback)</div>
+    <div class="publish-btns" style="margin-bottom: 10px;">
+      <button class="pub-btn secondary" onclick="generateCode()">Generate Code</button>
+      <button class="pub-btn secondary" onclick="copyCode()">Copy to Clipboard</button>
+    </div>
+    <pre class="export-code" id="exportCode"></pre>
+    <div class="export-copied" id="copiedMsg">✓ Copied to clipboard — paste into index.html</div>
+
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// TMR CADDIE MANAGER v2.1 — Clickable Thumbnails + Watch Links
+//
+// CHANGES FROM v2:
+// • Browse thumbnails are clickable → opens YouTube in new tab
+// • Play icon overlay appears on hover
+// • "▶ Watch" link in lineup cards (with timestamp support)
+// • All configured channels show in chips (even with 0 videos)
+// ═══════════════════════════════════════════════════════════════
+
+let videos = [];          // Today's lineup (Aaron's picks)
+let cachedVideos = [];    // All videos from server cache
+let publishedIds = new Set(); // Video IDs already published to TMR (archive)
+let showPublished = true; // Toggle: show/hide published videos in browse — default ON so Aaron sees full library
+let browsePage = 1;       // Current page in browse grid
+const BROWSE_PER_PAGE = 24;
+// All 11 channels — always show in chips even with 0 videos
+let allChannelNames = [
+  'Good Good', 'Grant Horvat', 'Bryan Bros', 'Rick Shiels',
+  'Bryson DeChambeau', 'Luke Kwon', 'Phil Mickelson / HyFlyers',
+  'Ryan Ruffels', 'The Lads', 'Brad Dalke', 'Good Good Pros'
+];
+let activeChannel = null; // Currently selected channel filter
+
+
+// ──────────────────────────────────────────────────
+// UTILITIES
+// ──────────────────────────────────────────────────
+
+function extractVideoId(input) {
+  input = input.trim();
+  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+  let m = input.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  m = input.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  m = input.match(/embed\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  m = input.match(/shorts\/([a-zA-Z0-9_-]{11})/);
+  if (m) return m[1];
+  return null;
+}
+
+function parseTimestamp(str) {
+  if (!str || !str.trim()) return null;
+  const parts = str.trim().split(':').map(Number);
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  const n = parseInt(str);
+  return isNaN(n) ? null : n;
+}
+
+function formatTs(seconds) {
+  if (!seconds) return '';
+  return Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0');
+}
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const hours = Math.floor((Date.now() - new Date(dateStr).getTime()) / 3600000);
+  if (hours < 1) return 'Just now';
+  if (hours < 24) return hours + 'h ago';
+  const days = Math.floor(hours / 24);
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return days + 'd ago';
+  return Math.floor(days / 7) + 'w ago';
+}
+
+function youtubeUrl(videoId, timestamp) {
+  let url = 'https://www.youtube.com/watch?v=' + videoId;
+  if (timestamp) url += '&t=' + timestamp + 's';
+  return url;
+}
+
+function showStatus(msg, type) {
+  const el = document.getElementById('addStatus');
+  el.textContent = msg;
+  el.className = 'add-status show ' + type;
+  if (type !== 'loading') setTimeout(() => el.className = 'add-status', 3500);
+}
+
+function setCacheStatus(color, text) {
+  document.getElementById('cacheStatus').innerHTML =
+    `<span class="dot ${color}"></span> ${text}`;
+}
+
+// Escape HTML to prevent XSS in video titles
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+// Load all previously published video IDs from archive
+async function loadPublishedIds() {
+  try {
+    const res = await fetch('/api/save-picks?mode=archive');
+    const data = await res.json();
+    publishedIds = new Set((data.videos || []).map(v => v.videoId));
+  } catch (e) {
+    console.warn('Could not load archive for PUBLISHED badges:', e.message);
+  }
+}
+
+
+// ──────────────────────────────────────────────────
+// BROWSE: Load from /api/fetch-videos (zero quota)
+// ──────────────────────────────────────────────────
+
+async function loadBrowse() {
+  const grid = document.getElementById('browseGrid');
+  const btn = document.getElementById('browseRefreshBtn');
+  btn.disabled = true;
+  btn.textContent = 'Loading...';
+  grid.innerHTML = '<div class="browse-loading">⛳ Loading cached videos...</div>';
+
+  try {
+    const res = await fetch('/api/fetch-videos');
+    if (!res.ok) throw new Error('Server returned ' + res.status);
+    const data = await res.json();
+
+    cachedVideos = data.videos || [];
+
+    // Store all channel names (including ones with 0 videos this week)
+    // The API returns "channels" = channels WITH videos
+    // We merge with any channels from errors (those had 0 or failed)
+    allChannelNames = [...(data.channels || [])];
+    if (data.errors) {
+      data.errors.forEach(e => {
+        if (e.channel && !allChannelNames.includes(e.channel) && !e.error.includes('PLACEHOLDER')) {
+          allChannelNames.push(e.channel);
+        }
+      });
+    }
+    allChannelNames.sort();
+
+    // Update meta line (fresh vs published counts)
+    const meta = document.getElementById('browseMeta');
+    const totalVids = data.videoCount;
+    const pubCount = cachedVideos.filter(v => publishedIds.has(v.videoId)).length;
+    const freshCount = totalVids - pubCount;
+    meta.textContent = `Cache updated ${timeAgo(data.lastUpdated)} · `
+      + `${freshCount} fresh · ${pubCount} published · ${data.channelCount} channels`
+      + (data.errors?.length ? ` · ${data.errors.length} channel(s) with no recent videos` : '');
+
+    setCacheStatus('green', freshCount + ' fresh videos');
+    buildChannelChips();
+    renderBrowseGrid();
+
+  } catch (e) {
+    grid.innerHTML = '<div class="browse-empty">'
+      + 'Could not load video cache: ' + esc(e.message)
+      + '<br><small style="margin-top:8px;display:block;">Is /api/fetch-videos deployed?</small>'
+      + '</div>';
+    setCacheStatus('red', 'Cache unavailable');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Refresh';
+}
+
+function buildChannelChips() {
+  // Combine channels that have videos + all known channel names
+  const channelsWithVideos = [...new Set(cachedVideos.map(v => v.channel))];
+  const allNames = [...new Set([...channelsWithVideos, ...allChannelNames])];
+
+  // Sort: channels with most videos first, then empty channels alphabetically
+  allNames.sort((a, b) => {
+    const countA = cachedVideos.filter(v => v.channel === a).length;
+    const countB = cachedVideos.filter(v => v.channel === b).length;
+    if (countB !== countA) return countB - countA; // most videos first
+    return a.localeCompare(b); // alphabetical tiebreaker
+  });
+
+  const el = document.getElementById('channelChips');
+  let html = `<div class="channel-chip ${!activeChannel ? 'active' : ''}" `
+    + `onclick="selectChannel(null)">All (${cachedVideos.length})</div>`;
+
+  allNames.forEach(ch => {
+    const n = cachedVideos.filter(v => v.channel === ch).length;
+    const safe = ch.replace(/'/g, "\\'");
+    const emptyClass = n === 0 ? ' empty-chip' : '';
+    html += `<div class="channel-chip${emptyClass} ${activeChannel === ch ? 'active' : ''}" `
+      + `onclick="selectChannel('${safe}')">${esc(ch)} (${n})</div>`;
+  });
+  el.innerHTML = html;
+}
+
+function selectChannel(ch) {
+  activeChannel = ch;
+  browsePage = 1;
+  buildChannelChips();
+  renderBrowseGrid();
+}
+
+function getFilteredBrowse() {
+  return activeChannel
+    ? cachedVideos.filter(v => v.channel === activeChannel)
+    : cachedVideos;
+}
+
+function renderBrowseGrid() {
+  const grid = document.getElementById('browseGrid');
+  const filtered = getFilteredBrowse();
+
+  if (!filtered.length) {
+    const msg = activeChannel
+      ? `No videos from ${esc(activeChannel)} in the last 7 days.`
+      : 'No videos found.';
+    grid.innerHTML = `<div class="browse-empty">${msg}</div>`;
+    return;
+  }
+
+  // Separate fresh vs published
+  const fresh = [];
+  const pub = [];
+  filtered.forEach((r, i) => {
+    const added = videos.some(v => v.videoId === r.videoId);
+    const published = publishedIds.has(r.videoId) && !added;
+    if (published) { pub.push({ r, i }); } else { fresh.push({ r, i }); }
+  });
+
+  // Paginate fresh videos
+  const totalFreshPages = Math.max(1, Math.ceil(fresh.length / BROWSE_PER_PAGE));
+  if (browsePage > totalFreshPages) browsePage = totalFreshPages;
+  const startIdx = (browsePage - 1) * BROWSE_PER_PAGE;
+  const pageFresh = fresh.slice(startIdx, startIdx + BROWSE_PER_PAGE);
+
+  // Render fresh videos for current page
+  let html = pageFresh.map(({ r, i }) => {
+    const vid = r.videoId;
+    const added = videos.some(v => v.videoId === vid);
+    const ytUrl = youtubeUrl(vid);
+    return `
+      <div class="browse-card ${added ? 'already-added' : ''}">
+        <div class="browse-card-thumb">
+          <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" title="Preview on YouTube" onclick="event.stopPropagation();">
+            <img src="${esc(r.thumbnail)}" alt="" loading="lazy">
+            <div class="browse-card-play"></div>
+          </a>
+          ${r.duration ? `<div class="browse-card-dur">${esc(r.duration)}</div>` : ''}
+          ${!added ? `<button class="browse-card-add" onclick="event.stopPropagation();addFromBrowse(${i})">+</button>` : ''}
+        </div>
+        <div class="browse-card-info" onclick="${added ? '' : 'addFromBrowse(' + i + ')'}">
+          <div class="browse-card-channel">${esc(r.channel)}</div>
+          <div class="browse-card-title">${esc(r.title)}</div>
+          <div class="browse-card-meta">${r.views || ''} ${r.views ? '·' : ''} ${timeAgo(r.publishedAt)}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Pagination controls (only if more than 1 page of fresh)
+  if (totalFreshPages > 1) {
+    html += '<div class="browse-pagination">';
+    html += `<button class="browse-page-btn" onclick="browseGoTo(${browsePage - 1})"${browsePage === 1 ? ' disabled' : ''}>&larr;</button>`;
+    for (let p = 1; p <= totalFreshPages; p++) {
+      html += `<button class="browse-page-btn${p === browsePage ? ' active' : ''}" onclick="browseGoTo(${p})">${p}</button>`;
+    }
+    html += `<button class="browse-page-btn" onclick="browseGoTo(${browsePage + 1})"${browsePage === totalFreshPages ? ' disabled' : ''}>&rarr;</button>`;
+    html += `<span class="browse-page-info">${startIdx + 1}–${Math.min(startIdx + BROWSE_PER_PAGE, fresh.length)} of ${fresh.length}</span>`;
+    html += '</div>';
+  }
+
+  // Published toggle + cards (show on last page or if only 1 page)
+  if (pub.length > 0 && browsePage === totalFreshPages) {
+    html += `<div class="published-toggle">
+      <button class="published-toggle-btn" onclick="togglePublished()">
+        ${showPublished ? 'Hide' : 'Show'} ${pub.length} published video${pub.length !== 1 ? 's' : ''}
+      </button>
+    </div>`;
+
+    if (showPublished) {
+      html += pub.map(({ r, i }) => {
+        const vid = r.videoId;
+        const ytUrl = youtubeUrl(vid);
+        return `
+          <div class="browse-card published">
+            <div class="browse-card-thumb">
+              <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" title="Preview on YouTube" onclick="event.stopPropagation();">
+                <img src="${esc(r.thumbnail)}" alt="" loading="lazy">
+                <div class="browse-card-play"></div>
+              </a>
+              ${r.duration ? `<div class="browse-card-dur">${esc(r.duration)}</div>` : ''}
+              <button class="browse-card-add" onclick="event.stopPropagation();addFromBrowse(${i})">+</button>
+            </div>
+            <div class="browse-card-info" onclick="addFromBrowse(${i})">
+              <div class="browse-card-channel">${esc(r.channel)}</div>
+              <div class="browse-card-title">${esc(r.title)}</div>
+              <div class="browse-card-meta">${r.views || ''} ${r.views ? '·' : ''} ${timeAgo(r.publishedAt)}</div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  grid.innerHTML = html;
+}
+
+function browseGoTo(page) {
+  browsePage = page;
+  renderBrowseGrid();
+  document.getElementById('browseGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function togglePublished() {
+  showPublished = !showPublished;
+  renderBrowseGrid();
+}
+
+function addFromBrowse(idx) {
+  const r = getFilteredBrowse()[idx];
+  if (!r || videos.some(v => v.videoId === r.videoId)) return;
+
+  videos.push({
+    videoId: r.videoId,
+    title: r.title,
+    channel: r.channel,
+    thumbnail: r.thumbnail,
+    duration: r.duration || '',
+    views: r.views || '',
+    publishedAt: r.publishedAt,
+    featured: videos.length === 0,
+    timestamp: null,
+    comment: '',
+  });
+
+  showStatus('✓ Added: ' + r.title, 'success');
+  renderList();
+  renderBrowseGrid();
+}
+
+
+// ──────────────────────────────────────────────────
+// ADD VIDEO: cache check → /api/lookup-video fallback
+// ──────────────────────────────────────────────────
+
+async function addVideo() {
+  const raw = document.getElementById('urlInput').value;
+  const id = extractVideoId(raw);
+  if (!id) { showStatus('Could not find a video ID in that URL.', 'error'); return; }
+  if (videos.some(v => v.videoId === id)) { showStatus('Already in the lineup.', 'error'); return; }
+
+  // 1) Check cache first (free)
+  const cached = cachedVideos.find(v => v.videoId === id);
+  if (cached) {
+    videos.push({
+      videoId: id,
+      title: cached.title,
+      channel: cached.channel,
+      thumbnail: cached.thumbnail,
+      duration: cached.duration || '',
+      views: cached.views || '',
+      publishedAt: cached.publishedAt,
+      featured: videos.length === 0,
+      timestamp: null, comment: '',
+    });
+    document.getElementById('urlInput').value = '';
+    showStatus('✓ Added from cache: ' + cached.title, 'success');
+    renderList();
+    renderBrowseGrid();
+    return;
+  }
+
+  // 2) Not in cache — look up via server (keeps API key hidden)
+  showStatus('⛳ Looking up video...', 'loading');
+  try {
+    const res = await fetch('/api/lookup-video?id=' + encodeURIComponent(id));
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Lookup failed');
+
+    videos.push({
+      videoId: data.videoId,
+      title: data.title,
+      channel: data.channel,
+      thumbnail: data.thumbnail,
+      duration: data.duration || '',
+      views: data.views || '',
+      publishedAt: data.publishedAt,
+      featured: videos.length === 0,
+      timestamp: null, comment: '',
+    });
+    document.getElementById('urlInput').value = '';
+    showStatus('✓ Added: ' + data.title, 'success');
+    renderList();
+    renderBrowseGrid();
+
+  } catch (e) {
+    showStatus('Error: ' + e.message, 'error');
+  }
+}
+
+
+// ──────────────────────────────────────────────────
+// TODAY'S LINEUP
+// ──────────────────────────────────────────────────
+
+function setFeatured(idx) {
+  videos.forEach((v, i) => v.featured = (i === idx));
+  renderList();
+}
+
+function moveVideo(idx, dir) {
+  const to = idx + dir;
+  if (to < 0 || to >= videos.length) return;
+  [videos[idx], videos[to]] = [videos[to], videos[idx]];
+  renderList();
+}
+
+function removeVideo(idx) {
+  const wasFeatured = videos[idx].featured;
+  videos.splice(idx, 1);
+  if (wasFeatured && videos.length) videos[0].featured = true;
+  renderList();
+  renderBrowseGrid();
+}
+
+function renderList() {
+  const el = document.getElementById('videoList');
+  const count = videos.length;
+  document.getElementById('listCount').textContent = count + ' video' + (count !== 1 ? 's' : '');
+
+  if (!count) {
+    el.innerHTML = '<div class="empty-state">'
+      + '<div class="empty-state-icon">🎬</div>'
+      + '<div class="empty-state-text">No videos yet. Browse above or paste a YouTube URL to get started.</div>'
+      + '</div>';
+    return;
+  }
+
+  el.innerHTML = videos.map((v, i) => {
+    const ytUrl = youtubeUrl(v.videoId, v.timestamp);
+    return `
+    <div class="video-card ${v.featured ? 'featured' : ''}">
+      <div class="video-thumb">
+        <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" title="Watch on YouTube">
+          <img src="${esc(v.thumbnail)}" alt="">
+          <div class="video-thumb-play"></div>
+        </a>
+        ${v.duration ? `<div class="video-dur">${esc(v.duration)}</div>` : ''}
+        ${v.featured ? '<div class="video-featured-badge">★ Featured</div>' : ''}
+      </div>
+      <div class="video-info">
+        <div class="video-channel">${esc(v.channel)}</div>
+        <div class="video-title">${esc(v.title)}</div>
+        <div class="video-meta">
+          ${v.views ? v.views + ' views · ' : ''}${v.duration || ''} · ID: ${v.videoId}
+          · <a href="${ytUrl}" target="_blank" rel="noopener noreferrer" class="watch-link">▶ Watch</a>
+        </div>
+        <div class="video-comment-row">
+          <textarea class="video-comment-input"
+            placeholder="Aaron's comment (optional)..."
+            oninput="videos[${i}].comment=this.value">${v.comment || ''}</textarea>
+          <input type="text" class="video-ts-input" placeholder="12:27"
+            value="${formatTs(v.timestamp)}"
+            oninput="videos[${i}].timestamp=parseTimestamp(this.value)"
+            title="Timestamp (mm:ss)">
+        </div>
+      </div>
+      <div class="video-actions">
+        <button class="act-btn star ${v.featured ? 'active' : ''}" onclick="setFeatured(${i})" title="Set as featured">★</button>
+        <button class="act-btn" onclick="moveVideo(${i},-1)" title="Move up">↑</button>
+        <button class="act-btn" onclick="moveVideo(${i},1)" title="Move down">↓</button>
+        <button class="act-btn del" onclick="removeVideo(${i})" title="Remove">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+
+// ──────────────────────────────────────────────────
+// PUBLISH TO TMR
+// ──────────────────────────────────────────────────
+
+async function publishToTMR() {
+  if (!videos.length) {
+    setPublishStatus('No videos to publish.', 'err');
+    return;
+  }
+
+  const btn = document.getElementById('publishBtn');
+  btn.disabled = true;
+  btn.textContent = 'Publishing...';
+  setPublishStatus('⛳ Sending picks to TMR...', '');
+
+  try {
+    const res = await fetch('/api/save-picks', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        picks: videos.map(v => ({
+          videoId: v.videoId,
+          title: v.title,
+          channel: v.channel,
+          thumbnail: v.thumbnail,
+          duration: v.duration,
+          views: v.views,
+          featured: v.featured,
+          timestamp: v.timestamp,
+          comment: v.comment,
+        }))
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success) throw new Error(data.error || 'Unknown error');
+
+    setPublishStatus(
+      '✓ Published ' + videos.length + ' videos at ' + new Date().toLocaleTimeString(),
+      'ok'
+    );
+
+    // Refresh published IDs so PUBLISHED badges update immediately
+    await loadPublishedIds();
+    renderBrowseGrid();
+
+  } catch (e) {
+    setPublishStatus('Error: ' + e.message, 'err');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Publish to TMR';
+}
+
+function setPublishStatus(msg, cls) {
+  const el = document.getElementById('publishStatus');
+  el.textContent = msg;
+  el.className = 'publish-status' + (cls ? ' ' + cls : '');
+}
+
+
+// ──────────────────────────────────────────────────
+// LEGACY EXPORT (copy-paste fallback)
+// ──────────────────────────────────────────────────
+
+function generateCode() {
+  const el = document.getElementById('exportCode');
+  el.classList.add('show');
+  if (!videos.length) { el.textContent = '// No videos to export'; return; }
+
+  const items = videos.map(v => {
+    let s = '        {\n';
+    s += `          id: "${v.videoId}",\n`;
+    s += `          featured: ${v.featured},\n`;
+    s += `          timestamp: ${v.timestamp || 'null'},\n`;
+    s += `          comment: ${v.comment ? '"' + v.comment.replace(/"/g, '\\"') + '"' : 'null'},\n`;
+    s += '          titleOverride: null\n';
+    s += '        }';
+    return s;
+  }).join(',\n');
+
+  el.textContent = `      const caddieVideoConfig = [\n${items}\n      ];`;
+}
+
+function copyCode() {
+  generateCode();
+  const code = document.getElementById('exportCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    const msg = document.getElementById('copiedMsg');
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 2500);
+  });
+}
+
+
+// ──────────────────────────────────────────────────
+// INIT
+// ──────────────────────────────────────────────────
+
+document.getElementById('urlInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addVideo();
+});
+
+// Load current published picks into Aaron's lineup so he sees what's live
+async function loadCurrentPicks() {
+  try {
+    const res = await fetch('/api/save-picks');
+    const data = await res.json();
+    if (data.picks && data.picks.length > 0) {
+      videos = data.picks.map(p => ({
+        videoId: p.videoId || '',
+        title: p.title || '',
+        channel: p.channel || '',
+        thumbnail: p.thumbnail || '',
+        duration: p.duration || '',
+        views: p.views || '',
+        featured: Boolean(p.featured),
+        timestamp: p.timestamp || null,
+        comment: p.comment || '',
+      }));
+      renderList();
+      console.log('[Caddie] Loaded ' + videos.length + ' current picks into lineup');
+    }
+  } catch (e) {
+    console.warn('Could not load current picks:', e.message);
+  }
+}
+
+renderList();
+loadPublishedIds()
+  .then(() => loadCurrentPicks())
+  .then(() => loadBrowse());  // Load archive first, then videos — Aaron sees PUBLISHED badges instantly
+</script>
+</body>
+</html>
