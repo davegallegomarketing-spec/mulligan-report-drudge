@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/fetch-videos",
+      "schedule": "0 10 * * *"
+    }
+  ]
+}
