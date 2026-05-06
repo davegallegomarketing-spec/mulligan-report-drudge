@@ -1028,6 +1028,13 @@
 <!-- ═══ CLUBHOUSE TV / CADDIE'S PICK — populated by inline loader at end of page ═══ -->
 <div id="caddiesPickRoot"></div>
 
+<!-- ═══ THREE COLUMNS — BLOCK 2 (continues after video; populated dynamically) ═══ -->
+<div class="cols" id="colsWrap2" style="display:none;">
+  <div class="col" id="col-0b"><div id="sec-front9-b"></div></div>
+  <div class="col" id="col-1b"><div id="sec-gear-b"></div></div>
+  <div class="col" id="col-2b"><div id="sec-thew-b"></div></div>
+</div>
+
 <!-- FOOTER -->
 <div class="footer">
   <strong style="color:#b8860b;">THE MULLIGAN REPORT</strong> · Est. 2026<br>
@@ -1485,10 +1492,31 @@ async function loadLinkPulseEdition() {
       else col2.push(a);
     });
 
-    // Render into the first div inside each column
-    renderColumn('sec-front9', col0, 0);
-    renderColumn('sec-gear', col1, 1);
-    renderColumn('sec-thew', col2, 2);
+    // ═══ MID-PAGE VIDEO BREAK ═══
+    // First 30 rows per column render in block 1 (above Clubhouse TV).
+    // Anything beyond row 30 renders in block 2 (below Clubhouse TV).
+    // Newest articles enter at top of block 1, push older ones down — once
+    // they exceed row 30 they automatically appear at top of block 2.
+    var SPLIT_AT = 30;
+
+    var col0a = col0.slice(0, SPLIT_AT), col0b = col0.slice(SPLIT_AT);
+    var col1a = col1.slice(0, SPLIT_AT), col1b = col1.slice(SPLIT_AT);
+    var col2a = col2.slice(0, SPLIT_AT), col2b = col2.slice(SPLIT_AT);
+
+    // Render block 1 (above video — original column structure with sidebars)
+    renderColumn('sec-front9', col0a, 0);
+    renderColumn('sec-gear',   col1a, 1);
+    renderColumn('sec-thew',   col2a, 2);
+
+    // Render block 2 (below video — only shown if any column has overflow)
+    var hasBlock2 = (col0b.length + col1b.length + col2b.length) > 0;
+    if (hasBlock2) {
+      renderColumn('sec-front9-b', col0b, 0);
+      renderColumn('sec-gear-b',   col1b, 1);
+      renderColumn('sec-thew-b',   col2b, 2);
+      var block2 = document.getElementById('colsWrap2');
+      if (block2) block2.style.display = '';
+    }
 
     // After articles render, fix link behavior for mobile (back button works)
     applyMobileLinkBehavior();
