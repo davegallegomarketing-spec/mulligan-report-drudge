@@ -135,6 +135,39 @@
   /* Sidebar strip (Block 3) — subtle separation from the post block above */
   #colsWrap3{border-top:2px solid #b8860b;background:#f4ecd8;}
 
+  /* ═══ BALANCED ARTICLE BLOCKS ═══
+     CSS multi-column layout for Block 1 + Block 2 article streams.
+     The browser auto-balances column heights so all 3 end at the same point —
+     no whitespace gap at the bottom of any column. Items flow top-to-bottom
+     in column 1, then column 2, then column 3. */
+  .cols-balanced{
+    column-count:3;
+    column-gap:0;
+    column-rule:1px solid #c9bfa8;
+    column-fill:balance;
+    padding:10px 0;
+    text-align:center;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .col-item{
+    break-inside:avoid;
+    -webkit-column-break-inside:avoid;
+    page-break-inside:avoid;
+    padding:0 14px;
+    margin-bottom:12px;
+    overflow-wrap:break-word;
+  }
+  .col-item a.L,.col-item a.H,.col-item a.B{display:block;text-decoration:underline;overflow-wrap:break-word;}
+  .col-item a.L{padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;line-height:1.4;}
+  .col-item a.L:hover{color:#b8860b;}
+  .col-item a.H{padding:6px 0;font-size:17px;font-weight:bold;color:#c0392b;text-transform:uppercase;line-height:1.18;}
+  .col-item a.H:hover{color:#b8860b;}
+  .col-item a.B{padding:5px 0;font-size:15px;font-weight:bold;color:#1b4332;text-transform:uppercase;line-height:1.22;}
+  .col-item a.B:hover{color:#b8860b;}
+  .col-item .src{font-size:12px;color:#999;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
+  .col-item .aside{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#666;font-weight:normal;display:block;}
+
   /* Column content classes */
   .d{display:block;border:none;border-top:1px solid #c9bfa8;margin:8px 0;height:0;font-size:0;line-height:0;}
   .sl{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.15em;display:block;margin:6px 0 3px;}
@@ -287,6 +320,8 @@
 
     /* ── COLUMNS: collapse to single saturated stream ── */
     .cols{grid-template-columns:1fr;}
+    .cols-balanced{column-count:1;column-rule:none;padding:14px 0;}
+    .col-item{padding:0 14px;margin-bottom:14px;border-bottom:1px solid #c9bfa8;padding-bottom:14px;}
     .col{padding:14px 14px;border-right:none;border-bottom:1px solid #c9bfa8;text-align:left;}
     .col:last-child{border-bottom:none;}
 
@@ -801,22 +836,14 @@
 <!-- ═══ LINKPULSE FEATURED #2 (dynamic, below nav) ═══ -->
 <div id="lp-featured-2" class="hero" style="display:none;border-bottom:2px solid #b8860b;"></div>
 
-<!-- ═══ BLOCK 1 — 3 columns × 30 posts = 90 ═══ -->
-<div class="cols" id="colsWrap">
-  <div class="col" id="col-0"><div id="sec-front9"></div></div>
-  <div class="col" id="col-1"><div id="sec-gear"></div></div>
-  <div class="col" id="col-2"><div id="sec-thew"></div></div>
-</div>
+<!-- ═══ BLOCK 1 — auto-balanced 3 columns, 90 posts ═══ -->
+<div class="cols-balanced" id="colsWrap"><div id="sec-block-1"></div></div>
 
 <!-- ═══ CLUBHOUSE TV / CADDIE'S PICK — populated by inline loader at end of page ═══ -->
 <div id="caddiesPickRoot"></div>
 
-<!-- ═══ BLOCK 2 — 3 columns × 30 posts = 90 ═══ -->
-<div class="cols" id="colsWrap2">
-  <div class="col" id="col-0b"><div id="sec-front9-b"></div></div>
-  <div class="col" id="col-1b"><div id="sec-gear-b"></div></div>
-  <div class="col" id="col-2b"><div id="sec-thew-b"></div></div>
-</div>
+<!-- ═══ BLOCK 2 — auto-balanced 3 columns, 90 posts ═══ -->
+<div class="cols-balanced" id="colsWrap2"><div id="sec-block-2"></div></div>
 
 <!-- ═══ BLOCK 3 — sidebar strip (widgets / links / capture) ═══ -->
 <div class="cols" id="colsWrap3">
@@ -1373,24 +1400,15 @@ function renderFeatured(el, article) {
   el.style.display = 'block';
 }
 
-// ═══ SIMPLE 3-COLUMN DISTRIBUTION (Drudge-style) ═══
-// All articles go into the 3 columns evenly, no category routing.
-// colIdx (0, 1, 2) staggers the image + headline cadence per column so
-// images and red H-headlines don't align horizontally across columns —
-// that horizontal "stripe" effect is what kills the chaotic broadsheet feel.
-function renderColumn(elId, articles, colIdx) {
+// ═══ ARTICLE BLOCK RENDERER ═══
+// Renders a flat list of articles into a single container. CSS multi-column
+// layout (.cols-balanced) on the parent splits and balances them across 3
+// columns automatically. Each article is wrapped in a `.col-item` div with
+// `break-inside:avoid` so individual stories never split across a column gap.
+function renderBlock(elId, articles) {
   var el = document.getElementById(elId);
-  if (!el || articles.length === 0) return;
-
-  // Per-column offsets — chosen so no two columns share an image at the same row
-  // col 0: images at 0, 4, 8, 12...
-  // col 1: images at 2, 6, 10, 14...
-  // col 2: images at 1, 5, 9, 13... (also: a deeper "first image" so the top isn't a 3-up stripe)
-  var imgOffsets = [0, 2, 1];
-  var imgOffset = imgOffsets[colIdx % 3];
-
-  // Headline-style offset (shifts the red-H, bold-B rhythm per column)
-  var hlOffset = colIdx;
+  if (!el) return;
+  if (!articles || articles.length === 0) { el.innerHTML = ''; return; }
 
   var h = '';
   articles.forEach(function(a, i) {
@@ -1399,43 +1417,35 @@ function renderColumn(elId, articles, colIdx) {
     var titleUp = a.title.toUpperCase();
     var srcLine = '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
 
-    if (i > 0) h += '<span class="d"></span>';
+    var chunk = '';
 
-    // Show image on staggered cadence per column (every 4th, offset by column)
-    // Column 0 still gets a hero image at top to anchor the column;
-    // columns 1 & 2 push their first image down so the top of the page
-    // isn't a horizontal row of three images.
-    var showImg = hasImg && ((i - imgOffset) % 4 === 0) && (i >= imgOffset);
-    if (showImg) {
-      h += '<a href="' + a.link + '" target="_blank" rel="noopener"><img class="col-img" src="' + a.image + '" onerror="this.parentElement.style.display=\'none\'" alt=""></a>';
-      h += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
+    // Show an image every 5th article (cadence is position-in-stream, not
+    // per-column — browser handles the column placement).
+    if (hasImg && i % 5 === 0) {
+      chunk += '<a href="' + a.link + '" target="_blank" rel="noopener"><img class="col-img" src="' + a.image + '" onerror="this.parentElement.style.display=\'none\'" alt=""></a>';
+      chunk += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
     }
 
-    // Alternate headline styles for visual variety — staggered by column
-    var hi = i + hlOffset; // shifted index for headline rhythm
-    if (i === 0) {
-      // First article in every column still gets the big H treatment so
-      // each column has a strong anchor — but the *content* differs (col 1 & 2
-      // won't have an image above it, so the visual weight is different).
-      h += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
-      if (desc) h += '<span class="aside">*' + desc + '*</span>';
-      h += srcLine;
-    } else if (hi % 5 === 0) {
-      h += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
-      if (desc) h += '<span class="aside">*' + desc + '*</span>';
-      h += srcLine;
-    } else if (hi % 3 === 1) {
-      h += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-      if (desc) h += '<span class="aside">*' + desc + '*</span>';
-      h += srcLine;
-    } else if (hi % 4 === 2) {
-      h += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener" style="color:#c0392b;">' + titleUp + '</a>';
-      h += srcLine;
+    // Headline rhythm: H (big red caps) on the lead and every 7th, B (green
+    // caps) every 3rd, red-L every 4th+2, plain L otherwise.
+    if (i === 0 || i % 7 === 0) {
+      chunk += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
+      if (desc) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += srcLine;
+    } else if (i % 3 === 1) {
+      chunk += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+      if (desc) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += srcLine;
+    } else if (i % 4 === 2) {
+      chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener" style="color:#c0392b;">' + titleUp + '</a>';
+      chunk += srcLine;
     } else {
-      h += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-      if (desc && hi % 2 === 0) h += '<span class="aside">*' + desc + '*</span>';
-      h += srcLine;
+      chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+      if (desc && i % 2 === 0) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += srcLine;
     }
+
+    h += '<div class="col-item">' + chunk + '</div>';
   });
 
   el.innerHTML = h;
@@ -1467,37 +1477,16 @@ async function loadLinkPulseEdition() {
       usedLinks[f2.link] = true;
     }
 
-    // ═══ SPLIT ALL ARTICLES INTO 3 COLUMNS ═══
+    // ═══ FEED THE TWO BALANCED BLOCKS ═══
+    // Block 1 = first 90 articles above the video.
+    // Block 2 = next 90 articles below the video.
+    // CSS multi-column (.cols-balanced) splits each block into 3 equal-height
+    // columns at the browser level — no manual round-robin needed.
     var remaining = arts.filter(function(a) { return !usedLinks[a.link]; });
+    var BLOCK_SIZE = 90;
 
-    // Round-robin into 3 columns
-    var col0 = [], col1 = [], col2 = [];
-    remaining.forEach(function(a, i) {
-      if (i % 3 === 0) col0.push(a);
-      else if (i % 3 === 1) col1.push(a);
-      else col2.push(a);
-    });
-
-    // ═══ MID-PAGE VIDEO BREAK ═══
-    // Block 1: 30 posts × 3 cols = 90 above the video.
-    // Block 2: 30 posts × 3 cols = 90 below the video.
-    // Anything beyond 60 per column is dropped — sidebars live in Block 3 (static HTML).
-    var BLOCK1_CAP = 30;
-    var BLOCK2_CAP = 30;
-
-    var col0a = col0.slice(0, BLOCK1_CAP), col0b = col0.slice(BLOCK1_CAP, BLOCK1_CAP + BLOCK2_CAP);
-    var col1a = col1.slice(0, BLOCK1_CAP), col1b = col1.slice(BLOCK1_CAP, BLOCK1_CAP + BLOCK2_CAP);
-    var col2a = col2.slice(0, BLOCK1_CAP), col2b = col2.slice(BLOCK1_CAP, BLOCK1_CAP + BLOCK2_CAP);
-
-    // Block 1 (above video)
-    renderColumn('sec-front9', col0a, 0);
-    renderColumn('sec-gear',   col1a, 1);
-    renderColumn('sec-thew',   col2a, 2);
-
-    // Block 2 (below video) — always rendered; quietly empty if no overflow
-    renderColumn('sec-front9-b', col0b, 0);
-    renderColumn('sec-gear-b',   col1b, 1);
-    renderColumn('sec-thew-b',   col2b, 2);
+    renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE));
+    renderBlock('sec-block-2', remaining.slice(BLOCK_SIZE, BLOCK_SIZE * 2));
 
     // After articles render, fix link behavior for mobile (back button works)
     applyMobileLinkBehavior();
