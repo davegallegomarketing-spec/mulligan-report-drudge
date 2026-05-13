@@ -1,31 +1,38 @@
 // /api/fetch-videos.js
 // ═══════════════════════════════════════════════════════════════
-// THE MULLIGAN REPORT — Video Feed Cache
+// THE MULLIGAN REPORT — Video Feed Cache (YouTube Data API edition)
 //
 // HOW IT WORKS:
-// 1. Fetches YouTube RSS feeds for each channel (FREE — no quota)
-// 2. Enriches with YouTube API for duration + views (~3 units total)
-// 3. Filters out Shorts (< 90 seconds)
-// 4. Returns sorted JSON for the Caddie Manager to consume
+// 1. For each channel, calls playlistItems.list on the channel's
+//    uploads playlist (UU + channelId minus the leading UC).
+//    This returns the most recent uploads. Costs 1 quota unit each.
+// 2. Enriches with videos.list for duration + views (1 unit per 50 videos).
+// 3. Filters out Shorts (< 90 seconds).
+// 4. Returns sorted JSON for the Caddie Manager to consume.
+//
+// QUOTA MATH (free tier = 10,000 units/day):
+//   23 channels × 1 unit (playlistItems)  = 23
+//   1–2 batches × 1 unit (videos.list)    = ~2
+//   TOTAL per run                         = ~25 units
 //
 // RUNS: Once daily via Vercel Cron (vercel.json)
 //       Also callable on-demand via GET
 //
-// FIXES (Nov 2025):
-//   • Cache-Control changed to `no-store` so the Refresh button gets fresh data
-//   • Added `?nocache=1` query param to force-bypass and clear KV
-//   • Added `channelStatus` to response for at-a-glance channel health
-//   • `?nocache=1` deletes tmr:video-cache before re-fetching
+// WHY NOT RSS:
+//   YouTube started 404-ing the youtube.com/feeds/videos.xml endpoint
+//   for requests originating from Vercel/AWS serverless IPs, even with
+//   a Googlebot User-Agent. The Data API works from anywhere as long as
+//   the YT_API_KEY is valid.
+//
+// ENV VARS REQUIRED:
+//   YT_API_KEY  — YouTube Data API v3 key (Google Cloud Console)
+//   KV_*        — Optional. Used for caching the response.
 // ═══════════════════════════════════════════════════════════════
 
-const { parseStringPromise } = require('xml2js');
-
 // ── Aaron's Channels (23 total) ──
-// RSS feeds require channel IDs (UC...), not handles (@name).
-// If a channel ID is wrong, the feed returns 404 and gets skipped.
-// Check the `channelStatus` field in the response to see which IDs are broken.
+// channelId starts with "UC". The uploads playlist is "UU" + the rest.
 const CHANNELS = [
-  // ── Original 6 (confirmed working) ──
+  // ── Original 6 ──
   { name: 'Good Good',                 channelId: 'UCfi-mPMOmche6WI-jkvnGXw' },
   { name: 'Grant Horvat',              channelId: 'UCgUueMmSpcl-aCTt5CuCKQw' },
   { name: 'Bryan Bros',                channelId: 'UCdCxaD8rWfAj12rloIYS6jQ' },
@@ -33,7 +40,7 @@ const CHANNELS = [
   { name: 'Bryson DeChambeau',         channelId: 'UCCxF55adGXOscJ3L8qdKnrQ' },
   { name: 'Luke Kwon',                 channelId: 'UCJcc1x6emfrQquiV8Oe_pug' },
 
-  // ── New 5 (from Aaron's PDF, page 7) ──
+  // ── New 5 ──
   { name: 'Phil Mickelson / HyFlyers', channelId: 'UC3jFoA7_6BTV90hsRSVHoaw' },
   { name: 'Ryan Ruffels',              channelId: 'UCmGSpvkyiQdFgW9BmymcXbw' },
   { name: 'The Lads',                  channelId: 'UCsazhBmAVDUL_WYcARQEFQA' },
@@ -59,9 +66,9 @@ const CHANNELS = [
   { name: 'Me and My Golf',            channelId: 'UCTwywdg9Sw5xs4wdN-qz7yw' },
 ];
 
-const HOURS_FILTER = 336;  // 14 days
+const HOURS_FILTER = 336;           // 14 days
+const MAX_PER_CHANNEL = 10;         // max recent uploads to pull per channel
 
-// ── CORS — FIX #1: no-store, so Vercel edge never serves stale ──
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -76,32 +83,49 @@ module.exports = async function handler(req, res) {
   }
   Object.entries(CORS).forEach(([k, v]) => res.setHeader(k, v));
 
-  // FIX #2: ?nocache=1 forces a fresh pull and clears KV
   const noCache = req.query && (req.query.nocache === '1' || req.query.nocache === 'true');
 
   try {
     const YT_KEY = process.env.YT_API_KEY || null;
+
+    if (!YT_KEY) {
+      // Same error shape as before so the Manager UI doesn't break
+      return res.status(200).json({
+        videos: [],
+        lastUpdated: new Date().toISOString(),
+        videoCount: 0,
+        enrichment: 'no_api_key',
+        cacheBypass: noCache,
+        summary: { healthy: 0, empty: 0, broken: 0, total: CHANNELS.length },
+        channelStatus: CHANNELS.map(ch => ({
+          name: ch.name,
+          channelId: ch.channelId,
+          status: 'ERROR',
+          error: 'YT_API_KEY env var is not set on this deployment',
+        })),
+      });
+    }
+
     const cutoff = new Date(Date.now() - HOURS_FILTER * 60 * 60 * 1000);
 
-    // If nocache requested, blow away the KV cache key before refetching
     if (noCache) {
       try {
         const { kv } = require('@vercel/kv');
         await kv.del('tmr:video-cache');
       } catch (_) {
-        // KV not configured — no-op
+        // KV not configured — fine
       }
     }
 
     // ────────────────────────────────────────────
-    // STEP 1: Fetch RSS feeds (FREE, no quota)
+    // STEP 1: Pull recent uploads via playlistItems.list
     // ────────────────────────────────────────────
     const results = await Promise.allSettled(
-      CHANNELS.map(ch => fetchRSS(ch, cutoff))
+      CHANNELS.map(ch => fetchChannelUploads(ch, YT_KEY, cutoff))
     );
 
     let allVideos = [];
-    const channelStatus = [];  // FIX #3: per-channel health report
+    const channelStatus = [];
 
     results.forEach((r, i) => {
       const ch = CHANNELS[i];
@@ -123,7 +147,7 @@ module.exports = async function handler(req, res) {
       }
     });
 
-    // Dedup
+    // Dedup (a video could in theory appear in two playlists if a channel re-uploads)
     const seen = new Set();
     allVideos = allVideos.filter(v => {
       if (seen.has(v.videoId)) return false;
@@ -132,10 +156,10 @@ module.exports = async function handler(req, res) {
     });
 
     // ────────────────────────────────────────────
-    // STEP 2: Enrich (duration + views)
+    // STEP 2: Enrich with duration + views
     // ────────────────────────────────────────────
     let enrichmentStatus = 'skipped';
-    if (allVideos.length > 0 && YT_KEY) {
+    if (allVideos.length > 0) {
       enrichmentStatus = 'attempted';
       const enriched = await enrichVideos(allVideos.map(v => v.videoId), YT_KEY);
       const enrichedCount = Object.keys(enriched).length;
@@ -149,8 +173,6 @@ module.exports = async function handler(req, res) {
         // Filter out Shorts
         allVideos = allVideos.filter(v => !v.durationSeconds || v.durationSeconds >= 90);
       }
-    } else if (!YT_KEY) {
-      enrichmentStatus = 'no_api_key';
     }
 
     // ────────────────────────────────────────────
@@ -158,7 +180,6 @@ module.exports = async function handler(req, res) {
     // ────────────────────────────────────────────
     allVideos.sort((a, b) => new Date(b.publishedAt) - new Date(a.publishedAt));
 
-    // Quick summary so you can eyeball health at the top of the JSON
     const ok      = channelStatus.filter(c => c.status === 'OK').length;
     const empty   = channelStatus.filter(c => c.status === 'EMPTY').length;
     const broken  = channelStatus.filter(c => c.status === 'ERROR').length;
@@ -170,10 +191,9 @@ module.exports = async function handler(req, res) {
       enrichment: enrichmentStatus,
       cacheBypass: noCache,
       summary: { healthy: ok, empty, broken, total: CHANNELS.length },
-      channelStatus,  // full per-channel breakdown — check this when videos go missing
+      channelStatus,
     };
 
-    // Persist to KV (24h TTL)
     try {
       const { kv } = require('@vercel/kv');
       await kv.set('tmr:video-cache', JSON.stringify(payload), { ex: 86400 });
@@ -194,47 +214,66 @@ module.exports = async function handler(req, res) {
 // HELPERS
 // ══════════════════════════════════════════════════════════════
 
-async function fetchRSS(channel, cutoff) {
-  const url = `https://www.youtube.com/feeds/videos.xml?channel_id=${channel.channelId}`;
+// For any standard YouTube channel, the uploads playlist ID is just
+// the channel ID with "UC" swapped for "UU". This saves a channels.list
+// call (1 quota unit per channel) and works for every channel in our list.
+function uploadsPlaylistId(channelId) {
+  if (!channelId || !channelId.startsWith('UC')) {
+    throw new Error(`Invalid channel ID format: ${channelId}`);
+  }
+  return 'UU' + channelId.slice(2);
+}
+
+async function fetchChannelUploads(channel, apiKey, cutoff) {
+  const playlistId = uploadsPlaylistId(channel.channelId);
+  const url = `https://www.googleapis.com/youtube/v3/playlistItems` +
+    `?part=snippet&playlistId=${playlistId}&maxResults=${MAX_PER_CHANNEL}&key=${apiKey}`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
 
   let response;
   try {
-    response = await fetch(url, {
-      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)' },
-      signal: controller.signal,
-    });
+    response = await fetch(url, { signal: controller.signal });
   } finally {
     clearTimeout(timeout);
   }
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status} (channel ID may be wrong)`);
+    let detail = `HTTP ${response.status}`;
+    try {
+      const errBody = await response.json();
+      if (errBody?.error?.message) detail += ` — ${errBody.error.message}`;
+    } catch (_) {}
+    throw new Error(detail);
   }
 
-  const xml = await response.text();
-  const parsed = await parseStringPromise(xml, { explicitArray: false });
+  const data = await response.json();
+  const items = data.items || [];
 
-  const entries = parsed?.feed?.entry;
-  if (!entries) return [];
+  return items
+    .map(item => {
+      const s = item.snippet || {};
+      const videoId = s.resourceId?.videoId;
+      const thumb =
+        s.thumbnails?.maxres?.url ||
+        s.thumbnails?.standard?.url ||
+        s.thumbnails?.high?.url ||
+        (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : null);
 
-  const list = Array.isArray(entries) ? entries : [entries];
-
-  return list
-    .map(entry => ({
-      videoId:         entry['yt:videoId'],
-      title:           entry.title,
-      channel:         channel.name,
-      channelId:       channel.channelId,
-      thumbnail:       `https://i.ytimg.com/vi/${entry['yt:videoId']}/hqdefault.jpg`,
-      publishedAt:     entry.published,
-      duration:        null,
-      views:           null,
-      durationSeconds: 0,
-    }))
-    .filter(v => v.videoId && new Date(v.publishedAt) >= cutoff);
+      return {
+        videoId,
+        title:           s.title,
+        channel:         channel.name,
+        channelId:       channel.channelId,
+        thumbnail:       thumb,
+        publishedAt:     s.publishedAt,
+        duration:        null,
+        views:           null,
+        durationSeconds: 0,
+      };
+    })
+    .filter(v => v.videoId && v.publishedAt && new Date(v.publishedAt) >= cutoff);
 }
 
 
