@@ -704,17 +704,22 @@
   /* Hero card — fills its column */
   .cp-hero{margin:0;padding:0;}
 
-  /* Side-by-side TV layout: hero left (60%), thumbnails right (40%) */
+  /* Side-by-side TV layout: hero left (bigger), thumbnails right */
   .cp-tv-layout{
     display:grid;
-    grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);
-    gap:18px;
+    grid-template-columns:minmax(0,2fr) minmax(0,1fr);
+    gap:14px;
     align-items:start;
-    max-width:1040px;
+    max-width:1100px;
     margin:0 auto;
   }
   .cp-tv-main{min-width:0;}
   .cp-tv-side{min-width:0;}
+  /* Headline + quote sit under hero, left-aligned inside the column */
+  .cp-tv-main .cp-headline{text-align:left;margin:14px 0 4px;padding:0;max-width:none;}
+  .cp-tv-main .cp-headline a{display:block;}
+  .cp-tv-main .cp-meta-line{text-align:left;}
+  .cp-tv-main .cp-quote{margin:12px 0 4px;max-width:none;}
   .cp-more--side{margin-top:0;padding:0;border-top:none;}
   .cp-more--side .cp-more-head{margin-bottom:10px;padding:0 2px;}
   .cp-more--side .cp-grid{
@@ -2011,10 +2016,12 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
           '<div class="cp-sub">Caddie\u2019s Pick \u00b7 Curated daily</div>'+
         '</div>'+
         '<div class="cp-tv-layout">'+
-          '<div class="cp-tv-main">'+renderHeroCard(hero)+'</div>'+
+          '<div class="cp-tv-main">'+
+            renderHeroCard(hero)+
+            renderHeroMeta(hero)+
+          '</div>'+
           (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+'</aside>' : '')+
         '</div>'+
-        renderHeroMeta(hero)+
         '<div class="cp-cta">'+
           '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
         '</div>'+
