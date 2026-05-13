@@ -625,15 +625,57 @@
     display:block !important;
   }
   .cp-section{
-    background:#0f2b1f;
+    background-color:#0f2b1f;
+    background-image:
+      linear-gradient(rgba(184,134,11,0.12) 2px,transparent 2px),
+      linear-gradient(90deg,rgba(184,134,11,0.12) 2px,transparent 2px),
+      linear-gradient(rgba(244,236,216,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(244,236,216,0.04) 1px,transparent 1px),
+      linear-gradient(rgba(0,0,0,0.15) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,0,0,0.15) 1px,transparent 1px);
+    background-size:80px 80px,80px 80px,20px 20px,20px 20px,40px 40px,40px 40px;
     padding:36px 24px 32px;
     border-top:3px solid #b8860b;
-    border-bottom:3px solid #b8860b;
     font-family:Georgia,'Times New Roman',serif;
     color:#f4ecd8;
     margin:0;
   }
   .cp-section.is-empty{display:none;}
+  /* Inner frame keeps content from stretching edge-to-edge on wide monitors */
+  .cp-frame{
+    max-width:1100px;
+    margin:0 auto;
+    border:1px solid rgba(184,134,11,0.35);
+    padding:28px 20px;
+    background:rgba(15,43,31,0.4);
+  }
+  /* Subscribe ribbon — sits flush against the bottom of the section */
+  .cp-ribbon{
+    background:#0a1f15;
+    border-top:2px solid #b8860b;
+    border-bottom:2px solid #b8860b;
+    padding:16px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin:0;
+  }
+  .cp-ribbon-text{color:#f4ecd8;}
+  .cp-ribbon-title{font-family:Arial,sans-serif;font-size:15px;font-weight:bold;color:#f4ecd8;}
+  .cp-ribbon-sub{font-family:Georgia,serif;font-style:italic;font-size:13px;color:#d4cbb5;margin-left:8px;}
+  .cp-ribbon-btn{
+    background:#b8860b;color:#0f2b1f;
+    font-family:Arial Black,Arial,sans-serif;font-size:12px;font-weight:900;letter-spacing:.18em;
+    padding:11px 32px;text-decoration:none;
+    transition:background .15s ease;
+  }
+  .cp-ribbon-btn:hover{background:#d4a828;}
+  @media (max-width:640px){
+    .cp-ribbon{padding:14px 18px;text-align:center;justify-content:center;}
+    .cp-ribbon-sub{display:block;margin-left:0;margin-top:4px;}
+  }
 
   .cp-header{text-align:center;margin-bottom:22px;padding:0 16px;}
   .cp-wordmark{display:inline-flex;align-items:center;gap:12px;justify-content:center;}
@@ -781,6 +823,7 @@
 
   @media (max-width:768px){
     .cp-section{padding:24px 14px 22px;}
+    .cp-frame{padding:18px 12px;}
     .cp-wordmark-text{font-size:20px;letter-spacing:.14em;}
     .cp-logo{width:30px;height:30px;}
     .cp-logo::after{border-left-width:10px;border-top-width:7px;border-bottom-width:7px;}
@@ -1912,16 +1955,25 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
 
     return ''+
     '<section class="cp-section">'+
-      '<div class="cp-header">'+
-        '<div class="cp-wordmark">'+
-          '<span class="cp-logo"></span>'+
-          '<span class="cp-wordmark-text">CLUBHOUSE TV</span>'+
+      '<div class="cp-frame">'+
+        '<div class="cp-header">'+
+          '<div class="cp-wordmark">'+
+            '<span class="cp-logo"></span>'+
+            '<span class="cp-wordmark-text">CLUBHOUSE TV</span>'+
+          '</div>'+
+          '<div class="cp-sub">Caddie\u2019s Pick \u00b7 Curated daily</div>'+
         '</div>'+
-        '<div class="cp-sub">Caddie\u2019s Pick \u00b7 Curated daily</div>'+
+        renderHero(hero)+
+        moreBlock+
       '</div>'+
-      renderHero(hero)+
-      moreBlock+
-    '</section>';
+    '</section>'+
+    '<div class="cp-ribbon">'+
+      '<div class="cp-ribbon-text">'+
+        '<span class="cp-ribbon-title">Enjoying the Front 9?</span>'+
+        '<span class="cp-ribbon-sub">Get tomorrow\u2019s round delivered before your tee time.</span>'+
+      '</div>'+
+      '<a href="#subscribe" class="cp-ribbon-btn">SUBSCRIBE</a>'+
+    '</div>';
   }
 
   function init(){
