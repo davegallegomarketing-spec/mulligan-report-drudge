@@ -699,8 +699,43 @@
   }
   .cp-sub::before,.cp-sub::after{content:" \2501\2501 ";color:#5f6e5f;font-style:normal;}
 
-  /* Hero card — wider, fills the band */
-  .cp-hero{max-width:640px;margin:0 auto;padding:0 16px;}
+  /* Hero card — fills its column */
+  .cp-hero{margin:0;padding:0;}
+
+  /* Side-by-side TV layout: hero left (60%), thumbnails right (40%) */
+  .cp-tv-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);
+    gap:18px;
+    align-items:start;
+    max-width:1040px;
+    margin:0 auto;
+  }
+  .cp-tv-main{min-width:0;}
+  .cp-tv-side{min-width:0;}
+  .cp-more--side{margin-top:0;padding:0;border-top:none;}
+  .cp-more--side .cp-more-head{margin-bottom:10px;padding:0 2px;}
+  .cp-more--side .cp-grid{
+    display:flex;flex-direction:column;gap:10px;padding:0;
+  }
+  .cp-more--side .cp-card-mini{
+    display:grid;
+    grid-template-columns:130px 1fr;
+    gap:10px;
+    align-items:center;
+    padding:6px;
+    border:1px solid transparent;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .cp-more--side .cp-card-mini:hover{
+    border-color:rgba(184,134,11,0.4);
+    background:rgba(184,134,11,0.05);
+  }
+  .cp-more--side .cp-thumb{aspect-ratio:16/9;}
+  .cp-more--side .cp-mini-title{
+    font-size:12px;margin:0 0 4px;-webkit-line-clamp:2;line-height:1.3;
+  }
+  .cp-more--side .cp-mini-meta{font-size:10px;}
   .cp-card{
     position:relative;display:block;border:2px solid #b8860b;background:#1a1a1a;
     aspect-ratio:16/9;overflow:hidden;cursor:pointer;text-decoration:none;
@@ -824,6 +859,14 @@
   @media (max-width:768px){
     .cp-section{padding:24px 14px 22px;}
     .cp-frame{padding:18px 12px;}
+    .cp-tv-layout{grid-template-columns:1fr;gap:14px;}
+    .cp-more--side .cp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+    .cp-more--side .cp-card-mini{
+      display:block;padding:0;border:none;background:transparent;
+    }
+    .cp-more--side .cp-card-mini:hover{border:none;background:transparent;}
+    .cp-more--side .cp-mini-title{font-size:13px;margin:8px 0 4px;}
+    .cp-more--side .cp-mini-meta{font-size:11px;}
     .cp-wordmark-text{font-size:20px;letter-spacing:.14em;}
     .cp-logo{width:30px;height:30px;}
     .cp-logo::after{border-left-width:10px;border-top-width:7px;border-bottom-width:7px;}
@@ -1846,30 +1889,13 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     return url;
   }
 
-  function renderHero(h){
-    var quoteBlock = '';
-    if (h.comment && h.comment.trim()) {
-      quoteBlock =
-        '<blockquote class="cp-quote">'+
-          '<p>'+esc(h.comment)+'</p>'+
-          '<span class="cp-attr">\u2014 The Caddie</span>'+
-        '</blockquote>';
-    }
-
+  function renderHeroCard(h){
     var viewsBlock = h.views
       ? '<span class="cp-views">'+esc(h.views)+'</span>'
       : '';
     var durBlock = h.duration
       ? '<span class="cp-dur">'+esc(h.duration)+'</span>'
       : '';
-    var metaLineSep = '<span class="sep">\u00b7</span>';
-    var metaParts = [];
-    if (h.channel)  metaParts.push('<span class="cp-channel">'+esc(h.channel)+'</span>');
-    if (h.views)    metaParts.push(esc(h.views) + ' views');
-    if (h.duration) metaParts.push(esc(h.duration));
-    metaParts.push('YouTube');
-    var metaLine = metaParts.join(metaLineSep);
-
     return ''+
     '<div class="cp-hero">'+
       '<a href="'+watchURL(h)+'" class="cp-card" target="_blank" rel="noopener">'+
@@ -1888,12 +1914,36 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
           '</div>'+
         '</div>'+
       '</a>'+
-    '</div>'+
+    '</div>';
+  }
+
+  function renderHeroMeta(h){
+    var quoteBlock = '';
+    if (h.comment && h.comment.trim()) {
+      quoteBlock =
+        '<blockquote class="cp-quote">'+
+          '<p>'+esc(h.comment)+'</p>'+
+          '<span class="cp-attr">\u2014 The Caddie</span>'+
+        '</blockquote>';
+    }
+    var metaLineSep = '<span class="sep">\u00b7</span>';
+    var metaParts = [];
+    if (h.channel)  metaParts.push('<span class="cp-channel">'+esc(h.channel)+'</span>');
+    if (h.views)    metaParts.push(esc(h.views) + ' views');
+    if (h.duration) metaParts.push(esc(h.duration));
+    metaParts.push('YouTube');
+    var metaLine = metaParts.join(metaLineSep);
+
+    return ''+
     '<div class="cp-headline">'+
       '<a href="'+watchURL(h)+'" target="_blank" rel="noopener">'+esc(h.title)+'</a>'+
       '<div class="cp-meta-line">'+metaLine+'</div>'+
     '</div>'+
     quoteBlock;
+  }
+
+  function renderHero(h){
+    return renderHeroCard(h) + renderHeroMeta(h);
   }
 
   function renderMini(v){
@@ -1939,19 +1989,14 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     }
 
     var moreBlock = rest.length > 0
-      ? '<div class="cp-more">'+
+      ? '<div class="cp-more cp-more--side">'+
           '<div class="cp-more-head">'+
             '<span class="cp-more-label">More from the Caddie</span>'+
             '<span class="cp-more-curated">Curated daily</span>'+
           '</div>'+
           '<div class="cp-grid">'+miniHTML+'</div>'+
-          '<div class="cp-cta">'+
-            '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
-          '</div>'+
         '</div>'
-      : '<div class="cp-cta" style="margin-top:24px;">'+
-          '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
-        '</div>';
+      : '';
 
     return ''+
     '<section class="cp-section">'+
@@ -1963,8 +2008,14 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
           '</div>'+
           '<div class="cp-sub">Caddie\u2019s Pick \u00b7 Curated daily</div>'+
         '</div>'+
-        renderHero(hero)+
-        moreBlock+
+        '<div class="cp-tv-layout">'+
+          '<div class="cp-tv-main">'+renderHeroCard(hero)+'</div>'+
+          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+'</aside>' : '')+
+        '</div>'+
+        renderHeroMeta(hero)+
+        '<div class="cp-cta">'+
+          '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
+        '</div>'+
       '</div>'+
     '</section>'+
     '<div class="cp-ribbon">'+
