@@ -49,15 +49,15 @@ const CHANNELS = [
 
   // ── High-volume channels ──
   { name: 'Bob Does Sports',           channelId: 'UCqr4sONkmFEOPc3rfoVLEvg' },
-  { name: 'No Laying Up',              channelId: 'UCHr0bLJVR8RqMzEdIhwNJaw' },
-  { name: 'Brodie Smith',              channelId: 'UCaHT88aobpcvRFEuy4t5Ezw' },
-  { name: 'GM Golf',                   channelId: 'UCIh2wARyB4Gr1E3mTmKKIeg' },
+  { name: 'No Laying Up',              channelId: 'UCZn1UAWT9W0pLTWCdt8CTBg' },  // corrected May 2026
+  { name: 'Brodie Smith',              channelId: 'UCkfXWo-UfGoJWHnD1jRrGpg' },  // corrected May 2026 (golf channel, not disc golf)
+  { name: 'GM Golf',                   channelId: 'UClljAz6ZKy0XeViKsohdjqA' },  // corrected May 2026
 
   // ── Engagement boosters ──
-  { name: 'PGA Tour',                  channelId: 'UCKwGZZMrh_sTmfNqVRqdKRg' },
-  { name: 'Fore Play',                 channelId: 'UCwpbGAECmJOjact0arFTKxw' },
-  { name: 'Peter Finch',               channelId: 'UCFoez1XjcSLKm8MvEzJJIxQ' },
-  { name: 'Scratch Golf Academy',      channelId: 'UCgz5RwEa7GOUOI34pJfBJHA' },
+  { name: 'PGA Tour',                  channelId: 'UCKwGZZMrhNYKzucCtTPY2Nw' },  // corrected May 2026
+  { name: 'Fore Play',                 channelId: 'UCw3LGiL_bYbWrgpQ7w7QZrw' },  // corrected May 2026
+  { name: 'Peter Finch',               channelId: 'UCFoez1Xjc90CsHvCzqKnLcw' },  // corrected May 2026
+  { name: 'Scratch Golf Academy',      channelId: 'UC79FyJ_choPudvaY5Tx_TvA' },  // corrected May 2026
 
   // ── Entertainment + instruction mix ──
   { name: 'Danny Maude',               channelId: 'UCSwdmDQhAi_-ICkAvNBLEBw' },
