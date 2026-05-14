@@ -1072,14 +1072,6 @@
       <a href="https://mygolfspy.com" rel="noopener">MYGOLFSPY</a> · <a href="https://mygolfspy.com/most-wanted/" rel="noopener">MOST WANTED</a> · <a href="https://golf.com/gear/" rel="noopener">GOLF.COM GEAR</a> · <a href="https://www.golfdigest.com/hot-list" rel="noopener">HOT LIST</a>
     </div>
 
-    <span class="d"></span>
-
-    <div class="sb">
-      <div class="t">The Back 9 is where deals live.</div>
-      <div class="s">Gear drops, deal alerts, reviews — free daily.</div>
-      <input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button>
-    </div>
-
   </div>
 
   <!-- ─── STRIP COL 3 — DIRECTORY + UTILITY ─── -->
@@ -1146,14 +1138,6 @@
     <span class="d"></span>
 
     EMAIL: <a href="mailto:tips@mulliganreport.com" style="font-size:12px;">TIPS@MULLIGANREPORT.COM</a>
-
-    <span class="d"></span>
-
-    <div class="sb">
-      <div class="t">Don't miss tomorrow's round</div>
-      <div class="s">Free. Every morning. Unsubscribe anytime.</div>
-      <input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button>
-    </div>
 
     <span class="d"></span>
 
@@ -1527,10 +1511,17 @@ function renderFeatured(el, article) {
 // layout (.cols-balanced) on the parent splits and balances them across 3
 // columns automatically. Each article is wrapped in a `.col-item` div with
 // `break-inside:avoid` so individual stories never split across a column gap.
-function renderBlock(elId, articles) {
+//
+// `injects` is an optional array of subscribe-form configs that get spliced
+// into the stream at specific positions:
+//   [{ at: 8,  title: "...", sub: "..." }, ...]
+// With ~90 articles and column-fill:balance, positions ~8/45/82 reliably
+// land in visual columns 1/2/3 at staggered vertical heights.
+function renderBlock(elId, articles, injects) {
   var el = document.getElementById(elId);
   if (!el) return;
   if (!articles || articles.length === 0) { el.innerHTML = ''; return; }
+  injects = injects || [];
 
   var h = '';
   articles.forEach(function(a, i) {
@@ -1568,6 +1559,20 @@ function renderBlock(elId, articles) {
     }
 
     h += '<div class="col-item">' + chunk + '</div>';
+
+    // Drop in any subscribe form whose `at` index matches this article
+    for (var j = 0; j < injects.length; j++) {
+      if (injects[j].at === i) {
+        var inj = injects[j];
+        h += '<div class="col-item">' +
+               '<div class="sb">' +
+                 '<div class="t">' + inj.title + '</div>' +
+                 '<div class="s">' + inj.sub + '</div>' +
+                 '<input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button>' +
+               '</div>' +
+             '</div>';
+      }
+    }
   });
 
   el.innerHTML = h;
@@ -1601,11 +1606,23 @@ async function loadLinkPulseEdition() {
     // Block 2 = positions 93..182 (next 90 articles).
     // CSS multi-column (.cols-balanced) splits each block into 3 equal-height
     // columns at the browser level — no manual round-robin needed.
+    //
+    // The injects[] config drops one subscribe form into each visual column
+    // at a different vertical position (early / middle / late in stream)
+    // so they form a diagonal cascade — never paired horizontally.
     var remaining = arts.slice(2); // everything after the two heroes
     var BLOCK_SIZE = 90;
 
-    renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE));
-    renderBlock('sec-block-2', remaining.slice(BLOCK_SIZE, BLOCK_SIZE * 2));
+    renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE), [
+      { at: 8,  title: "The First Tee",     sub: "Morning briefing — every weekday before you tee off." },
+      { at: 45, title: "Inside The Ropes",  sub: "Hot takes, sketches & golf history — every morning." },
+      { at: 82, title: "Read The Greens",   sub: "Curated golf intel before your first putt." }
+    ]);
+    renderBlock('sec-block-2', remaining.slice(BLOCK_SIZE, BLOCK_SIZE * 2), [
+      { at: 8,  title: "Pro Shop Drops",            sub: "Equipment deals & gear reviews — daily." },
+      { at: 45, title: "The Back 9",                sub: "Gear drops, deal alerts, reviews — free daily." },
+      { at: 82, title: "Don't miss tomorrow's round", sub: "Free. Every morning. Unsubscribe anytime." }
+    ]);
 
     // After articles render, fix link behavior for mobile (back button works)
     applyMobileLinkBehavior();
