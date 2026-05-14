@@ -669,16 +669,43 @@
   .cp-ribbon-text{color:#f4ecd8;}
   .cp-ribbon-title{font-family:Arial,sans-serif;font-size:15px;font-weight:bold;color:#f4ecd8;}
   .cp-ribbon-sub{font-family:Georgia,serif;font-style:italic;font-size:13px;color:#d4cbb5;margin-left:8px;}
+  .cp-ribbon-form{
+    display:flex;
+    align-items:stretch;
+    gap:0;
+    flex-shrink:0;
+  }
+  .cp-ribbon-input{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(184,134,11,0.4);
+    border-right:none;
+    padding:11px 14px;
+    color:#fff;
+    font-family:Courier,'Courier New',monospace;
+    font-size:13px;
+    width:260px;
+    outline:none;
+    box-sizing:border-box;
+  }
+  .cp-ribbon-input::placeholder{color:rgba(255,255,255,0.4);}
+  .cp-ribbon-input:focus{
+    border-color:#b8860b;
+    background:rgba(255,255,255,0.12);
+  }
   .cp-ribbon-btn{
     background:#b8860b;color:#0f2b1f;
     font-family:Arial Black,Arial,sans-serif;font-size:12px;font-weight:900;letter-spacing:.18em;
     padding:11px 32px;text-decoration:none;
+    border:none;
+    cursor:pointer;
     transition:background .15s ease;
   }
   .cp-ribbon-btn:hover{background:#d4a828;}
   @media (max-width:640px){
     .cp-ribbon{padding:14px 18px;text-align:center;justify-content:center;}
     .cp-ribbon-sub{display:block;margin-left:0;margin-top:4px;}
+    .cp-ribbon-form{width:100%;justify-content:center;}
+    .cp-ribbon-input{flex:1;min-width:0;width:auto;}
   }
 
   .cp-header{text-align:center;margin-bottom:14px;padding:0 16px;}
@@ -2098,7 +2125,10 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         '<span class="cp-ribbon-title">Enjoying the Front 9?</span>'+
         '<span class="cp-ribbon-sub">Get tomorrow\u2019s round delivered before your tee time.</span>'+
       '</div>'+
-      '<a href="#subscribe" class="cp-ribbon-btn">SUBSCRIBE</a>'+
+      '<form class="cp-ribbon-form" onsubmit="event.preventDefault();openSubscribe();">'+
+        '<input class="cp-ribbon-input" type="email" placeholder="Your email..." required>'+
+        '<button class="cp-ribbon-btn" type="submit">SUBSCRIBE</button>'+
+      '</form>'+
     '</div>';
   }
 
