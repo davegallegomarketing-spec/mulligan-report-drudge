@@ -1582,29 +1582,26 @@ async function loadLinkPulseEdition() {
 
     const arts = data.articles;
 
-    // ═══ FEATURED HEROES ═══
+    // ═══ FEATURED HEROES — STRICT POSITIONAL ORDER ═══
+    // Position 1 (newest publish) always wins the top hero slot, even if it
+    // has no image. Position 2 always wins the secondary hero. This lets the
+    // editor decide what's #1 simply by publishing it (newest = top), and
+    // single-article "BREAKING" publishes correctly take over the hero.
     const feat1 = document.getElementById('lp-featured-1');
     const feat2 = document.getElementById('lp-featured-2');
 
-    let f1 = arts.find(function(a) { return a.image && a.image.startsWith('http'); }) || arts[0];
-    renderFeatured(feat1, f1);
+    let f1 = arts[0];
+    let f2 = arts[1];
 
-    let usedLinks = {};
-    usedLinks[f1.link] = true;
-
-    let f2 = arts.find(function(a) { return !usedLinks[a.link] && a.image && a.image.startsWith('http'); });
-    if (!f2) f2 = arts.find(function(a) { return !usedLinks[a.link]; });
-    if (f2) {
-      renderFeatured(feat2, f2);
-      usedLinks[f2.link] = true;
-    }
+    if (f1) renderFeatured(feat1, f1);
+    if (f2) renderFeatured(feat2, f2);
 
     // ═══ FEED THE TWO BALANCED BLOCKS ═══
-    // Block 1 = first 90 articles above the video.
-    // Block 2 = next 90 articles below the video.
+    // Block 1 = positions 3..92 (90 articles).
+    // Block 2 = positions 93..182 (next 90 articles).
     // CSS multi-column (.cols-balanced) splits each block into 3 equal-height
     // columns at the browser level — no manual round-robin needed.
-    var remaining = arts.filter(function(a) { return !usedLinks[a.link]; });
+    var remaining = arts.slice(2); // everything after the two heroes
     var BLOCK_SIZE = 90;
 
     renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE));
