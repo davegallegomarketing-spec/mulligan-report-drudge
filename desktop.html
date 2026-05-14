@@ -708,25 +708,32 @@
     .cp-ribbon-input{flex:1;min-width:0;width:auto;}
   }
 
-  .cp-header{text-align:center;margin-bottom:14px;padding:0 16px;}
-  .cp-wordmark{display:inline-flex;align-items:center;gap:12px;justify-content:center;}
+  /* CLUBHOUSE TV — prominent wordmark treatment.
+     Sized to anchor the dark band as a recognizable masthead. */
+  .cp-header{text-align:center;margin-bottom:22px;padding:0 16px;}
+  .cp-wordmark{display:inline-flex;align-items:center;gap:18px;justify-content:center;}
   .cp-logo{
     display:inline-flex;align-items:center;justify-content:center;
-    width:36px;height:36px;background:#b8860b;border-radius:5px;
+    width:56px;height:56px;background:#b8860b;border-radius:8px;
+    box-shadow:0 0 0 3px rgba(184,134,11,0.25), 0 4px 14px rgba(0,0,0,0.45);
+    flex-shrink:0;
   }
   .cp-logo::after{
     content:"";width:0;height:0;
-    border-left:13px solid #0f2b1f;
-    border-top:9px solid transparent;border-bottom:9px solid transparent;
-    margin-left:4px;
+    border-left:20px solid #0f2b1f;
+    border-top:14px solid transparent;border-bottom:14px solid transparent;
+    margin-left:6px;
   }
   .cp-wordmark-text{
-    font-family:Arial,sans-serif;font-size:26px;font-weight:bold;
-    color:#f4ecd8;letter-spacing:.18em;
+    font-family:Arial,sans-serif;font-size:42px;font-weight:900;
+    color:#f4ecd8;letter-spacing:.16em;line-height:1;
+    text-shadow:0 2px 4px rgba(0,0,0,0.5);
+    border-bottom:3px solid #b8860b;
+    padding-bottom:6px;
   }
   .cp-sub{
-    font-family:Georgia,serif;font-style:italic;font-size:14px;
-    color:#b8860b;margin-top:8px;
+    font-family:Georgia,serif;font-style:italic;font-size:15px;
+    color:#b8860b;margin-top:14px;letter-spacing:.04em;
   }
   .cp-sub::before,.cp-sub::after{content:" \2501\2501 ";color:#5f6e5f;font-style:normal;}
 
@@ -932,10 +939,10 @@
     .cp-more--side .cp-card-mini:hover{border:none;background:transparent;}
     .cp-more--side .cp-mini-title{font-size:13px;margin:8px 0 4px;}
     .cp-more--side .cp-mini-meta{font-size:11px;}
-    .cp-wordmark-text{font-size:20px;letter-spacing:.14em;}
-    .cp-logo{width:30px;height:30px;}
-    .cp-logo::after{border-left-width:10px;border-top-width:7px;border-bottom-width:7px;}
-    .cp-sub{font-size:12px;}
+    .cp-wordmark-text{font-size:28px;letter-spacing:.12em;border-bottom-width:2px;padding-bottom:4px;}
+    .cp-logo{width:42px;height:42px;border-radius:6px;}
+    .cp-logo::after{border-left-width:15px;border-top-width:10px;border-bottom-width:10px;margin-left:5px;}
+    .cp-sub{font-size:12px;margin-top:10px;}
     .cp-headline a{font-size:19px;}
     .cp-overlay-title{font-size:13px;}
     .cp-play{width:58px;height:58px;}
