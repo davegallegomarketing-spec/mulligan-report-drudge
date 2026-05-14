@@ -710,30 +710,30 @@
 
   /* CLUBHOUSE TV — prominent wordmark treatment.
      Sized to anchor the dark band as a recognizable masthead. */
-  .cp-header{text-align:center;margin-bottom:22px;padding:0 16px;}
-  .cp-wordmark{display:inline-flex;align-items:center;gap:18px;justify-content:center;}
+  .cp-header{text-align:center;margin-bottom:18px;padding:0 16px;}
+  .cp-wordmark{display:inline-flex;align-items:center;gap:15px;justify-content:center;}
   .cp-logo{
     display:inline-flex;align-items:center;justify-content:center;
-    width:56px;height:56px;background:#b8860b;border-radius:8px;
-    box-shadow:0 0 0 3px rgba(184,134,11,0.25), 0 4px 14px rgba(0,0,0,0.45);
+    width:46px;height:46px;background:#b8860b;border-radius:7px;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.25), 0 3px 10px rgba(0,0,0,0.4);
     flex-shrink:0;
   }
   .cp-logo::after{
     content:"";width:0;height:0;
-    border-left:20px solid #0f2b1f;
-    border-top:14px solid transparent;border-bottom:14px solid transparent;
-    margin-left:6px;
+    border-left:16px solid #0f2b1f;
+    border-top:11px solid transparent;border-bottom:11px solid transparent;
+    margin-left:5px;
   }
   .cp-wordmark-text{
-    font-family:Arial,sans-serif;font-size:42px;font-weight:900;
+    font-family:Arial,sans-serif;font-size:34px;font-weight:900;
     color:#f4ecd8;letter-spacing:.16em;line-height:1;
-    text-shadow:0 2px 4px rgba(0,0,0,0.5);
-    border-bottom:3px solid #b8860b;
-    padding-bottom:6px;
+    text-shadow:0 2px 3px rgba(0,0,0,0.45);
+    border-bottom:2px solid #b8860b;
+    padding-bottom:5px;
   }
   .cp-sub{
-    font-family:Georgia,serif;font-style:italic;font-size:15px;
-    color:#b8860b;margin-top:14px;letter-spacing:.04em;
+    font-family:Georgia,serif;font-style:italic;font-size:14px;
+    color:#b8860b;margin-top:12px;letter-spacing:.04em;
   }
   .cp-sub::before,.cp-sub::after{content:" \2501\2501 ";color:#5f6e5f;font-style:normal;}
 
@@ -939,10 +939,10 @@
     .cp-more--side .cp-card-mini:hover{border:none;background:transparent;}
     .cp-more--side .cp-mini-title{font-size:13px;margin:8px 0 4px;}
     .cp-more--side .cp-mini-meta{font-size:11px;}
-    .cp-wordmark-text{font-size:28px;letter-spacing:.12em;border-bottom-width:2px;padding-bottom:4px;}
-    .cp-logo{width:42px;height:42px;border-radius:6px;}
-    .cp-logo::after{border-left-width:15px;border-top-width:10px;border-bottom-width:10px;margin-left:5px;}
-    .cp-sub{font-size:12px;margin-top:10px;}
+    .cp-wordmark-text{font-size:24px;letter-spacing:.13em;border-bottom-width:2px;padding-bottom:4px;}
+    .cp-logo{width:36px;height:36px;border-radius:6px;}
+    .cp-logo::after{border-left-width:13px;border-top-width:9px;border-bottom-width:9px;margin-left:4px;}
+    .cp-sub{font-size:12px;margin-top:9px;}
     .cp-headline a{font-size:19px;}
     .cp-overlay-title{font-size:13px;}
     .cp-play{width:58px;height:58px;}
@@ -1959,10 +1959,14 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
   }
 
   /* Use server-supplied thumbnail if present; else build from videoId.
-     onerror falls back to hqdefault if maxres returns 404. */
-  function thumbHTML(v, alt){
+     onerror falls back to hqdefault if maxres returns 404.
+     forceHd=true forces maxresdefault even if the saved thumbnail is low-res
+     (used for the big hero tile so it renders sharp on wide screens). */
+  function thumbHTML(v, alt, forceHd){
     var src;
-    if (v.thumbnail) {
+    if (forceHd && v.videoId) {
+      src = YT_THUMB + encodeURIComponent(v.videoId) + '/maxresdefault.jpg';
+    } else if (v.thumbnail) {
       src = v.thumbnail;
     } else if (v.videoId) {
       src = YT_THUMB + encodeURIComponent(v.videoId) + '/maxresdefault.jpg';
@@ -1996,7 +2000,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     return ''+
     '<div class="cp-hero">'+
       '<a href="'+watchURL(h)+'" class="cp-card" target="_blank" rel="noopener">'+
-        thumbHTML(h, h.title)+
+        thumbHTML(h, h.title, true)+
         '<span class="cp-badge">Caddie\u2019s Pick</span>'+
         viewsBlock+
         '<span class="cp-play"></span>'+
