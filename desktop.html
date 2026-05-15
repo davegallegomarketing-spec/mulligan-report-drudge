@@ -2008,12 +2008,16 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
            (fallback ? 'onerror="if(this.dataset.f!==\'1\'){this.dataset.f=\'1\';this.src=\''+fallback+'\';}"' : '')+'>';
   }
 
+  /* Internal watch page — keeps viewers on the Mulligan Report site instead
+     of sending them to YouTube. The watch.html page embeds the player and
+     surfaces "More from the Caddie" so session time increases. */
   function watchURL(v){
     var id = v.videoId || '';
-    var url = YT_WATCH + encodeURIComponent(id);
-    /* Append ?t= for timestamp jump if set */
+    if (!id) return YT_WATCH; /* fallback: YouTube homepage if no id */
+    var url = '/watch.html?v=' + encodeURIComponent(id);
+    /* Append &t= for timestamp jump if set — watch.html forwards this to the embed. */
     if (v.timestamp && Number.isFinite(Number(v.timestamp))) {
-      url += '&t=' + Number(v.timestamp) + 's';
+      url += '&t=' + Number(v.timestamp);
     }
     return url;
   }
@@ -2027,7 +2031,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
       : '';
     return ''+
     '<div class="cp-hero">'+
-      '<a href="'+watchURL(h)+'" class="cp-card" target="_blank" rel="noopener">'+
+      '<a href="'+watchURL(h)+'" class="cp-card">'+
         thumbHTML(h, h.title, true)+
         '<span class="cp-badge">Caddie\u2019s Pick</span>'+
         viewsBlock+
@@ -2065,7 +2069,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
 
     return ''+
     '<div class="cp-headline">'+
-      '<a href="'+watchURL(h)+'" target="_blank" rel="noopener">'+esc(h.title)+'</a>'+
+      '<a href="'+watchURL(h)+'">'+esc(h.title)+'</a>'+
       '<div class="cp-meta-line">'+metaLine+'</div>'+
     '</div>'+
     quoteBlock;
@@ -2085,7 +2089,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     var meta = metaParts.join(' \u00b7 ');
 
     return ''+
-    '<a href="'+watchURL(v)+'" class="cp-card-mini" target="_blank" rel="noopener">'+
+    '<a href="'+watchURL(v)+'" class="cp-card-mini">'+
       '<div class="cp-thumb">'+
         thumbHTML(v, v.title)+
         durBlock+
