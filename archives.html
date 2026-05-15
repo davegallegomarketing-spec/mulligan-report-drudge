@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Archives — The Mulligan Report</title>
 <link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
 <meta name="theme-color" content="#0a1a0f">
 <meta property="og:title" content="Clubhouse TV Archives — The Mulligan Report">
 <meta property="og:description" content="Every video the Caddie's picked. The best of golf YouTube, curated daily.">
@@ -619,12 +620,23 @@
   <a href="/">← Back to Today's Round</a>
 </div>
 
-<!-- ── SUBSCRIBE ── -->
+<!-- ── SUBSCRIBE (inline form, no modal) ── -->
+<!--
+  Same placeholder pattern as the top opt-in bar.
+  TOMORROW: replace this inline <form> with AWeber's inline JS snippet
+  configured for Email-only signups (form ID 499553532 or a new email-only form).
+-->
 <section class="arc-subscribe">
   <div class="arc-sub-card">
     <h3>Get the Caddie's Picks Daily</h3>
     <p>The best golf videos and stories, delivered every morning before your tee time.</p>
-    <div onclick="openSubscribe()" style="display:inline-block;background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:12px 36px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:12px;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe Free</div>
+    <form class="arc-sub-form" id="bottomOptinForm" onsubmit="return handleBottomOptin(event)">
+      <input type="email" id="bottomOptinEmail" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
+      <button type="submit">Subscribe</button>
+    </form>
+    <div class="arc-sub-success" id="bottomOptinSuccess">
+      ✓ Check your email to confirm your subscription.
+    </div>
   </div>
 </section>
 
@@ -816,11 +828,10 @@ function closeSubscribe() {
 // ── Top inline opt-in handler ──
 // Placeholder: forwards to the existing AWeber modal so no signups are lost
 // until the native inline AWeber form is dropped in tomorrow.
-// When the AWeber inline snippet is added, this whole function and the inline
-// <form id="topOptinForm"> can be removed — AWeber's script handles its own submit.
-function handleTopOptin(event) {
-  if (event && event.preventDefault) event.preventDefault();
-  var emailInput = document.getElementById('topOptinEmail');
+// When the AWeber inline snippet is added, both handlers and the inline
+// <form> blocks can be removed — AWeber's script handles its own submit.
+function _bridgeToAWeber(emailInputId) {
+  var emailInput = document.getElementById(emailInputId);
   var email = emailInput ? emailInput.value.trim() : '';
 
   if (!email || email.indexOf('@') === -1) {
@@ -845,6 +856,14 @@ function handleTopOptin(event) {
   }, 100);
 
   return false;
+}
+function handleTopOptin(event) {
+  if (event && event.preventDefault) event.preventDefault();
+  return _bridgeToAWeber('topOptinEmail');
+}
+function handleBottomOptin(event) {
+  if (event && event.preventDefault) event.preventDefault();
+  return _bridgeToAWeber('bottomOptinEmail');
 }
 </script>
 
