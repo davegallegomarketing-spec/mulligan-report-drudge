@@ -94,19 +94,7 @@
   .top-ad .pa-body strong{color:#1b4332;font-weight:700;}
   .top-ad .pa-body a{color:#1b4332;text-decoration:underline;font-size:13px;font-weight:900;}
 
-  /* ═══ OPTIN — PRIMARY EMAIL CAPTURE ═══ */
-  .optin{background:linear-gradient(135deg,#1b4332,#0f2b1f);padding:6px 20px;border-bottom:2px solid #b8860b;border-top:1px solid #2d6a4f;}
-  .optin .optin-inner{display:flex;align-items:center;justify-content:center;gap:14px;max-width:900px;margin:0 auto;}
-  .optin .optin-text{font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.7);white-space:nowrap;}
-  .optin .optin-text strong{color:#faf6ef;font-size:13px;font-weight:900;}
-  .optin .optin-text .optin-sub{font-size:12px;color:rgba(255,255,255,.4);display:inline;margin-left:6px;}
-  .optin .optin-cta{display:flex;align-items:center;gap:0;flex-shrink:0;}
-  .optin .optin-cta input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-right:none;padding:6px 12px;color:#fff;font-size:12px;font-family:Courier,monospace;width:170px;outline:none;border-radius:2px 0 0 2px;}
-  .optin .optin-cta input::placeholder{color:rgba(255,255,255,.3);}
-  .optin .optin-cta input:focus{border-color:#b8860b;background:rgba(255,255,255,.12);}
-  .optin .optin-cta button{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:7px 14px;border:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;border-radius:0 2px 2px 0;}
-  .optin .optin-cta button:hover{background:#d4a828;}
-  .optin .optin-proof{font-family:Georgia,serif;font-size:10px;color:rgba(255,255,255,.25);font-style:italic;white-space:nowrap;}
+  /* ═══ OPTIN — REMOVED (dormant top bar, no HTML element existed) ═══ */
 
   /* ═══ HERO ═══ */
   .hero{padding:14px 16px 10px;border-bottom:1px solid #c9bfa8;}
@@ -261,7 +249,111 @@
   /* ═══ SUBSCRIBE MODAL ═══ */
   .so{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,43,31,.93);z-index:10001;overflow-y:auto;}
   .so.active{display:flex;justify-content:center;align-items:center;}
-  .si{background:#faf6ef;border:2px solid #b8860b;padding:28px;max-width:400px;width:92%;text-align:center;position:relative;}
+  .si{background:#faf6ef;border:2px solid #b8860b;padding:28px;max-width:420px;width:92%;text-align:center;position:relative;}
+
+  /* AWeber form 499553532 — blend into TMR subscribe modal (cream/green) */
+  #af-form-499553532,
+  #af-form-499553532 .af-body,
+  #af-form-499553532 .af-form-wrapper,
+  .AW-Form-499553532 form,
+  .AW-Form-499553532 .af-form,
+  .AW-Form-499553532 .af-body{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-shadow:none !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    width:100% !important;
+  }
+  .AW-Form-499553532 .af-element{
+    margin:0 0 10px !important;
+    padding:0 !important;
+  }
+  .AW-Form-499553532 label.previewLabel{
+    display:none !important;
+  }
+  .AW-Form-499553532 .af-textWrap{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+  }
+  .AW-Form-499553532 input[type="text"],
+  .AW-Form-499553532 input[type="email"],
+  .AW-Form-499553532 .af-textWrap input{
+    width:100% !important;
+    padding:10px 12px !important;
+    border:1px solid #c9bfa8 !important;
+    background:#fff !important;
+    font-family:Courier,monospace !important;
+    font-size:14px !important;
+    color:#222 !important;
+    box-sizing:border-box !important;
+    border-radius:0 !important;
+    outline:none !important;
+  }
+  .AW-Form-499553532 input[type="text"]:focus,
+  .AW-Form-499553532 input[type="email"]:focus{
+    border-color:#b8860b !important;
+  }
+  .AW-Form-499553532 input[type="submit"],
+  .AW-Form-499553532 .buttonContainer input[type="submit"],
+  .AW-Form-499553532 button{
+    width:100% !important;
+    background:#1b4332 !important;
+    color:#d4a828 !important;
+    font-family:Arial,sans-serif !important;
+    font-size:12px !important;
+    font-weight:bold !important;
+    padding:11px 16px !important;
+    border:none !important;
+    text-transform:uppercase !important;
+    letter-spacing:.1em !important;
+    cursor:pointer !important;
+    border-radius:0 !important;
+    margin-top:4px !important;
+    transition:background 0.15s !important;
+  }
+  .AW-Form-499553532 input[type="submit"]:hover,
+  .AW-Form-499553532 button:hover{
+    background:#0f2b1f !important;
+  }
+  .AW-Form-499553532 .privacyPolicy,
+  .AW-Form-499553532 .af-clear,
+  .AW-Form-499553532 .af-footer{
+    display:none !important;
+  }
+
+  /* Subscribe modal — thank-you success state */
+  .sub-thankyou{
+    text-align:center;
+    padding:18px 4px;
+  }
+  .sub-thankyou .sub-check{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:#1b4332;
+    color:#d4a828;
+    font-size:28px;
+    line-height:50px;
+    margin:0 auto 14px;
+    font-weight:bold;
+  }
+  .sub-thankyou h3{
+    font-family:'Times New Roman',serif;
+    font-size:22px;
+    color:#1b4332;
+    margin:0 0 8px;
+  }
+  .sub-thankyou p{
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:#555;
+    line-height:1.45;
+    margin:0;
+  }
 
   /* ═══ SKETCH VIEWER ═══ */
   .sv{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,43,31,.95);z-index:10000;justify-content:center;align-items:center;flex-direction:column;}
@@ -293,15 +385,7 @@
     .top-ad .pa-badge{padding:6px 14px;justify-content:center;}
     .top-ad .pa-body{padding:8px 14px;font-size:13px;flex-wrap:wrap;justify-content:center;line-height:1.4;}
 
-    /* ── OPTIN: wrap gracefully so email input doesn't overflow ── */
-    .optin{padding:10px 14px;}
-    .optin .optin-inner{flex-wrap:wrap;gap:8px 12px;}
-    .optin .optin-text{white-space:normal;text-align:center;flex:1 1 100%;font-size:13px;line-height:1.35;}
-    .optin .optin-text .optin-sub{display:block;margin-left:0;margin-top:2px;font-size:11.5px;}
-    .optin .optin-cta{flex:1 1 100%;justify-content:center;}
-    .optin .optin-cta input{flex:1;width:auto;min-width:0;padding:10px 12px;font-size:14px;}
-    .optin .optin-cta button{padding:10px 14px;font-size:11px;}
-    .optin .optin-proof{flex:1 1 100%;text-align:center;font-size:10.5px;}
+    /* ── OPTIN: removed (dormant top bar, no HTML element existed) ── */
 
     /* ── LOGO BAR: shrink the masthead so it doesn't eat the screen ── */
     .logo-bar{padding:14px 10px 8px;}
@@ -556,6 +640,81 @@
   }
   .gv-form button:hover{background:#0f2b1f;}
   .gv-form button:disabled{background:#888;cursor:wait;}
+
+  /* AWeber form 279004960 — blend into TMR sweepstakes popup (cream/Courier) */
+  #af-form-279004960,
+  #af-form-279004960 .af-body,
+  #af-form-279004960 .af-form-wrapper,
+  .AW-Form-279004960 form,
+  .AW-Form-279004960 .af-form,
+  .AW-Form-279004960 .af-body{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-shadow:none !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    width:100% !important;
+  }
+  .AW-Form-279004960 .af-element{
+    margin:0 0 8px !important;
+    padding:0 !important;
+  }
+  .AW-Form-279004960 label.previewLabel{
+    display:none !important;
+  }
+  .AW-Form-279004960 .af-textWrap{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+  }
+  .AW-Form-279004960 input[type="text"],
+  .AW-Form-279004960 input[type="email"],
+  .AW-Form-279004960 .af-textWrap input{
+    width:100% !important;
+    padding:11px 12px !important;
+    border:2px solid #1b4332 !important;
+    background:#fff !important;
+    font-family:Georgia,serif !important;
+    font-size:15px !important;
+    color:#222 !important;
+    box-sizing:border-box !important;
+    border-radius:0 !important;
+    outline:none !important;
+  }
+  .AW-Form-279004960 input[type="text"]:focus,
+  .AW-Form-279004960 input[type="email"]:focus{
+    border-color:#b8860b !important;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2) !important;
+  }
+  .AW-Form-279004960 input[type="submit"],
+  .AW-Form-279004960 .buttonContainer input[type="submit"],
+  .AW-Form-279004960 button{
+    width:100% !important;
+    background:#1b4332 !important;
+    color:#f4ecd8 !important;
+    font-family:Arial,sans-serif !important;
+    font-size:13px !important;
+    font-weight:bold !important;
+    padding:12px 18px !important;
+    border:none !important;
+    text-transform:uppercase !important;
+    letter-spacing:.12em !important;
+    cursor:pointer !important;
+    border-radius:0 !important;
+    margin-top:4px !important;
+    transition:background 0.15s !important;
+  }
+  .AW-Form-279004960 input[type="submit"]:hover,
+  .AW-Form-279004960 button:hover{
+    background:#0f2b1f !important;
+  }
+  .AW-Form-279004960 .privacyPolicy,
+  .AW-Form-279004960 .af-clear,
+  .AW-Form-279004960 .af-footer{
+    display:none !important;
+  }
 
   .gv-fine{
     font-family:Arial,sans-serif;
@@ -1262,15 +1421,27 @@
   </div>
 </div>
 
-<!-- ═══ SUBSCRIBE ═══ -->
+<!-- ═══ SUBSCRIBE — AWeber form 499553532 (general newsletter) ═══ -->
 <div class="so" id="subOverlay" onclick="if(event.target===this)closeSubscribe()">
   <div class="si">
-    <button onclick="closeSubscribe()" style="position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;">✕</button>
-    <div style="font-family:'Times New Roman',serif;font-size:26px;font-weight:bold;color:#1b4332;">THE MULLIGAN REPORT</div>
-    <div style="font-family:Georgia,serif;font-size:12px;color:#999;font-style:italic;margin:3px 0 12px;">Get inside the ropes. Every morning before your tee time.</div>
-    <input type="text" placeholder="Your email..." style="padding:8px 10px;border:1px solid #c9bfa8;font-size:14px;width:58%;font-family:Courier,monospace;">
-    <button style="background:#1b4332;color:#d4a828;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;padding:9px 16px;border:none;text-transform:uppercase;cursor:pointer;">Subscribe</button>
-    <div style="font-size:12px;color:#999;margin-top:6px;">12,847 golfers · Free · Unsubscribe anytime</div>
+    <button onclick="closeSubscribe()" style="position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;z-index:5;">✕</button>
+    <div class="sub-modal-body">
+      <div class="sub-mast" style="font-family:'Times New Roman',serif;font-size:26px;font-weight:bold;color:#1b4332;">THE MULLIGAN REPORT</div>
+      <div class="sub-tag" style="font-family:Georgia,serif;font-size:12px;color:#666;font-style:italic;margin:3px 0 14px;">Get inside the ropes. Every morning before your tee time.</div>
+
+      <!-- AWeber Signup Form 499553532 -->
+      <div class="AW-Form-499553532"></div>
+      <script type="text/javascript">(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//forms.aweber.com/form/32/499553532.js";
+          fjs.parentNode.insertBefore(js, fjs);
+          }(document, "script", "aweber-wjs-tmrsub01"));
+      </script>
+
+      <div class="sub-trust" style="font-size:12px;color:#888;margin-top:10px;font-family:Georgia,serif;">12,847 golfers · Free · Unsubscribe anytime</div>
+    </div>
   </div>
 </div>
 
@@ -1321,29 +1492,66 @@ function renderA(i){const a=articles[i];const urlBtn=a.url?`<a href="${a.url}" t
 function prevArticle(){cIdx=(cIdx-1+articles.length)%articles.length;renderA(cIdx);}
 function nextArticle(){cIdx=(cIdx+1)%articles.length;renderA(cIdx);}
 
-function openSubscribe(){document.getElementById('subOverlay').classList.add('active');document.body.style.overflow='hidden';}
-function closeSubscribe(){document.getElementById('subOverlay').classList.remove('active');document.body.style.overflow='';}
+function openSubscribe(){
+  // Reset to form view if returning after a previous submit
+  var body = document.querySelector('#subOverlay .sub-modal-body');
+  if (body) {
+    var ty = document.getElementById('subThankYou');
+    if (ty) ty.remove();
+    var formParts = body.querySelectorAll('.sub-mast, .sub-tag, .AW-Form-499553532, .sub-trust');
+    formParts.forEach(function(el){ el.style.display = ''; });
+  }
+  document.getElementById('subOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  // Intercept the AWeber form so we can show our own thank-you state
+  setTimeout(interceptSubscribeForm, 400);
+  setTimeout(interceptSubscribeForm, 1200);
+}
+function closeSubscribe(){
+  document.getElementById('subOverlay').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+// Intercept AWeber subscribe form (499553532) submit → custom thank-you
+var subInterceptDone = false;
+function interceptSubscribeForm(){
+  if (subInterceptDone) return;
+  var container = document.querySelector('.AW-Form-499553532');
+  if (!container) return;
+  var form = container.querySelector('form');
+  if (!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch(form.action, { method:'POST', body:data, mode:'no-cors' })
+      .then(function(){ showSubThankYou(); })
+      .catch(function(){ showSubThankYou(); });
+  });
+  subInterceptDone = true;
+}
+
+function showSubThankYou(){
+  var body = document.querySelector('#subOverlay .sub-modal-body');
+  if (!body) return;
+  var formParts = body.querySelectorAll('.sub-mast, .sub-tag, .AW-Form-499553532, .sub-trust');
+  formParts.forEach(function(el){ el.style.display = 'none'; });
+  var existing = document.getElementById('subThankYou');
+  if (existing) existing.remove();
+  var ty = document.createElement('div');
+  ty.id = 'subThankYou';
+  ty.className = 'sub-thankyou';
+  ty.innerHTML = '<div class="sub-check">✓</div>' +
+    '<h3>You\'re in.</h3>' +
+    '<p>Check your inbox to confirm. Your daily golf briefing arrives tomorrow morning.</p>';
+  body.appendChild(ty);
+  setTimeout(closeSubscribe, 3500);
+}
 
 const sketches=[
   {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg',cap:'The rules say you get a free drop. The tree says otherwise.',date:'March 15, 2026'}
 ];
 function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
 function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
-
-// ═══ OPTIN BAR CAPTURE ═══
-function optinCapture() {
-  var input = document.getElementById('optinEmail');
-  var email = input.value.trim();
-  if (!email || !email.includes('@')) {
-    input.style.border = '1px solid #c0392b';
-    input.setAttribute('placeholder', 'Enter a valid email...');
-    return;
-  }
-  // In production: POST to your email API / Substack / ConvertKit
-  console.log('Optin capture:', email);
-  var inner = document.querySelector('.optin-inner');
-  inner.innerHTML = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#4ade80;font-weight:900;letter-spacing:.03em;text-align:center;padding:4px 0;">⛳ YOU\'RE IN — TOMORROW\'S ROUND HITS YOUR INBOX BEFORE YOUR TEE TIME</div>';
-}
 
 // ═══ SEARCH ═══
 function searchStories(){
@@ -1772,24 +1980,23 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         <strong>4 winners. 4 chances.</strong> Every reader wins the daily golf briefing.
       </p>
 
-      <form class="gv-form" id="gvForm" onsubmit="return gvSubmit(event);">
-        <input
-          type="email"
-          name="email"
-          id="gvEmail"
-          placeholder="Your email address"
-          required
-          autocomplete="email"
-        >
-        <button type="submit" id="gvBtn">Enter to Win &amp; Subscribe</button>
-      </form>
+      <!-- AWeber Sweepstakes Step 1 form 279004960 -->
+      <div class="AW-Form-279004960" id="gvAweberContainer"></div>
+      <script type="text/javascript">(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//forms.aweber.com/form/60/279004960.js";
+          fjs.parentNode.insertBefore(js, fjs);
+          }(document, "script", "aweber-wjs-tmrsweep01"));
+      </script>
 
       <div class="gv-fine">
         No purchase necessary · One entry per person per quarter · 18+ U.S. residents only<br>
         <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
         &nbsp;·&nbsp;
         <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy</a>
-        <button class="gv-no" type="button" onclick="gvClose()">No thanks, just the news</button>
+        <button class="gv-no" type="button" onclick="gvClose(); setTimeout(openSubscribe, 300);">No thanks, just the news</button>
       </div>
 
     </div>
@@ -1831,6 +2038,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     // Mark seen as soon as it shows so close-during-render doesn't double-fire
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
     detachAll(); // shut off remaining triggers
+    gvArmIntercept(); // attach our submit interceptor to AWeber's form
   }
 
   window.gvClose = function(){
@@ -1857,49 +2065,49 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     }
   });
 
-  // ─── Form submit (placeholder — wire to AWeber later) ───────────────────
-  window.gvSubmit = function(ev){
-    ev.preventDefault();
-    var emailEl = document.getElementById('gvEmail');
-    var btn = document.getElementById('gvBtn');
+  // ─── Form submit — intercept AWeber form 279004960 ─────────────────────
+  var gvInterceptDone = false;
+  function gvInterceptAweber(){
+    if (gvInterceptDone) return;
+    var container = document.querySelector('.AW-Form-279004960');
+    if (!container) return;
+    var form = container.querySelector('form');
+    if (!form) return;
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(form);
+      // Submit silently to AWeber
+      fetch(form.action, { method:'POST', body:data, mode:'no-cors' })
+        .then(function(){ gvShowSuccess(); })
+        .catch(function(){ gvShowSuccess(); }); // no-cors won't return readable response
+    });
+    gvInterceptDone = true;
+  }
+
+  function gvShowSuccess(){
     var body = document.getElementById('gvBody');
-    var email = (emailEl.value || '').trim();
+    if (!body) return;
+    body.innerHTML =
+      '<div class="gv-success">' +
+        '<div class="gv-check">✓</div>' +
+        '<h3>You\'re entered.</h3>' +
+        '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
+      '</div>';
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+    setTimeout(gvClose, 2800);
+  }
 
-    // Basic validation
-    if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 0) {
-      emailEl.focus();
-      return false;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Submitting…';
-
-    // ───────────────────────────────────────────────────────────────────────
-    // TODO: Replace this fake submission with real AWeber endpoint when ready.
-    //
-    // AWeber's hosted form action looks like:
-    //   POST https://www.aweber.com/scripts/addlead.pl
-    //   Form fields: meta_web_form_id, meta_split_id, listname, redirect, email
-    //
-    // Or use AWeber's API: https://api.aweber.com/1.0/accounts/{id}/lists/{id}/subscribers
-    // (requires OAuth token, server-side only — recommend a Vercel /api/subscribe route)
-    //
-    // For now: simulate success after 600ms.
-    // ───────────────────────────────────────────────────────────────────────
-    setTimeout(function(){
-      body.innerHTML =
-        '<div class="gv-success">' +
-          '<div class="gv-check">✓</div>' +
-          '<h3>You\'re entered.</h3>' +
-          '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
-        '</div>';
-      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
-      // Auto-close after success
-      setTimeout(gvClose, 2800);
-    }, 600);
-
-    return false;
-  };
+  // Attempt to attach the AWeber intercept whenever the popup shows
+  // (AWeber's script may not have rendered the form by the time the modal opens,
+  //  so we retry a few times)
+  function gvArmIntercept(){
+    var tries = 0;
+    var t = setInterval(function(){
+      gvInterceptAweber();
+      tries++;
+      if (gvInterceptDone || tries > 20) clearInterval(t); // give up after ~4s
+    }, 200);
+  }
 
   // ─── Boot — attach all triggers; first to fire wins ─────────────────────
   function isMobile(){
