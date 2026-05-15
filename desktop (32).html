@@ -1,0 +1,2265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
+<title>THE MULLIGAN REPORT</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:Courier,'Courier New',monospace;background:#faf6ef;color:#1a1a1a;text-align:center;font-size:14px;line-height:1.55;}
+  a{color:#1b4332;font-weight:bold;text-decoration:underline;}
+  a:hover{color:#b8860b;}
+  .siren{display:inline-block;animation:pulse .5s infinite alternate;}
+  @keyframes pulse{from{opacity:1}to{opacity:.2}}
+
+  /* ═══ CRAWL / TICKER SYSTEM ═══ */
+  @keyframes cr{to{transform:translateX(-50%)}}
+  @keyframes pulse{from{opacity:1}to{opacity:.2}}
+  @keyframes tickerGlow{0%,100%{text-shadow:0 0 4px rgba(74,222,128,.3)}50%{text-shadow:0 0 8px rgba(74,222,128,.6)}}
+  @keyframes liveDot{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}50%{box-shadow:0 0 0 4px rgba(74,222,128,0)}}
+
+  .ticker-wrap{overflow:hidden;position:relative;}
+  .ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none;}
+  .ticker-wrap::before{left:0;}
+  .ticker-wrap::after{right:0;}
+
+  /* T1 — Today's Card */
+  .t1-wrap{background:linear-gradient(180deg,#1b4332 0%,#0f2b1f 100%);height:34px;border-bottom:1px solid #2d6a4f;}
+  .t1-wrap::before{background:linear-gradient(90deg,#1b4332,transparent);}
+  .t1-wrap::after{background:linear-gradient(270deg,#0f2b1f,transparent);}
+  .t1-inner{display:flex;align-items:center;height:100%;animation:cr 120s linear infinite;width:max-content;white-space:nowrap;}
+  .t1-inner:hover{animation-play-state:paused;}
+  .t1-badge{background:linear-gradient(135deg,#c0392b,#a93226);color:#fff;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:4px 14px;margin:0 14px 0 0;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;border-radius:2px;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.3);}
+  .t1-item{font-family:Arial,sans-serif;font-size:11.5px;font-weight:700;color:#c8c0ad;padding:0 4px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+  .t1-sep{color:rgba(255,255,255,.12);padding:0 8px;font-size:8px;display:inline-flex;align-items:center;}
+  .t1-sep::before{content:'';display:block;width:3px;height:3px;background:rgba(255,255,255,.2);border-radius:50%;}
+  .t1-item.t1-tourney{font-size:13px;color:#fff;letter-spacing:.06em;}
+  .t1-item.t1-score{color:#4ade80;animation:tickerGlow 2s ease-in-out infinite;}
+  .t1-item.t1-out{color:#e74c3c;font-weight:900;background:rgba(231,76,60,.12);padding:2px 8px;border-radius:2px;}
+  .t1-item.t1-money{color:#d4a828;font-weight:900;}
+  .t1-item.t1-money::before{content:'';display:inline-block;width:6px;height:6px;background:#d4a828;border-radius:1px;margin-right:4px;transform:rotate(45deg);}
+  .t1-item.t1-players{color:#8ecae6;}
+
+  /* T2 — Course Intel (broadcast-quality) */
+  .t2-wrap{background:linear-gradient(180deg,#1a1a18,#111110);height:36px;border-bottom:1px solid #2d6a4f;border-top:1px solid rgba(184,134,11,.3);}
+  .t2-wrap::before{background:linear-gradient(90deg,#1a1a18,transparent);}
+  .t2-wrap::after{background:linear-gradient(270deg,#111110,transparent);}
+  .t2-inner{display:flex;align-items:center;height:100%;animation:cr 100s linear infinite;width:max-content;white-space:nowrap;}
+  .t2-inner:hover{animation-play-state:paused;}
+  .t2-badge{background:linear-gradient(135deg,#b8860b,#9a7209);color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:4px 14px;margin:0 14px 0 0;text-transform:uppercase;letter-spacing:.1em;white-space:nowrap;border-radius:2px;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,.4);}
+  .t2-item{font-family:Arial,sans-serif;font-size:11.5px;font-weight:700;color:#a09882;padding:0 4px;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;text-transform:uppercase;letter-spacing:.02em;}
+  .t2-sep{color:rgba(255,255,255,.08);padding:0 8px;font-size:8px;display:inline-flex;align-items:center;}
+  .t2-sep::before{content:'';display:block;width:3px;height:3px;background:rgba(255,255,255,.12);border-radius:50%;}
+  .t2-item.t2-weather{color:#ef4444;font-weight:900;background:rgba(239,68,68,.12);padding:2px 10px;border-radius:2px;border:1px solid rgba(239,68,68,.2);}
+  .t2-item.t2-greens{color:#4ade80;font-weight:900;}
+  .t2-item.t2-greens::before{content:'';display:inline-block;width:7px;height:7px;background:#4ade80;border-radius:50%;margin-right:4px;box-shadow:0 0 4px rgba(74,222,128,.4);}
+  .t2-item.t2-money{color:#d4a828;font-weight:900;}
+  .t2-item.t2-money::before{content:'';display:inline-block;width:6px;height:6px;background:#d4a828;border-radius:1px;margin-right:4px;transform:rotate(45deg);}
+  .t2-item.t2-yardage{color:#fff;font-weight:900;font-size:12.5px;letter-spacing:.04em;}
+  .t2-item.t2-par{color:#fff;font-weight:900;background:rgba(255,255,255,.08);padding:2px 10px;border-radius:2px;}
+  .t2-item.t2-hole{color:#d4a828;font-weight:900;font-size:12.5px;}
+  .t2-item.t2-wind{color:#8ecae6;font-weight:700;}
+  .t2-item.t2-wind::before{content:'💨';font-size:10px;margin-right:2px;}
+  .t2-item.t2-absent{color:#ef4444;font-weight:900;}
+  .t2-item.t2-record{color:#4ade80;font-weight:900;background:rgba(74,222,128,.1);padding:2px 10px;border-radius:2px;border:1px solid rgba(74,222,128,.15);}
+  .t2-item.t2-designer{color:#c8b98a;font-style:italic;font-weight:400;letter-spacing:.03em;}
+  .t2-item.t2-surface{color:#4ade80;font-weight:700;}
+
+  /* T3 — Live TV */
+  .t3-wrap{background:linear-gradient(180deg,#111 0%,#0a0a0a 100%);height:34px;border-bottom:2px solid #b8860b;}
+  .t3-wrap::before{background:linear-gradient(90deg,#0a0a0a,transparent);}
+  .t3-wrap::after{background:linear-gradient(270deg,#0a0a0a,transparent);}
+  .t3-inner{display:flex;align-items:center;height:100%;animation:cr 90s linear infinite;width:max-content;white-space:nowrap;}
+  .t3-inner:hover{animation-play-state:paused;}
+  .t3-badge{display:inline-flex;align-items:center;gap:6px;margin:0 14px 0 0;flex-shrink:0;}
+  .t3-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:liveDot 1.5s ease-in-out infinite;}
+  .t3-badge-label{background:linear-gradient(135deg,#1b4332,#14352a);color:#4ade80;font-family:'Arial Black',Arial,sans-serif;font-weight:900;padding:4px 12px;font-size:10px;letter-spacing:.1em;border-radius:2px;box-shadow:0 1px 3px rgba(0,0,0,.4);}
+  .t3-item{font-family:Arial,sans-serif;font-size:11.5px;font-weight:700;color:#999;padding:0 4px;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:4px;}
+  .t3-sep{color:rgba(255,255,255,.06);padding:0 8px;font-size:8px;display:inline-flex;align-items:center;}
+  .t3-sep::before{content:'';display:block;width:3px;height:3px;background:rgba(255,255,255,.1);border-radius:50%;}
+  .t3-ch-golf{color:#2ecc71;font-weight:900;text-shadow:0 0 6px rgba(46,204,113,.3);}
+  .t3-ch-cbs{color:#3498db;font-weight:900;text-shadow:0 0 6px rgba(52,152,219,.3);}
+  .t3-ch-espn{color:#ef4444;font-weight:900;text-shadow:0 0 6px rgba(239,68,68,.3);}
+  .t3-ch-nbc{color:#f39c12;font-weight:900;text-shadow:0 0 6px rgba(243,156,18,.3);}
+  .t3-ch-fox{color:#00b4d8;font-weight:900;text-shadow:0 0 6px rgba(0,180,216,.3);}
+  .t3-ch-pga{color:#ef4444;font-weight:900;text-shadow:0 0 6px rgba(239,68,68,.3);}
+  .t3-time{color:#d4cbb5;font-weight:900;background:rgba(255,255,255,.06);padding:2px 7px;border-radius:2px;font-size:11px;}
+
+  /* ═══ TOP AD — PRO PICK (simple) ═══ */
+  .top-ad{background:#ebe4d6;border-bottom:1px solid #c9bfa8;padding:0;font-family:Arial,sans-serif;font-size:13px;color:#999;display:flex;align-items:stretch;overflow:hidden;}
+  .top-ad .pa-badge{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:8px 14px;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;}
+  .top-ad .pa-body{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:6px 16px;color:#666;font-size:13px;}
+  .top-ad .pa-body strong{color:#1b4332;font-weight:700;}
+  .top-ad .pa-body a{color:#1b4332;text-decoration:underline;font-size:13px;font-weight:900;}
+
+  /* ═══ OPTIN — PRIMARY EMAIL CAPTURE ═══ */
+  .optin{background:linear-gradient(135deg,#1b4332,#0f2b1f);padding:6px 20px;border-bottom:2px solid #b8860b;border-top:1px solid #2d6a4f;}
+  .optin .optin-inner{display:flex;align-items:center;justify-content:center;gap:14px;max-width:900px;margin:0 auto;}
+  .optin .optin-text{font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.7);white-space:nowrap;}
+  .optin .optin-text strong{color:#faf6ef;font-size:13px;font-weight:900;}
+  .optin .optin-text .optin-sub{font-size:12px;color:rgba(255,255,255,.4);display:inline;margin-left:6px;}
+  .optin .optin-cta{display:flex;align-items:center;gap:0;flex-shrink:0;}
+  .optin .optin-cta input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-right:none;padding:6px 12px;color:#fff;font-size:12px;font-family:Courier,monospace;width:170px;outline:none;border-radius:2px 0 0 2px;}
+  .optin .optin-cta input::placeholder{color:rgba(255,255,255,.3);}
+  .optin .optin-cta input:focus{border-color:#b8860b;background:rgba(255,255,255,.12);}
+  .optin .optin-cta button{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:7px 14px;border:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;border-radius:0 2px 2px 0;}
+  .optin .optin-cta button:hover{background:#d4a828;}
+  .optin .optin-proof{font-family:Georgia,serif;font-size:10px;color:rgba(255,255,255,.25);font-style:italic;white-space:nowrap;}
+
+  /* ═══ HERO ═══ */
+  .hero{padding:14px 16px 10px;border-bottom:1px solid #c9bfa8;}
+  .hero-img{max-width:700px;width:100%;margin:0 auto 10px;display:block;border:2px solid #1b4332;background:#0f2b1f;min-height:200px;max-height:420px;object-fit:cover;}
+  .hero-hl{font-family:Arial,Helvetica,sans-serif;font-size:42px;font-weight:bold;color:#c0392b;text-transform:uppercase;line-height:1.05;cursor:pointer;}
+  .hero-hl:hover{text-decoration:underline;}
+  .hero-cluster{margin-top:4px;font-size:15px;line-height:1.8;}
+  .hero-cluster a{font-weight:bold;color:#1b4332;text-decoration:underline;}
+  .hero-cluster .hot{color:#c0392b;text-transform:uppercase;}
+  .hero-cluster .sub{color:#1b4332;}
+  .hero-cluster em{font-family:Georgia,serif;color:#666;font-size:13px;text-decoration:none;}
+
+  /* ═══ LOGO BAR ═══ */
+  .logo-bar{background:#0f2b1f;padding:30px 20px 36px;text-align:center;border-bottom:2px solid rgba(184,134,11,0.25);position:relative;}
+  .logo-bar .flag{display:block;font-size:22px;line-height:1;color:#c0392b;margin-bottom:14px;}
+  .logo-bar .logo{font-family:'Times New Roman',Times,Georgia,serif;font-size:84px;font-weight:bold;line-height:1;letter-spacing:0.01em;}
+  .logo-bar .logo .word-1{color:#f4ecd8;font-style:normal;}
+  .logo-bar .logo .word-2{color:#d4a828;font-style:italic;margin-left:0.22em;}
+  .logo-bar .tagline{font-family:Georgia,serif;font-size:13px;font-style:italic;color:rgba(244,236,216,0.5);margin-top:18px;letter-spacing:0.01em;}
+
+  /* ═══ UTILITY BAR ═══ */
+  .util-bar{padding:7px 10px;border-bottom:2px solid #b8860b;background:#ebe4d6;font-family:Arial,sans-serif;font-size:12px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
+  .util-bar a{font-size:12px;color:#1b4332;font-weight:bold;text-transform:uppercase;padding:0 4px;white-space:nowrap;}
+  .util-bar .sep{color:#c9bfa8;}
+
+  /* ═══ COLUMNS ═══ */
+  .cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;text-align:center;}
+  .col{min-width:0;padding:10px 10px;border-right:1px solid #c9bfa8;font-size:14px;line-height:1.6;overflow-wrap:break-word;}
+  .col:last-child{border-right:none;}
+
+  /* Sidebar strip (Block 3) — subtle separation from the post block above */
+  #colsWrap3{border-top:2px solid #b8860b;background:#f4ecd8;}
+
+  /* ═══ BALANCED ARTICLE BLOCKS ═══
+     CSS multi-column layout for Block 1 + Block 2 article streams.
+     The browser auto-balances column heights so all 3 end at the same point —
+     no whitespace gap at the bottom of any column. Items flow top-to-bottom
+     in column 1, then column 2, then column 3. */
+  .cols-balanced{
+    column-count:3;
+    column-gap:0;
+    column-rule:1px solid #c9bfa8;
+    column-fill:balance;
+    padding:10px 0;
+    text-align:center;
+    font-size:14px;
+    line-height:1.6;
+  }
+  .col-item{
+    break-inside:avoid;
+    -webkit-column-break-inside:avoid;
+    page-break-inside:avoid;
+    padding:0 14px;
+    margin-bottom:12px;
+    overflow-wrap:break-word;
+  }
+  .col-item a.L,.col-item a.H,.col-item a.B{display:block;text-decoration:underline;overflow-wrap:break-word;}
+  .col-item a.L{padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;line-height:1.4;}
+  .col-item a.L:hover{color:#b8860b;}
+  .col-item a.H{padding:6px 0;font-size:17px;font-weight:bold;color:#c0392b;text-transform:uppercase;line-height:1.18;}
+  .col-item a.H:hover{color:#b8860b;}
+  .col-item a.B{padding:5px 0;font-size:15px;font-weight:bold;color:#1b4332;text-transform:uppercase;line-height:1.22;}
+  .col-item a.B:hover{color:#b8860b;}
+  .col-item .src{font-size:12px;color:#999;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
+  .col-item .aside{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#666;font-weight:normal;display:block;}
+
+  /* Column content classes */
+  .d{display:block;border:none;border-top:1px solid #c9bfa8;margin:8px 0;height:0;font-size:0;line-height:0;}
+  .sl{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.15em;display:block;margin:6px 0 3px;}
+  .col a.L{display:block;padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;text-decoration:underline;line-height:1.4;overflow-wrap:break-word;}
+  .col a.L:hover{color:#b8860b;}
+  .col a.H{display:block;padding:6px 0;font-size:17px;font-weight:bold;color:#c0392b;text-transform:uppercase;text-decoration:underline;line-height:1.18;overflow-wrap:break-word;}
+  .col a.H:hover{color:#b8860b;}
+  .col a.B{display:block;padding:5px 0;font-size:15px;font-weight:bold;color:#1b4332;text-transform:uppercase;text-decoration:underline;line-height:1.22;overflow-wrap:break-word;}
+  .col .src{font-size:12px;color:#999;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
+  .col .aside{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#666;font-weight:normal;display:block;}
+  .col .sm{font-size:13px;}
+  .col .sm a{font-size:13px;color:#1b4332;text-decoration:underline;}
+
+  /* Inline article image inside a column — responsive, never overflows */
+  .col-img{display:block;width:100%;max-width:240px;height:auto;aspect-ratio:4/3;object-fit:cover;margin:6px auto;border:2px solid #1b4332;background:#0f2b1f;}
+
+  /* Hot take */
+  .ht{text-align:left;border-left:3px solid #b8860b;padding:5px 10px;margin:3px 0;background:rgba(184,134,11,.04);font-family:Georgia,serif;font-size:13px;font-style:italic;color:#333;line-height:1.5;}
+  .ht .tag{font-family:Arial,sans-serif;font-size:11px;font-style:normal;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:2px;}
+
+  /* Proshop */
+  .ps{background:#ebe4d6;border:1px solid #c9bfa8;padding:6px 10px;margin:5px 0;font-size:12px;}
+  .ps .badge{font-family:Arial,sans-serif;font-size:11px;font-weight:bold;color:#b8860b;letter-spacing:.15em;text-transform:uppercase;}
+  .ps a{color:#1b4332;text-decoration:underline;}
+
+  /* Subscribe */
+  .sb{background:#1b4332;padding:8px 12px;margin:6px 0;border:2px solid #b8860b;}
+  .sb .t{font-family:Arial,sans-serif;font-size:14px;font-weight:bold;color:#faf6ef;text-transform:uppercase;letter-spacing:.08em;}
+  .sb .s{font-size:12px;color:rgba(255,255,255,.45);font-style:italic;font-family:Georgia,serif;}
+  .sb input{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:6px 10px;color:#fff;font-size:13px;font-family:Courier,monospace;margin-top:3px;width:55%;}
+  .sb button{background:#b8860b;color:#0f2b1f;font-family:Arial,sans-serif;font-size:12px;font-weight:bold;padding:5px 12px;border:none;text-transform:uppercase;cursor:pointer;}
+
+  /* Directory */
+  .dir{font-size:12px;line-height:1.5;color:#999;margin-top:6px;padding-top:6px;border-top:1px solid #ddd5c4;}
+  .dir a{font-size:12px;color:#1b4332;font-weight:bold;text-decoration:underline;}
+
+  /* App promo */
+  .app-promo{background:#0f2b1f;border:2px solid #b8860b;padding:10px;margin:6px 0;color:#d4cbb5;font-size:13px;line-height:1.5;}
+  .app-promo strong{color:#d4a828;}
+  .app-promo a{color:#d4a828;text-decoration:underline;}
+
+  /* Visit counter */
+  .vc{font-size:12px;color:#999;margin-top:6px;padding-top:5px;border-top:1px solid #ddd5c4;}
+  .vc b{color:#1b4332;}
+
+  /* Footer */
+  .footer{background:#0f2b1f;padding:16px;border-top:2px solid #b8860b;color:rgba(255,255,255,.3);font-size:12px;}
+  .footer a{color:#b8860b;}
+
+  /* ═══ ARTICLE OVERLAY ═══ */
+  .ao{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,43,31,.93);z-index:9999;overflow-y:auto;}
+  .ao.active{display:block;}
+  .ai{max-width:760px;margin:0 auto;background:#faf6ef;position:relative;min-height:100vh;}
+
+  /* Article masthead — matches main page header style */
+  .ai-mast{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;background:#0f2b1f;border-bottom:2px solid #b8860b;position:sticky;top:0;z-index:10;}
+  .ai-mast-logo{font-family:Courier,'Courier New',monospace;font-size:16px;font-weight:bold;color:#faf6ef;letter-spacing:.04em;text-transform:uppercase;}
+  .ai-mast-logo em{color:#b8860b;font-style:normal;}
+  .ai-mast-back{font-family:Courier,monospace;font-size:12px;font-weight:bold;color:#d4a828;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;}
+  .ai-mast-back:hover{color:#faf6ef;text-decoration:underline;}
+
+  /* Article content area */
+  .ai-content{padding:28px 24px 20px;text-align:center;}
+
+  .ai .acat{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;letter-spacing:.12em;text-transform:uppercase;color:#b8860b;margin-bottom:6px;text-align:center;}
+  .ai .acat::before{content:''; }
+  .ai .atit{font-family:Arial,Helvetica,sans-serif;font-size:28px;font-weight:bold;color:#1a1a1a;line-height:1.15;margin-bottom:12px;text-transform:uppercase;text-align:center;}
+  .ai .asb{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:2px solid #1a1a1a;border-bottom:1px solid #c9bfa8;margin-bottom:18px;}
+  .ai .asb-source{font-family:Courier,monospace;font-size:13px;color:#999;}
+  .ai .asb-source strong{color:#1b4332;}
+  .ai .asl{font-family:Courier,monospace;font-size:12px;font-weight:bold;color:#1b4332;text-transform:uppercase;letter-spacing:.04em;cursor:pointer;padding:5px 12px;border:1px solid #1b4332;text-decoration:none;display:inline-block;}
+  .ai .asl:hover{background:#1b4332;color:#faf6ef;}
+  .ai .atx{font-family:Courier,'Courier New',monospace;font-size:15px;color:#333;line-height:1.75;text-align:left;}
+  .ai .atx p{margin-bottom:16px;}
+
+  /* Article subscribe CTA — matches optin bar style */
+  .ai-cta{background:#1b4332;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-top:2px solid #b8860b;}
+  .ai-cta-text{font-family:Courier,monospace;font-size:13px;color:rgba(255,255,255,.6);}
+  .ai-cta-text strong{color:#faf6ef;}
+  .ai-cta-text em{font-style:italic;}
+  .ai-cta-btn{background:#b8860b;color:#0f2b1f;font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:8px 18px;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;border:none;white-space:nowrap;flex-shrink:0;}
+  .ai-cta-btn:hover{background:#d4a828;}
+
+  /* Article prev/next nav */
+  .ai-nav{display:flex;justify-content:space-between;padding:14px 24px;border-top:1px solid #c9bfa8;background:#ebe4d6;}
+  .ai-nav a{font-family:Courier,monospace;font-size:13px;font-weight:bold;color:#1b4332;cursor:pointer;text-transform:uppercase;}
+  .ai-nav a:hover{color:#b8860b;text-decoration:underline;}
+
+  /* ═══ SUBSCRIBE MODAL ═══ */
+  .so{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,43,31,.93);z-index:10001;overflow-y:auto;}
+  .so.active{display:flex;justify-content:center;align-items:center;}
+  .si{background:#faf6ef;border:2px solid #b8860b;padding:28px;max-width:400px;width:92%;text-align:center;position:relative;}
+
+  /* ═══ SKETCH VIEWER ═══ */
+  .sv{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,43,31,.95);z-index:10000;justify-content:center;align-items:center;flex-direction:column;}
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     MOBILE — modern saturated Drudge for phones.
+     Strategy: single dense column, keep all 3 tickers, shrink masthead,
+     scale typography, beef up touch targets. Additive only — desktop intact.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+
+    body{font-size:15px;line-height:1.55;-webkit-text-size-adjust:100%;}
+
+    /* ── TICKERS: keep all 3, shrink height/font, faster scroll ── */
+    .t1-wrap{height:28px;}
+    .t2-wrap{height:30px;}
+    .t3-wrap{height:30px;}
+    .t1-inner{animation-duration:200s;}
+    .t2-inner{animation-duration:170s;}
+    .t3-inner{animation-duration:150s;}
+    .t1-badge,.t2-badge,.t3-badge{font-size:9px;padding:3px 9px;margin:0 10px 0 0;letter-spacing:.08em;}
+    .t1-item,.t2-item,.t3-item{font-size:10.5px;letter-spacing:.02em;}
+    .t1-item.t1-tourney{font-size:11.5px;}
+    .t3-time{font-size:10px;padding:1px 5px;}
+    .ticker-wrap::before,.ticker-wrap::after{width:24px;}
+
+    /* ── PRO PICK TOP BAR: stack badge above body ── */
+    .top-ad{flex-direction:column;}
+    .top-ad .pa-badge{padding:6px 14px;justify-content:center;}
+    .top-ad .pa-body{padding:8px 14px;font-size:13px;flex-wrap:wrap;justify-content:center;line-height:1.4;}
+
+    /* ── OPTIN: wrap gracefully so email input doesn't overflow ── */
+    .optin{padding:10px 14px;}
+    .optin .optin-inner{flex-wrap:wrap;gap:8px 12px;}
+    .optin .optin-text{white-space:normal;text-align:center;flex:1 1 100%;font-size:13px;line-height:1.35;}
+    .optin .optin-text .optin-sub{display:block;margin-left:0;margin-top:2px;font-size:11.5px;}
+    .optin .optin-cta{flex:1 1 100%;justify-content:center;}
+    .optin .optin-cta input{flex:1;width:auto;min-width:0;padding:10px 12px;font-size:14px;}
+    .optin .optin-cta button{padding:10px 14px;font-size:11px;}
+    .optin .optin-proof{flex:1 1 100%;text-align:center;font-size:10.5px;}
+
+    /* ── LOGO BAR: shrink the masthead so it doesn't eat the screen ── */
+    .logo-bar{padding:22px 14px 26px;}
+    .logo-bar .logo{font-size:42px;}
+    .logo-bar .tagline{font-size:11.5px;margin-top:12px;line-height:1.4;padding:0 14px;}
+    .logo-bar .flag{font-size:18px;margin-bottom:10px;}
+
+    /* ── UTILITY BAR: bigger tap targets, comfortable scroll ── */
+    .util-bar{padding:10px 8px;}
+    .util-bar a{font-size:12px;padding:6px 6px;}
+    .util-bar .sep{padding:0 2px;}
+
+    /* ── HERO: scale headline, cap image height, keep impact ── */
+    .hero{padding:14px 14px 12px;}
+    .hero-img{min-height:0;max-height:240px;width:100%;border-width:2px;}
+    .hero-hl{font-size:28px;line-height:1.08;}
+    .hero-cluster{font-size:14px;line-height:1.7;}
+    .hero-cluster em{font-size:12px;}
+
+    /* ── COLUMNS: collapse to single saturated stream ── */
+    .cols{grid-template-columns:1fr;}
+    .cols-balanced{column-count:1;column-rule:none;padding:14px 0;}
+    .col-item{padding:0 14px;margin-bottom:14px;border-bottom:1px solid #c9bfa8;padding-bottom:14px;}
+    .col{padding:14px 14px;border-right:none;border-bottom:1px solid #c9bfa8;text-align:left;}
+    .col:last-child{border-bottom:none;}
+
+    /* Add a section divider/label feel between stacked columns */
+    .col + .col{border-top:3px double #b8860b;}
+
+    /* Headlines: keep punch, fit width, add breathing room */
+    .col a.H{font-size:19px;line-height:1.2;padding:6px 0;}
+    .col a.B{font-size:16px;line-height:1.25;padding:5px 0;}
+    .col a.L{font-size:15px;line-height:1.4;padding:5px 0;}
+    .col .src{font-size:11.5px;}
+    .col .aside{font-size:12.5px;line-height:1.5;}
+    .col .sm{font-size:14px;line-height:1.7;}
+    .col .sm a{font-size:14px;}
+    .sl{font-size:12px;margin:10px 0 4px;}
+
+    /* Hot take: more readable on small screens */
+    .ht{padding:10px 12px;font-size:14px;line-height:1.5;}
+    .ht .tag{font-size:11px;}
+
+    /* Pro Pick / Proshop block: more padding for readability */
+    .ps{padding:10px 12px;font-size:13px;line-height:1.5;}
+    .ps a{display:inline-block;padding:4px 0;}
+
+    /* Subscribe inline boxes: stack input + button ── */
+    .sb{padding:12px 14px;}
+    .sb .t{font-size:14px;}
+    .sb .s{font-size:12px;}
+    .sb input{width:100%;padding:10px 12px;font-size:14px;margin-top:8px;display:block;box-sizing:border-box;}
+    .sb button{width:100%;padding:11px 14px;font-size:12px;margin-top:6px;}
+
+    /* Search bar (right column): fill width, comfortable tap ── */
+    #searchInput{width:100% !important;padding:10px 12px !important;font-size:14px !important;box-sizing:border-box;display:block;}
+    #searchInput + button{width:100% !important;padding:11px 14px !important;font-size:12px !important;margin-top:6px;display:block;}
+    #searchResults{font-size:12px !important;}
+
+    /* Directories (text-link bricks): tighter line-height, taller taps */
+    .dir{font-size:12px;line-height:1.9;}
+    .dir a{font-size:12px;padding:2px 0;display:inline-block;}
+
+    /* App promo */
+    .app-promo{padding:12px;font-size:13px;line-height:1.55;}
+
+    /* Visit counter */
+    .vc{font-size:12px;line-height:1.6;}
+
+    /* ── FOOTER ── */
+    .footer{padding:18px 14px;font-size:12px;line-height:1.6;}
+
+    /* ── ARTICLE OVERLAY: full-bleed, larger body text ── */
+    .ai{max-width:100%;}
+    .ai-mast{padding:10px 14px;}
+    .ai-mast-logo{font-size:14px;}
+    .ai-mast-back{font-size:11px;}
+    .ai-content{padding:18px 16px 14px;}
+    .ai .acat{font-size:11px;}
+    .ai .atit{font-size:22px;line-height:1.18;}
+    .ai .asb{flex-wrap:wrap;gap:6px;padding:8px 0;}
+    .ai .asb-source{font-size:12px;}
+    .ai .asl{font-size:11px;padding:6px 10px;}
+    .ai .atx{font-size:16px;line-height:1.7;}
+    .ai .atx p{margin-bottom:14px;}
+    .ai-cta{flex-direction:column;gap:10px;padding:14px 16px;text-align:center;}
+    .ai-cta-text{font-size:13px;}
+    .ai-cta-btn{width:100%;padding:11px 14px;}
+    .ai-nav{padding:14px 16px;}
+    .ai-nav a{font-size:12px;padding:4px 0;}
+
+    /* Subscribe modal: better width, larger inputs */
+    .si{padding:22px 18px;width:94%;}
+    .si input{width:100% !important;padding:10px 12px !important;font-size:14px !important;margin:6px 0 8px !important;box-sizing:border-box;}
+    .si button{width:100% !important;padding:11px 14px !important;font-size:12px !important;}
+
+    /* Universal: bigger tap targets on inline links inside columns */
+    .col a{min-height:24px;}
+
+    /* Sketch viewer: full-screen comfort */
+    #sketchImg{max-width:96% !important;max-height:70vh !important;}
+    #sketchCap{font-size:13px !important;padding:0 14px;}
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     GIVEAWAY POPUP — quarterly Titleist sweepstakes
+     Triggers 3s after page load, once per session.
+     Drudge-style: translucent backdrop so the page shows through.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .gv-back{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(15,43,31,0.78);
+    z-index:9998;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    animation:gvFadeIn 0.4s ease-out;
+  }
+  .gv-back.show{display:flex;}
+  @keyframes gvFadeIn{from{opacity:0;}to{opacity:1;}}
+  @keyframes gvSlideUp{from{transform:translateY(20px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+  .gv-modal{
+    background:#f4ecd8;
+    border:3px solid #1b4332;
+    box-shadow:0 0 0 1px #b8860b, 8px 8px 0 rgba(0,0,0,0.15);
+    max-width:780px;
+    width:100%;
+    max-height:92vh;
+    overflow:auto;
+    display:flex;
+    flex-direction:row;
+    position:relative;
+    animation:gvSlideUp 0.45s ease-out;
+    font-family:Georgia,'Times New Roman',serif;
+  }
+  .gv-close{
+    position:absolute;
+    top:8px;
+    right:10px;
+    background:transparent;
+    border:none;
+    color:#1b4332;
+    font-size:22px;
+    font-weight:bold;
+    cursor:pointer;
+    line-height:1;
+    padding:4px 8px;
+    font-family:Arial,sans-serif;
+    z-index:2;
+  }
+  .gv-close:hover{color:#b8860b;}
+
+  .gv-img{
+    flex:0 0 42%;
+    background:#1b4332;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .gv-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+
+  .gv-body{
+    flex:1 1 58%;
+    padding:28px 28px 22px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+
+  .gv-banner{
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    color:#b8860b;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    text-align:center;
+    border-bottom:1px solid #c9bfa8;
+    border-top:1px solid #c9bfa8;
+    padding:5px 0;
+    margin-bottom:14px;
+    font-weight:bold;
+  }
+
+  .gv-headline{
+    font-family:Courier,'Courier New',monospace;
+    font-size:26px;
+    font-weight:bold;
+    color:#c0392b;
+    text-align:center;
+    line-height:1.1;
+    margin:0 0 10px;
+    text-transform:uppercase;
+    letter-spacing:.01em;
+  }
+  .gv-headline em{
+    font-style:italic;
+    color:#1b4332;
+    font-weight:normal;
+  }
+
+  .gv-sub{
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:#1b4332;
+    text-align:center;
+    line-height:1.45;
+    margin:0 0 16px;
+  }
+  .gv-sub strong{color:#c0392b;}
+
+  .gv-form{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .gv-form input[type="email"]{
+    padding:11px 12px;
+    border:2px solid #1b4332;
+    background:#fff;
+    font-family:Georgia,serif;
+    font-size:15px;
+    color:#222;
+    box-sizing:border-box;
+    width:100%;
+  }
+  .gv-form input[type="email"]:focus{
+    outline:none;
+    border-color:#b8860b;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2);
+  }
+  .gv-form button{
+    padding:12px 18px;
+    background:#1b4332;
+    color:#f4ecd8;
+    border:none;
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    cursor:pointer;
+    transition:background 0.15s;
+  }
+  .gv-form button:hover{background:#0f2b1f;}
+  .gv-form button:disabled{background:#888;cursor:wait;}
+
+  .gv-fine{
+    font-family:Arial,sans-serif;
+    font-size:10.5px;
+    color:#666;
+    text-align:center;
+    line-height:1.5;
+    margin-top:6px;
+  }
+  .gv-fine a{color:#1b4332;text-decoration:underline;}
+  .gv-fine a:hover{color:#b8860b;}
+  .gv-fine .gv-no{
+    display:block;
+    margin-top:6px;
+    color:#888;
+    cursor:pointer;
+    background:none;
+    border:none;
+    font-family:Arial,sans-serif;
+    font-size:10.5px;
+    text-decoration:underline;
+  }
+  .gv-fine .gv-no:hover{color:#666;}
+
+  .gv-success{
+    text-align:center;
+    padding:20px 0;
+  }
+  .gv-success .gv-check{
+    font-size:36px;
+    color:#1b4332;
+    margin-bottom:6px;
+  }
+  .gv-success h3{
+    font-family:Courier,monospace;
+    color:#1b4332;
+    font-size:20px;
+    margin:0 0 6px;
+  }
+  .gv-success p{
+    font-family:Georgia,serif;
+    color:#444;
+    font-size:13px;
+    margin:0;
+  }
+
+  /* Mobile: stack image on top, body below */
+  @media (max-width:640px){
+    .gv-modal{flex-direction:column;max-height:88vh;}
+    .gv-img{flex:0 0 200px;width:100%;}
+    .gv-img img{height:200px;}
+    .gv-body{padding:20px 20px 18px;}
+    .gv-headline{font-size:20px;}
+    .gv-sub{font-size:13px;}
+    .gv-banner{font-size:9px;letter-spacing:.14em;}
+  }
+
+  /* ════════════════════════════════════════════════════════════════
+     CLUBHOUSE TV / CADDIE'S PICK — full-width dark band
+     Sits between hero articles and 3-column flow.
+     Pulls live data from /api/save-picks.
+     ════════════════════════════════════════════════════════════════ */
+  /* Force break out of parent grid/flex (the .cols 3-column layout) — section
+     and its mount must always span the full page width regardless of where
+     the mount div ends up in the DOM tree. */
+  #caddiesPickRoot{
+    grid-column:1 / -1 !important;
+    width:100% !important;
+    display:block !important;
+  }
+  .cp-section{
+    background-color:#0f2b1f;
+    background-image:
+      linear-gradient(rgba(184,134,11,0.12) 2px,transparent 2px),
+      linear-gradient(90deg,rgba(184,134,11,0.12) 2px,transparent 2px),
+      linear-gradient(rgba(244,236,216,0.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(244,236,216,0.04) 1px,transparent 1px),
+      linear-gradient(rgba(0,0,0,0.15) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(0,0,0,0.15) 1px,transparent 1px);
+    background-size:80px 80px,80px 80px,20px 20px,20px 20px,40px 40px,40px 40px;
+    padding:24px 24px 22px;
+    border-top:3px solid #b8860b;
+    font-family:Georgia,'Times New Roman',serif;
+    color:#f4ecd8;
+    margin:0;
+  }
+  .cp-section.is-empty{display:none;}
+  /* Inner frame — caps the block to ~85% of the screen on wide monitors,
+     with a hard cap so the hero video doesn't get absurdly large on 4K. */
+  .cp-frame{
+    width:85vw;
+    max-width:1700px;
+    margin:0 auto;
+    border:1px solid rgba(184,134,11,0.35);
+    padding:20px 20px 18px;
+    background:rgba(15,43,31,0.4);
+  }
+  /* Subscribe ribbon — sits flush against the bottom of the section */
+  .cp-ribbon{
+    background:#0a1f15;
+    border-top:2px solid #b8860b;
+    border-bottom:2px solid #b8860b;
+    padding:16px 32px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin:0;
+  }
+  .cp-ribbon-text{color:#f4ecd8;}
+  .cp-ribbon-title{font-family:Arial,sans-serif;font-size:15px;font-weight:bold;color:#f4ecd8;}
+  .cp-ribbon-sub{font-family:Georgia,serif;font-style:italic;font-size:13px;color:#d4cbb5;margin-left:8px;}
+  .cp-ribbon-form{
+    display:flex;
+    align-items:stretch;
+    gap:0;
+    flex-shrink:0;
+  }
+  .cp-ribbon-input{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(184,134,11,0.4);
+    border-right:none;
+    padding:11px 14px;
+    color:#fff;
+    font-family:Courier,'Courier New',monospace;
+    font-size:13px;
+    width:260px;
+    outline:none;
+    box-sizing:border-box;
+  }
+  .cp-ribbon-input::placeholder{color:rgba(255,255,255,0.4);}
+  .cp-ribbon-input:focus{
+    border-color:#b8860b;
+    background:rgba(255,255,255,0.12);
+  }
+  .cp-ribbon-btn{
+    background:#b8860b;color:#0f2b1f;
+    font-family:Arial Black,Arial,sans-serif;font-size:12px;font-weight:900;letter-spacing:.18em;
+    padding:11px 32px;text-decoration:none;
+    border:none;
+    cursor:pointer;
+    transition:background .15s ease;
+  }
+  .cp-ribbon-btn:hover{background:#d4a828;}
+  @media (max-width:640px){
+    .cp-ribbon{padding:14px 18px;text-align:center;justify-content:center;}
+    .cp-ribbon-sub{display:block;margin-left:0;margin-top:4px;}
+    .cp-ribbon-form{width:100%;justify-content:center;}
+    .cp-ribbon-input{flex:1;min-width:0;width:auto;}
+  }
+
+  /* CLUBHOUSE TV — prominent wordmark treatment.
+     Sized to anchor the dark band as a recognizable masthead. */
+  .cp-header{text-align:center;margin-bottom:18px;padding:0 16px;}
+  .cp-wordmark{display:inline-flex;align-items:center;gap:15px;justify-content:center;}
+  .cp-logo{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:46px;height:46px;background:#b8860b;border-radius:7px;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.25), 0 3px 10px rgba(0,0,0,0.4);
+    flex-shrink:0;
+  }
+  .cp-logo::after{
+    content:"";width:0;height:0;
+    border-left:16px solid #0f2b1f;
+    border-top:11px solid transparent;border-bottom:11px solid transparent;
+    margin-left:5px;
+  }
+  .cp-wordmark-text{
+    font-family:Arial,sans-serif;font-size:34px;font-weight:900;
+    color:#f4ecd8;letter-spacing:.16em;line-height:1;
+    text-shadow:0 2px 3px rgba(0,0,0,0.45);
+    border-bottom:2px solid #b8860b;
+    padding-bottom:5px;
+  }
+  .cp-sub{
+    font-family:Georgia,serif;font-style:italic;font-size:14px;
+    color:#b8860b;margin-top:12px;letter-spacing:.04em;
+  }
+  .cp-sub::before,.cp-sub::after{content:" \2501\2501 ";color:#5f6e5f;font-style:normal;}
+
+  /* Hero card — fills its column */
+  .cp-hero{margin:0;padding:0;}
+
+  /* Side-by-side TV layout: hero left (bigger), thumbnails right */
+  .cp-tv-layout{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(0,1fr);
+    gap:18px;
+    align-items:start;
+    max-width:1700px;
+    margin:0 auto;
+  }
+  .cp-tv-main{min-width:0;}
+  .cp-tv-side{min-width:0;}
+  /* Headline + quote sit under hero, left-aligned inside the column */
+  .cp-tv-main .cp-headline{text-align:left;margin:14px 0 4px;padding:0;max-width:none;}
+  .cp-tv-main .cp-headline a{display:block;}
+  .cp-tv-main .cp-meta-line{text-align:left;}
+  .cp-tv-main .cp-quote{margin:12px 0 4px;max-width:none;}
+  .cp-more--side{margin-top:0;padding:0;border-top:none;}
+  .cp-more--side .cp-more-head{margin-bottom:10px;padding:0 2px;}
+  .cp-more--side .cp-grid{
+    display:flex;flex-direction:column;gap:10px;padding:0;
+  }
+  .cp-more--side .cp-card-mini{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    gap:12px;
+    align-items:center;
+    padding:8px;
+    border:1px solid transparent;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .cp-more--side .cp-card-mini:hover{
+    border-color:rgba(184,134,11,0.4);
+    background:rgba(184,134,11,0.05);
+  }
+  .cp-more--side .cp-thumb{aspect-ratio:16/9;}
+  .cp-more--side .cp-mini-title{
+    font-size:14px;margin:0 0 4px;-webkit-line-clamp:2;line-height:1.3;
+  }
+  .cp-more--side .cp-mini-meta{font-size:11px;}
+  /* Side-panel grid becomes a fixed-height scroll viewport so the right
+     column stays balanced with the hero video on the left.
+     Up/down chevron buttons scroll the viewport; native scroll still works. */
+  .cp-scroll-wrap{position:relative;}
+  .cp-more--side .cp-scroll-viewport{
+    max-height:440px;overflow-y:auto;overflow-x:hidden;
+    scroll-behavior:smooth;
+    /* Custom thin scrollbar — visible but understated. */
+    scrollbar-width:thin;scrollbar-color:#b8860b transparent;
+  }
+  .cp-more--side .cp-scroll-viewport::-webkit-scrollbar{width:6px;}
+  .cp-more--side .cp-scroll-viewport::-webkit-scrollbar-track{background:transparent;}
+  .cp-more--side .cp-scroll-viewport::-webkit-scrollbar-thumb{
+    background:#b8860b;border-radius:3px;opacity:.6;
+  }
+  .cp-scroll-btn{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:38px;height:38px;background:rgba(15,43,31,0.92);
+    border:2px solid #b8860b;border-radius:50%;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s, transform .15s, opacity .25s;
+    z-index:5;padding:0;
+    box-shadow:0 3px 10px rgba(0,0,0,0.5);
+  }
+  .cp-scroll-btn:hover{background:#b8860b;}
+  .cp-scroll-btn:hover .cp-scroll-arrow{border-top-color:#0f2b1f;border-bottom-color:#0f2b1f;}
+  .cp-scroll-btn:active{transform:translateX(-50%) scale(0.95);}
+  .cp-scroll-btn[data-disabled="1"]{opacity:0;pointer-events:none;}
+  .cp-scroll-btn--up{top:-8px;}
+  .cp-scroll-btn--down{bottom:-8px;}
+  .cp-scroll-arrow{
+    display:inline-block;width:0;height:0;
+    border-left:8px solid transparent;border-right:8px solid transparent;
+    transition:border-top-color .15s, border-bottom-color .15s;
+  }
+  .cp-scroll-btn--up .cp-scroll-arrow{border-bottom:11px solid #b8860b;}
+  .cp-scroll-btn--down .cp-scroll-arrow{border-top:11px solid #b8860b;}
+  /* Subtle fade-edge hints so users sense there's more above/below. */
+  .cp-scroll-wrap::before,.cp-scroll-wrap::after{
+    content:"";position:absolute;left:0;right:0;height:24px;
+    pointer-events:none;z-index:3;transition:opacity .25s;
+  }
+  .cp-scroll-wrap::before{
+    top:0;background:linear-gradient(to bottom,rgba(15,43,31,1),rgba(15,43,31,0));
+    opacity:0;
+  }
+  .cp-scroll-wrap::after{
+    bottom:0;background:linear-gradient(to top,rgba(15,43,31,1),rgba(15,43,31,0));
+    opacity:1;
+  }
+  .cp-scroll-wrap[data-at-top="0"]::before{opacity:1;}
+  .cp-scroll-wrap[data-at-bottom="1"]::after{opacity:0;}
+  .cp-card{
+    position:relative;display:block;border:2px solid #b8860b;background:#1a1a1a;
+    aspect-ratio:16/9;overflow:hidden;cursor:pointer;text-decoration:none;
+  }
+  .cp-card img{width:100%;height:100%;object-fit:cover;display:block;}
+  .cp-badge{
+    position:absolute;top:12px;left:12px;background:#b8860b;color:#0f2b1f;
+    font-family:'Arial Black',Arial,sans-serif;font-size:11px;font-weight:900;
+    padding:6px 10px;letter-spacing:.1em;text-transform:uppercase;z-index:2;
+  }
+  .cp-views{
+    position:absolute;top:12px;right:12px;background:rgba(15,43,31,0.85);
+    color:#f4ecd8;font-family:Courier,monospace;font-size:12px;font-weight:bold;
+    padding:5px 10px;letter-spacing:.05em;z-index:2;
+  }
+  .cp-views::before{content:"\25B6 ";color:#b8860b;}
+  .cp-play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:110px;height:110px;background:#c0392b;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;z-index:2;
+    border:4px solid #f4ecd8;box-shadow:0 6px 20px rgba(0,0,0,.35);
+    transition:transform .15s,background .15s;
+  }
+  .cp-card:hover .cp-play{transform:translate(-50%,-50%) scale(1.08);background:#a93226;}
+  .cp-play::after{
+    content:"";width:0;height:0;
+    border-left:30px solid #fff;
+    border-top:19px solid transparent;border-bottom:19px solid transparent;
+    margin-left:8px;
+  }
+  /* Bottom overlay: title centered, channel-left + duration-right meta row */
+  .cp-overlay{
+    position:absolute;bottom:0;left:0;right:0;padding:16px 16px 14px;z-index:1;
+    background:linear-gradient(to top,rgba(15,43,31,0.95) 0%,rgba(15,43,31,0.75) 60%,rgba(15,43,31,0) 100%);
+  }
+  .cp-overlay-title{
+    font-family:Arial,sans-serif;font-size:21px;font-weight:bold;color:#fff;
+    line-height:1.2;margin:0 0 8px;
+  }
+  .cp-overlay-meta{
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:Courier,monospace;font-size:12px;color:#d4cbb5;letter-spacing:.04em;
+  }
+  .cp-overlay-meta-left{display:inline-flex;align-items:center;gap:8px;}
+  .cp-channel-dot{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:22px;height:22px;background:#c0392b;border-radius:50%;
+  }
+  .cp-channel-dot::after{
+    content:"";width:0;height:0;
+    border-left:7px solid #fff;
+    border-top:5px solid transparent;border-bottom:5px solid transparent;
+    margin-left:2px;
+  }
+  .cp-overlay-meta .cp-channel{color:#fff;font-weight:bold;}
+  .cp-overlay-meta .cp-dur{
+    background:rgba(0,0,0,0.7);color:#fff;padding:2px 8px;
+    font-family:Courier,monospace;font-size:12px;font-weight:bold;
+  }
+
+  /* Headline below hero — mixed case, NOT all-caps */
+  .cp-headline{text-align:center;margin:14px auto 4px;max-width:900px;padding:0 16px;}
+  .cp-headline a{
+    font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:bold;
+    color:#f4ecd8;line-height:1.2;text-decoration:none;
+  }
+  .cp-headline a:hover{color:#fff;text-decoration:underline;}
+  .cp-meta-line{font-family:Courier,monospace;font-size:12px;color:#9fa897;margin-top:8px;letter-spacing:.04em;}
+  .cp-meta-line .cp-channel{color:#d4a828;font-weight:bold;}
+  .cp-meta-line .sep{color:#5f6e5f;margin:0 6px;}
+
+  /* Caddie's quote */
+  .cp-quote{max-width:680px;margin:12px auto 4px;padding:10px 32px 4px;text-align:left;position:relative;}
+  .cp-quote::before{
+    content:"\201C";position:absolute;left:0;top:-6px;
+    font-family:Georgia,serif;font-size:60px;color:#b8860b;line-height:1;
+  }
+  .cp-quote p{font-family:Georgia,serif;font-style:italic;font-size:15px;color:#f4ecd8;line-height:1.55;margin:0;}
+  .cp-quote .cp-attr{
+    display:block;margin-top:12px;
+    font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-style:normal;
+    color:#b8860b;letter-spacing:.18em;text-transform:uppercase;
+  }
+
+  /* "More from the Caddie" — 4 thumbnails, no gold border, clean look */
+  .cp-more{margin-top:18px;padding:14px 8px 0;border-top:1px solid rgba(184,134,11,0.3);}
+  .cp-more-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;padding:0 8px;}
+  .cp-more-label{
+    font-family:Courier,monospace;font-size:12px;font-weight:bold;color:#d4a828;
+    text-transform:uppercase;letter-spacing:.18em;
+  }
+  .cp-more-label::before{content:"\25B6 ";color:#b8860b;}
+  .cp-more-curated{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#9fa897;}
+
+  .cp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:0 8px;}
+  .cp-card-mini{cursor:pointer;text-decoration:none;display:block;}
+  .cp-thumb{position:relative;aspect-ratio:16/9;overflow:hidden;background:#1a1a1a;}
+  .cp-thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s;}
+  .cp-card-mini:hover .cp-thumb img{transform:scale(1.04);}
+  .cp-thumb-dur{
+    position:absolute;bottom:6px;right:6px;background:rgba(0,0,0,.85);color:#fff;
+    font-family:Courier,monospace;font-size:11px;font-weight:bold;padding:2px 6px;
+  }
+  .cp-mini-title{
+    font-family:Arial,sans-serif;font-size:13px;font-weight:bold;color:#f4ecd8;
+    line-height:1.3;margin:8px 0 4px;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  }
+  .cp-card-mini:hover .cp-mini-title{color:#fff;}
+  .cp-mini-meta{font-family:Courier,monospace;font-size:11px;color:#9fa897;letter-spacing:.04em;}
+  .cp-mini-meta .cp-channel{color:#d4a828;font-weight:bold;}
+
+  .cp-cta{text-align:center;margin:28px 0 4px;}
+  .cp-cta a{
+    display:inline-block;font-family:Courier,monospace;font-size:13px;font-weight:bold;
+    color:#b8860b;text-transform:uppercase;letter-spacing:.12em;text-decoration:none;
+    padding:10px 28px;border:1px solid #b8860b;background:transparent;transition:all .15s;
+  }
+  .cp-cta a:hover{background:#b8860b;color:#0f2b1f;}
+
+  @media (max-width:768px){
+    .cp-section{padding:24px 14px 22px;}
+    .cp-frame{padding:18px 12px;}
+    .cp-tv-layout{grid-template-columns:1fr;gap:14px;}
+    .cp-more--side .cp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+    .cp-more--side .cp-card-mini{
+      display:block;padding:0;border:none;background:transparent;
+    }
+    .cp-more--side .cp-card-mini:hover{border:none;background:transparent;}
+    .cp-more--side .cp-mini-title{font-size:13px;margin:8px 0 4px;}
+    .cp-more--side .cp-mini-meta{font-size:11px;}
+    /* On mobile, drop the fixed-height scroll viewport — let the 2-col grid
+       flow naturally and the page scrolls. Arrows hidden, no fade edges. */
+    .cp-more--side .cp-scroll-viewport{max-height:none;overflow:visible;}
+    .cp-scroll-btn{display:none;}
+    .cp-scroll-wrap::before,.cp-scroll-wrap::after{display:none;}
+    .cp-wordmark-text{font-size:24px;letter-spacing:.13em;border-bottom-width:2px;padding-bottom:4px;}
+    .cp-logo{width:36px;height:36px;border-radius:6px;}
+    .cp-logo::after{border-left-width:13px;border-top-width:9px;border-bottom-width:9px;margin-left:4px;}
+    .cp-sub{font-size:12px;margin-top:9px;}
+    .cp-headline a{font-size:19px;}
+    .cp-overlay-title{font-size:13px;}
+    .cp-play{width:58px;height:58px;}
+    .cp-play::after{border-left-width:18px;border-top-width:11px;border-bottom-width:11px;}
+    .cp-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .cp-quote{padding:14px 26px 4px;}
+    .cp-quote::before{font-size:48px;}
+    .cp-quote p{font-size:14px;}
+    .cp-mini-title{font-size:12px;}
+  }
+
+</style>
+</head>
+<body>
+
+<!-- CRAWL — T1: TODAY'S CARD -->
+<div class="ticker-wrap t1-wrap">
+<div class="t1-inner" id="ticker-1">
+  <span class="t1-badge">TODAY'S CARD</span>
+  <span class="t1-item" style="color:#d4cbb5;">Loading ticker data...</span>
+</div></div>
+
+<!-- T2: COURSE INTEL -->
+<div class="ticker-wrap t2-wrap" id="ticker-2-wrap" style="display:none;">
+<div class="t2-inner" id="ticker-2">
+  <span class="t2-badge">COURSE INTEL</span>
+</div></div>
+
+<!-- T3: LIVE TV -->
+<div class="ticker-wrap t3-wrap" id="ticker-3-wrap" style="display:none;">
+<div class="t3-inner" id="ticker-3">
+  <span class="t3-badge"><span class="t3-dot"></span><span class="t3-badge-label">LIVE TV</span></span>
+</div></div>
+
+<!-- ═══ LINKPULSE FEATURED #1 (dynamic, above hero) ═══ -->
+<div id="lp-featured-1" class="hero" style="display:none;"></div>
+
+<!-- LOGO BAR -->
+<div class="logo-bar">
+  <span class="flag">⚑</span>
+  <div class="logo"><span class="word-1">THE MULLIGAN</span><span class="word-2">REPORT</span></div>
+  <div class="tagline">Your daily golf briefing — curated, never automated · <script>document.write(new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}))</script></div>
+</div>
+
+<!-- UTILITY BAR (sticky on mobile) -->
+<div class="util-bar">
+  <a href="https://www.pgatour.com/leaderboard" rel="noopener">LIVE LEADERBOARD</a><span class="sep"> | </span><a href="https://www.pgatour.com/tournaments" rel="noopener">TEE TIMES</a><span class="sep"> | </span><a href="https://www.vegasinsider.com/golf/odds/futures/" rel="noopener">BETTING ODDS</a><span class="sep"> | </span><a href="https://www.golfwrx.com/witb" rel="noopener">WHAT'S IN THE BAG</a><span class="sep"> | </span><a href="https://www.golfchannel.com/tv" rel="noopener">TV SCHEDULE</a><span class="sep"> | </span><a href="https://www.pgatour.com/tournaments" rel="noopener">COURSE FLYOVER</a><span class="sep"> | </span><a href="https://weather.com/sports/golf" rel="noopener">WEATHER</a><span class="sep"> | </span><a href="https://www.pgatour.com/fantasy" rel="noopener">FANTASY</a><span class="sep"> | </span><a href="https://sportsbook.draftkings.com/leagues/golf" rel="noopener">DRAFTKINGS</a><span class="sep"> | </span><a href="https://www.pgatour.com/tournaments/2026/the-players-championship/R2026011" rel="noopener">HOLE #17</a>
+</div>
+
+<!-- ═══ LINKPULSE FEATURED #2 (dynamic, below nav) ═══ -->
+<div id="lp-featured-2" class="hero" style="display:none;border-bottom:2px solid #b8860b;"></div>
+
+<!-- ═══ BLOCK 1 — auto-balanced 3 columns, 90 posts ═══ -->
+<div class="cols-balanced" id="colsWrap"><div id="sec-block-1"></div></div>
+
+<!-- ═══ CLUBHOUSE TV / CADDIE'S PICK — populated by inline loader at end of page ═══ -->
+<div id="caddiesPickRoot"></div>
+
+<!-- ═══ BLOCK 2 — auto-balanced 3 columns, 90 posts ═══ -->
+<div class="cols-balanced" id="colsWrap2"><div id="sec-block-2"></div></div>
+
+<!-- ═══ BLOCK 3 — sidebar strip (widgets / links / capture) ═══ -->
+<div class="cols" id="colsWrap3">
+
+  <!-- ─── STRIP COL 1 — EDITORIAL ─── -->
+  <div class="col" id="col-0c">
+
+    <span class="sl">🔥 19TH HOLE — HOT TAKES</span>
+
+    <div class="ht">
+      <span class="tag">ON SCHEFFLER:</span>
+      Best ball-striker alive and can't make a 5-footer under pressure. That's not a slump — that's a design flaw.
+    </div>
+    <div class="ht">
+      <span class="tag">ON THE LIV MERGER:</span>
+      PGA Tour and LIV are like two divorced parents fighting over custody at a Chili's. Everybody's uncomfortable and the kids just want to play golf.
+    </div>
+    <div class="ht">
+      <span class="tag">ON THE KIRKLAND BALL:</span>
+      If $28 performs within 3% of $52, then the Pro V1 isn't a golf ball — it's a status symbol.
+    </div>
+    <div class="ht">
+      <span class="tag">ON TIGER:</span>
+      He is 50 years old with a rebuilt leg and everyone still stops what they are doing when he posts on Instagram. Nobody else in sports has that power.
+    </div>
+
+    <span class="d"></span>
+
+    <span class="sl">✏️ THE ROUGH SKETCH</span>
+
+    <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg" style="width:85%;max-width:220px;border:2px solid #1b4332;cursor:pointer;margin:4px auto;display:block;" onclick="openSketchViewer(0)" alt="Rough sketch cartoon">
+    <span class="aside">"The rules say you get a free drop. The tree says otherwise."</span>
+
+    <span class="d"></span>
+
+    <span class="sl">🏛️ TODAY IN GOLF HISTORY</span>
+    <a class="L" href="https://en.wikipedia.org/wiki/1986_Masters_Tournament" rel="noopener" style="font-size:13px;">1986: Jack Nicklaus. Augusta. 46 Years Old. The Greatest Sunday Ever.</a>
+    <a class="L" href="https://en.wikipedia.org/wiki/1997_Masters_Tournament" rel="noopener" style="font-size:13px;">1997: Tiger at Augusta. 21 Years Old. Won by 12. Changed the Sport Forever.</a>
+    <a class="L" href="https://en.wikipedia.org/wiki/2019_Masters_Tournament" rel="noopener" style="font-size:13px;">2019: Tiger at Augusta Again. 43 Years Old. Nobody Thought It Was Possible.</a>
+
+    <span class="d"></span>
+
+    <div class="vc">
+      VISITS TO MULLIGAN REPORT 3/23/2026<br>
+      <b>47,291</b> PAST 24 HOURS<br>
+      <b>892,103</b> PAST 31 DAYS<br>
+      <b>8,341,206</b> PAST YEAR
+    </div>
+
+    <span class="d"></span>
+
+    <div class="app-promo">
+      <strong>THE MULLIGAN REPORT 2026</strong><br>
+      FIRST ALERTS · LEADERBOARD · CLASSIC VIEW<br>
+      ALWAYS CURATED BY HUMAN BEING...<br>
+      <a href="#">iPHONE/iPAD...</a> · <a href="#">ANDROID...</a>
+    </div>
+
+  </div>
+
+  <!-- ─── STRIP COL 2 — GEAR DESK ─── -->
+  <div class="col" id="col-1c">
+
+    <span class="sl">🏷 PRO PICKS</span>
+
+    <div class="ps">
+      <div class="badge">/// PRO PICK ///</div>
+      TaylorMade Qi35 — "Best since the M2." 15% more accurate. <a href="https://mulligan-report-drudge.vercel.app" target="_self">REVIEW →</a>
+    </div>
+    <div class="ps">
+      <div class="badge">/// PRO PICK ///</div>
+      Callaway AI Smoke Max — Stunningly forgiving. $549. <a href="https://mulligan-report-drudge.vercel.app" target="_self">REVIEW →</a>
+    </div>
+    <div class="ps">
+      <div class="badge">/// PRO PICK ///</div>
+      Ping G440 Max — MyGolfSpy's #1 Driver 2026. $599. <a href="https://mulligan-report-drudge.vercel.app" target="_self">REVIEW →</a>
+    </div>
+
+    <span class="d"></span>
+
+    <span class="sl">📈 TRENDING THIS WEEK</span>
+    <div class="sm">
+      <a href="https://www.vegasinsider.com/golf/odds/masters/" rel="noopener">Masters 2026 Odds</a> · <a href="https://mygolfspy.com/buyers-guides/best-golf-gps/" rel="noopener">Best GPS Watches</a> · <a href="https://en.wikipedia.org/wiki/PGA_Tour%E2%80%93LIV_Golf_merger_agreement" rel="noopener">LIV vs PGA</a> · <a href="https://www.golfdigest.com/story/best-beginner-golf-clubs" rel="noopener">Beginner Clubs</a> · <a href="https://mygolfspy.com/most-wanted/golf-balls/" rel="noopener">Ball Compression</a> · <a href="https://en.wikipedia.org/wiki/Tiger_Woods" rel="noopener">Tiger Timeline</a> · <a href="https://www.masters.com/en_US/discover/index.html" rel="noopener">Augusta Moments</a> · <a href="https://www.golfdigest.com/places-to-play/americas-100-greatest-public" rel="noopener">Best Public Courses</a> · <a href="https://www.mytpi.com" rel="noopener">Golf Fitness</a> · <a href="https://superspeedgolf.com" rel="noopener">Swing Speed Training</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">🛠️ BRANDS</b><br>
+      <a href="https://www.titleist.com" rel="noopener">TITLEIST</a> · <a href="https://www.callawaygolf.com" rel="noopener">CALLAWAY</a> · <a href="https://www.taylormadegolf.com" rel="noopener">TAYLORMADE</a> · <a href="https://ping.com" rel="noopener">PING</a> · <a href="https://www.cobragolf.com" rel="noopener">COBRA</a> · <a href="https://mizunousa.com/golf" rel="noopener">MIZUNO</a> · <a href="https://www.srixon.com" rel="noopener">SRIXON</a> · <a href="https://www.clevelandgolf.com" rel="noopener">CLEVELAND</a> · <a href="https://www.wilson.com/en-us/golf" rel="noopener">WILSON</a> · <a href="https://www.pxg.com" rel="noopener">PXG</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">🛒 SHOPS</b><br>
+      <a href="https://www.amazon.com/s?k=golf+clubs" rel="noopener">AMAZON GOLF</a> · <a href="https://www.2ndswing.com" rel="noopener">2ND SWING</a> · <a href="https://www.globalgolf.com" rel="noopener">GLOBAL GOLF</a> · <a href="https://www.pgatoursuperstore.com" rel="noopener">PGA SUPERSTORE</a> · <a href="https://www.dickssportinggoods.com/c/golf" rel="noopener">DICK'S</a> · <a href="https://www.golfgalaxy.com" rel="noopener">GOLF GALAXY</a> · <a href="https://www.carlsgolfland.com" rel="noopener">CARL'S GOLFLAND</a> · <a href="https://www.rockbottomgolf.com" rel="noopener">ROCK BOTTOM GOLF</a> · <a href="https://www.budgetgolf.com" rel="noopener">BUDGET GOLF</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">⛳ EQUIPMENT</b><br>
+      <a href="https://mygolfspy.com" rel="noopener">MYGOLFSPY</a> · <a href="https://mygolfspy.com/most-wanted/" rel="noopener">MOST WANTED</a> · <a href="https://golf.com/gear/" rel="noopener">GOLF.COM GEAR</a> · <a href="https://www.golfdigest.com/hot-list" rel="noopener">HOT LIST</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sb" style="padding:24px 18px;">
+      <div style="font-family:Arial,sans-serif;font-size:10px;color:#d4a828;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;font-weight:900;">⛳ Gear Desk Brief</div>
+      <div class="t" style="font-size:18px;line-height:1.2;margin-bottom:8px;">Don't miss tomorrow's round</div>
+      <div class="s" style="font-size:13px;line-height:1.5;margin:0 0 14px;">Drops, deals & reviews from the gear desk. Equipment news, ball tests, driver shootouts — every weekday morning.</div>
+      <input type="text" placeholder="Your email..." style="display:block;width:90%;margin:0 auto 8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
+      <button onclick="openSubscribe()" style="display:block;width:90%;margin:0 auto;padding:11px 12px;font-size:13px;box-sizing:border-box;">SUBSCRIBE FREE</button>
+      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:14px;font-style:italic;font-family:Georgia,serif;">12,847 golfers · No spam · Unsubscribe anytime</div>
+    </div>
+
+  </div>
+
+  <!-- ─── STRIP COL 3 — DIRECTORY + UTILITY ─── -->
+  <div class="col" id="col-2c">
+
+    <span class="sl">🔍 SEARCH STORIES</span>
+    <div style="text-align:left;margin:4px 0;">
+      <input type="text" id="searchInput" placeholder="Search stories..." onkeydown="if(event.key==='Enter')searchStories()" style="font-family:Courier,monospace;font-size:13px;padding:6px 8px;border:1px solid #c9bfa8;background:#fff;width:68%;color:#1a1a1a;">
+      <button onclick="searchStories()" style="font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:6px 12px;border:1px solid #1b4332;background:#faf6ef;color:#1b4332;cursor:pointer;">SEARCH</button>
+      <div id="searchResults" style="font-size:12px;color:#999;margin-top:4px;text-align:left;display:none;"></div>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">🎙️ PODCASTS</b><br>
+      <a href="https://nolayingup.com" rel="noopener">NO LAYING UP</a> · <a href="https://www.thefriedegg.com" rel="noopener">THE FRIED EGG</a> · <a href="https://www.chasingscratchgolf.com" rel="noopener">CHASING SCRATCH</a> · <a href="https://www.youtube.com/playlist?list=PLPGuPGWQOUNEGQwQ8XhQcBmJlrojJ0Gx7" rel="noopener">NLU TOURIST SAUCE</a> · <a href="https://randomgolfclub.com" rel="noopener">ERIK ANDERS LANG</a> · <a href="https://open.spotify.com/show/1CI8N2DX2jOEGFowlyESPt" rel="noopener">SWEET SPOT</a> · <a href="https://golf.com/subpar/" rel="noopener">GOLF'S SUBPAR</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">📺 YOUTUBE</b><br>
+      <a href="https://www.youtube.com/@RickShielsPGA" rel="noopener">RICK SHIELS</a> · <a href="https://www.youtube.com/@DannyMaudeGolf" rel="noopener">DANNY MAUDE</a> · <a href="https://www.youtube.com/@GoodGood" rel="noopener">GOOD GOOD</a> · <a href="https://www.youtube.com/@golfsidekick" rel="noopener">GOLF SIDEKICK</a> · <a href="https://www.youtube.com/@BobDoesSports" rel="noopener">BOB DOES SPORTS</a> · <a href="https://www.youtube.com/@skratch" rel="noopener">SKRATCH</a> · <a href="https://www.youtube.com/@TheBryanBros" rel="noopener">BRYAN BROS</a> · <a href="https://www.youtube.com/@PeterFinchGolf" rel="noopener">PETER FINCH</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">📰 GOLF MEDIA</b><br>
+      <a href="https://www.golfdigest.com/instruction" rel="noopener">GOLF DIGEST</a> · <a href="https://www.espn.com/golf/leaderboard" rel="noopener">ESPN GOLF</a> · <a href="https://www.pgatour.com/leaderboard" rel="noopener">PGA TOUR</a> · <a href="https://www.golfchannel.com/news" rel="noopener">GOLF CHANNEL</a> · <a href="https://www.skysports.com/golf" rel="noopener">SKY SPORTS</a> · <a href="https://www.golfwrx.com" rel="noopener">GOLFWRX</a> · <a href="https://golf.com" rel="noopener">GOLF.COM</a> · <a href="https://www.thefriedegg.com" rel="noopener">THE FRIED EGG</a> · <a href="https://nolayingup.com" rel="noopener">NO LAYING UP</a> · <a href="https://firepitcollective.com" rel="noopener">FIRE PIT COLLECTIVE</a> · <a href="https://www.golfmonthly.com" rel="noopener">GOLF MONTHLY</a> · <a href="https://golfweek.usatoday.com" rel="noopener">GOLF WEEK</a> · <a href="https://www.linksmagazine.com" rel="noopener">LINKS MAG</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">📊 LIVE DATA</b><br>
+      <a href="https://www.pgatour.com/leaderboard" rel="noopener">PGA TOUR LEADERBOARD</a> · <a href="https://www.europeantour.com/dpworld-tour/" rel="noopener">DP WORLD TOUR</a> · <a href="https://www.lpga.com/tournaments" rel="noopener">LPGA LEADERBOARD</a> · <a href="https://datagolf.com" rel="noopener">DATAGOLF</a> · <a href="https://www.owgr.com" rel="noopener">OWGR</a> · <a href="https://www.pgatour.com/fedexcup" rel="noopener">FEDEX CUP</a> · <a href="https://www.europeantour.com/dpworld-tour/race-to-dubai/" rel="noopener">RACE TO DUBAI</a> · <a href="https://www.golfchannel.com/tv" rel="noopener">TV SCHEDULE</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">🏌️ COURSE INTEL</b><br>
+      <a href="https://www.golfdigest.com/places-to-play/americas-100-greatest" rel="noopener">GD TOP 100 (US)</a> · <a href="https://www.golfdigest.com/places-to-play/worlds-100-greatest" rel="noopener">GD TOP 100 (WORLD)</a> · <a href="https://golfweek.usatoday.com/best-courses/" rel="noopener">GOLFWEEK'S BEST</a> · <a href="https://www.top100golfcourses.com" rel="noopener">TOP 100 GOLF COURSES</a> · <a href="https://www.thefriedegg.com/architecture" rel="noopener">FRIED EGG ARCHITECTURE</a> · <a href="https://www.golfpass.com/travel-advisor" rel="noopener">GOLFPASS REVIEWS</a>
+    </div>
+
+    <span class="d"></span>
+
+    <div class="sm">
+      <b style="font-size:12px;color:#b8860b;font-family:Arial,sans-serif;letter-spacing:.1em;">🏛️ THE GAME</b><br>
+      <a href="https://www.usga.org" rel="noopener">USGA</a> · <a href="https://www.randa.org" rel="noopener">R&amp;A</a> · <a href="https://www.pga.com" rel="noopener">PGA OF AMERICA</a> · <a href="https://www.worldgolfhalloffame.org" rel="noopener">HALL OF FAME</a>
+    </div>
+
+    <span class="d"></span>
+
+    <span class="sl">✉️ SEND TIPS</span>
+    <div style="text-align:left;margin:4px 0;">
+      <textarea id="tipBox" placeholder="Got a story? A hot take? A tip we should know about? Drop it here..." style="font-family:Courier,monospace;font-size:13px;padding:8px;border:1px solid #c9bfa8;background:#fff;width:100%;height:120px;resize:vertical;color:#1a1a1a;"></textarea>
+      <button onclick="submitTip()" style="font-family:Courier,monospace;font-size:12px;font-weight:bold;padding:6px 14px;border:1px solid #1b4332;background:#faf6ef;color:#1b4332;cursor:pointer;margin-top:3px;">SUBMIT</button>
+      <div id="tipConfirm" style="font-size:12px;color:#1b4332;font-weight:bold;margin-top:4px;display:none;"></div>
+    </div>
+
+    <span class="d"></span>
+
+    EMAIL: <a href="mailto:tips@mulliganreport.com" style="font-size:12px;">TIPS@MULLIGANREPORT.COM</a>
+
+    <span class="d"></span>
+
+    <div class="dir">
+      <a href="https://www.lpga.com" rel="noopener">LPGA</a> · <a href="https://www.golfchannel.com" rel="noopener">GOLF CHANNEL</a> · <a href="https://www.ngf.org" rel="noopener">NATL GOLF FOUNDATION</a> · <a href="https://www.randa.org" rel="noopener">R&amp;A</a> · <a href="https://www.usga.org" rel="noopener">USGA</a> · <a href="https://www.pga.com" rel="noopener">PGA OF AMERICA</a> · <a href="https://www.europeantour.com/dpworld-tour/" rel="noopener">DP WORLD TOUR</a> · <a href="https://www.livgolf.com" rel="noopener">LIV GOLF</a> · <a href="https://asiantour.com" rel="noopener">ASIAN TOUR</a> · <a href="https://www.pgatour.com/korn-ferry-tour" rel="noopener">KORN FERRY</a><br><br>
+      <a href="#archives" onclick="return false;">ARCHIVES</a> · <a href="#recent" onclick="return false;">RECENT HEADLINES...</a>
+      <br><br>
+      <a href="https://themulliganreport.com/legal.html#privacy" rel="noopener">PRIVACY POLICY</a> · <a href="https://themulliganreport.com/legal.html#terms" rel="noopener">TERMS</a> · <a href="mailto:admin@themulliganreport.com?subject=Advertising%20Inquiry%20-%20The%20Mulligan%20Report">ADVERTISE</a>
+      <br><br>
+      <a href="https://themulliganreport.com/legal.html#affiliate" rel="noopener">AFFILIATE DISCLOSURE</a> · <a href="https://themulliganreport.com/legal.html#dmca" rel="noopener">DMCA</a> · <a href="https://themulliganreport.com/legal.html#cookies" rel="noopener">COOKIES</a> · <a href="https://themulliganreport.com/legal.html#disclaimer" rel="noopener">DISCLAIMER</a> · <a href="mailto:admin@themulliganreport.com">CONTACT</a>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong style="color:#b8860b;">THE MULLIGAN REPORT</strong> · Est. 2026<br>
+  Your daily golf briefing — curated, never automated<br><br>
+  © 2026 The Mulligan Report · All rights reserved
+</div>
+
+<!-- ═══ ARTICLE OVERLAY ═══ -->
+<div class="ao" id="articleOverlay" onclick="if(event.target===this)closeArticle()">
+  <div class="ai">
+    <!-- Article Masthead -->
+    <div class="ai-mast">
+      <div class="ai-mast-logo">THE MULLIGAN <em>REPORT</em></div>
+      <div class="ai-mast-back" onclick="closeArticle()">← BACK TO TODAY'S ROUND</div>
+    </div>
+
+    <!-- Article Content -->
+    <div class="ai-content" id="articleBody"></div>
+
+    <!-- Subscribe CTA -->
+    <div class="ai-cta">
+      <div class="ai-cta-text"><strong>Like what you're reading?</strong> <em>Get stories like this every morning.</em></div>
+      <button class="ai-cta-btn" onclick="closeArticle();openSubscribe();">SUBSCRIBE</button>
+    </div>
+
+    <!-- Prev / Next -->
+    <div class="ai-nav">
+      <a onclick="prevArticle()">← Previous Story</a>
+      <a onclick="nextArticle()">Next Story →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SUBSCRIBE ═══ -->
+<div class="so" id="subOverlay" onclick="if(event.target===this)closeSubscribe()">
+  <div class="si">
+    <button onclick="closeSubscribe()" style="position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;">✕</button>
+    <div style="font-family:'Times New Roman',serif;font-size:26px;font-weight:bold;color:#1b4332;">THE MULLIGAN REPORT</div>
+    <div style="font-family:Georgia,serif;font-size:12px;color:#999;font-style:italic;margin:3px 0 12px;">Get inside the ropes. Every morning before your tee time.</div>
+    <input type="text" placeholder="Your email..." style="padding:8px 10px;border:1px solid #c9bfa8;font-size:14px;width:58%;font-family:Courier,monospace;">
+    <button style="background:#1b4332;color:#d4a828;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;padding:9px 16px;border:none;text-transform:uppercase;cursor:pointer;">Subscribe</button>
+    <div style="font-size:12px;color:#999;margin-top:6px;">12,847 golfers · Free · Unsubscribe anytime</div>
+  </div>
+</div>
+
+<!-- ═══ SKETCH VIEWER ═══ -->
+<div class="sv" id="sketchViewer" onclick="if(event.target===this)closeSketchViewer()">
+  <button onclick="closeSketchViewer()" style="position:absolute;top:14px;right:18px;background:none;border:none;color:#faf6ef;font-size:22px;cursor:pointer;">✕</button>
+  <img id="sketchImg" src="" style="max-width:92%;max-height:75vh;border:2px solid #b8860b;">
+  <div id="sketchCap" style="font-family:Georgia,serif;font-size:14px;font-style:italic;color:#d4cbb5;margin-top:12px;text-align:center;max-width:440px;"></div>
+  <div id="sketchDate" style="font-size:12px;color:#b8860b;margin-top:4px;"></div>
+</div>
+
+<script>
+// ═══ ARTICLES ═══
+const articles=[
+  {id:'tiger',cat:'⛳ Masters · Tiger',title:"He's Back. Tiger Told Augusta to Set an Extra Place.",source:'Golf Digest',url:'https://www.golfdigest.com',time:'2h ago',body:`<p>Fourteen months of silence. No interviews. Then at 6:47 AM, Tiger posted a single image to Instagram: his green jacket on a locker at Augusta National. Caption: "Fitting still fits."</p><p>Within 90 minutes, 4 million likes. Within two hours, every sportsbook adjusted Masters odds.</p><p>Woods has been practicing at Medalist Golf Club for six weeks. His camp confirmed he intends to play all four rounds at the Masters.</p><p>"I've still got a few shots left that nobody's seen yet," Woods told a small group at a private dinner.</p>`},
+  {id:'scheffler',cat:'⛳ The Players · Stats',title:"Scheffler Left $3.6 Million on the Putting Green. Literally.",source:'ESPN Golf',url:'https://www.espn.com/golf/',time:'4h ago',body:`<p>The numbers are staggering: Scottie Scheffler has lost an estimated $3.6 million in prize money this season due to putting alone. That figure comes from an ESPN analysis comparing his actual results to projected finishes if he putted at merely tour-average rates.</p><p>The world's best ball-striker ranks 178th on Tour in Strokes Gained: Putting this season, losing 0.34 strokes per round to the field average. For context, he gains +2.1 strokes per round tee-to-green — by far the best in professional golf.</p><p>Inside 15 feet is where the trouble starts. Scheffler is converting just 28% of putts from 10-15 feet (tour average: 33%) and 51% from 5-8 feet (tour average: 58%). Those numbers, compounded over a full season, translate directly into dollars lost and trophies not won.</p><p>His caddie, Ted Scott, has said "the only surprise is when we are not inside 15 feet." But inside 15 feet, the best iron player alive becomes average at best.</p>`},
+  {id:'rahm',cat:'⛳ LIV Golf · Rumors',title:"Rahm Might Be Done With LIV. The Exit Clause Just Got Interesting.",source:'Golf Channel',url:'https://www.golfchannel.com',time:'6h ago',body:`<p>Jon Rahm's $300 million deal with LIV Golf included a clause nobody talked about at signing: a performance-based exit window that activates if certain conditions are not met by the end of 2026.</p><p>Sources say the clause allows Rahm to renegotiate or potentially exit if LIV fails to secure a top-tier U.S. broadcast agreement and/or fails to reach a formal agreement with the PGA Tour by December 31, 2026.</p><p>With the Fox Sports deal now announced for 2027, the broadcast condition may be satisfied — but the PGA Tour merger remains stalled in negotiations both sides describe as "complicated."</p><p>Rahm, 31, has been visibly frustrated with the LIV format. His results have been inconsistent, and he has spoken privately about missing the competitive depth of PGA Tour fields. Whether the exit clause gives him real leverage or is merely a negotiating tool remains to be seen.</p>`},
+  {id:'usga',cat:'⛳ Rules · 2026 Changes',title:"The USGA Just Changed 3 Rules That Will Affect Every Weekend Golfer.",source:'USGA.org',url:'https://www.usga.org/rules',time:'8h ago',body:`<p>The USGA announced three significant rule changes effective January 1, 2027.</p><p><strong>Rule Change #1: Ball Search Time Reduced to 2 Minutes.</strong> Currently 3 minutes. The USGA says this will speed up pace of play by an estimated 12 minutes per round across all skill levels. Weekend golfers are already complaining.</p><p><strong>Rule Change #2: Stroke-and-Distance Alternative Now Permanent.</strong> The model local rule allowing you to drop near where your ball was lost (with a 2-stroke penalty) instead of going back to the tee is now a permanent option for all competitions.</p><p><strong>Rule Change #3: Bunker Rake Rule Modified.</strong> Players may now smooth footprints and other damage in bunkers before playing their shot, as long as it does not improve the lie of the ball. This one is actually popular.</p>`},
+  {id:'slice',cat:'🏌️ Swing Tips · Trending',title:"I Did This 3-Second Drill Before Every Drive for a Month. My Slice Is Gone.",source:'Rick Shiels',url:'https://www.youtube.com/@RickShielsPGAGolf',time:'890K views',body:`<p>The drill is deceptively simple: before every drive, close your stance (pull your right foot back 3 inches), grip the club with 30% less pressure, and make one slow-motion practice swing focusing only on the path of the clubhead through the ball.</p><p>Three seconds. No swing thoughts during the actual swing — just the pre-shot setup adjustment and one rehearsal.</p><p>Rick Shiels tested this with 12 amateur golfers over 30 days. Every single one reduced their slice. The average improvement was a 14-yard reduction in left-to-right curve. Three of the twelve completely eliminated their slice and started hitting a slight draw.</p><p>The key insight: most slices are caused by an open clubface at impact, which is caused by tension in the grip and an out-to-in swing path. The closed stance forces an in-to-out path, and the lighter grip allows the face to release naturally.</p>`},
+  {id:'qi35',cat:'🏷 Pro Pick · Driver Review',title:"TaylorMade Qi35 — The Most Accurate Driver We've Ever Tested.",source:'Golf Monthly',url:'https://www.golfmonthly.com/reviews/driver-reviews',time:'Full review',body:`<p>The Qi35 represents TaylorMade's best work in years. The 60X Carbon Twist Face generates ball speeds of 168+ mph for elite swingers, while the Infinity Carbon Crown redistributes weight lower and deeper for a higher launch with less spin.</p><p>In our testing with 20 golfers across handicap ranges, the Qi35 produced the tightest dispersion pattern of any TaylorMade driver in history — an average of 26 yards total spread, compared to 34 yards for the previous Qi10. That is a 24% improvement in accuracy from one generation to the next.</p><p>The sound is clean and powerful without being metallic. The adjustable weight track allows you to dial in a draw or fade bias, and the stock Fujikura Speeder NX shaft pairs well with moderate swing speeds.</p><p>At $599, it is premium-priced but justified by the performance. If accuracy is your priority over raw distance, this is the driver to beat in 2026.</p><p><strong>The Mulligan Report Verdict:</strong> Best-in-class accuracy. Not the longest, not the cheapest, but the straightest driver on the market right now. If you are tired of spraying it off the tee, this is the one.</p><p style="font-size:13px;color:#999;font-style:italic;border-top:1px solid #ddd;padding-top:10px;margin-top:10px;">Pro Pick is a curated equipment recommendation from The Mulligan Report. We only feature gear we believe genuinely helps golfers play better.</p>`},
+  {id:'callaway',cat:'🏷 Pro Pick · Driver Review',title:"Callaway AI Smoke Max — Longer. Straighter. Smarter.",source:'Golf Monthly',url:'https://www.golfmonthly.com/reviews/driver-reviews',time:'Full review',body:`<p>Callaway's AI Smoke Max uses machine-learning-designed face technology — the AI Smart Face — which optimizes ball speed across a wider area than any previous Callaway model. The Max version adds a high-MOI head shape and a fixed 16g tungsten weight positioned low and back.</p><p>What does that mean in practice? A drive struck half an inch off-center still launches with 95% of the ball speed of a pure strike. For mid-to-high handicappers who do not find the center every time, that is transformative.</p><p>The sound is a clean, confident crack — not as muted as the TaylorMade Qi35 but not metallic either. The Jailbreak AI Speed Frame adds stiffness to the body, translating to a more consistent feel shot to shot.</p><p>On course, the AI Smoke Max produced the tightest dispersion pattern of any max-game-improvement driver we tested in 2026. Average carry was 238 yards with a total dispersion of 31 yards left-to-right. For context, the average amateur's dispersion is 55+ yards. This driver shrinks that gap significantly.</p><p>At $549, the AI Smoke Max is $50 less than the Qi35 and arguably more forgiving. If you are tired of losing balls off the tee, this is the driver to try.</p><p><strong>The Mulligan Report Verdict:</strong> The most forgiving driver in 2026. Not the longest, but the one that punishes mishits the least. A genuine game-improver for 10-25 handicappers.</p><p style="font-size:13px;color:#999;font-style:italic;border-top:1px solid #ddd;padding-top:10px;margin-top:10px;">Pro Pick is a curated equipment recommendation from The Mulligan Report. We only feature gear we believe genuinely helps golfers play better.</p>`},
+  {id:'schauffele',cat:'⛳ The Players · R3',title:"Schauffele's 65 Was the Best Round of Saturday. Nobody Talked About It.",source:'PGA Tour',url:'https://www.pgatour.com',time:'5h ago',body:`<p>While Ludvig Aberg dominated every headline and Scottie Scheffler's putting woes filled every podcast, Xander Schauffele quietly posted a 65 that moved him to T2 — just two shots off the lead heading into the final round.</p><p>The numbers were absurd: 14 of 14 fairways hit, 16 of 18 greens in regulation, and 28 putts. That is a ball-striking clinic at a course designed to punish anything less than precision.</p><p>Schauffele has finished top-5 at The Players three times now without winning. TPC Sawgrass suits his game perfectly — accurate off the tee, elite with irons, and steady under pressure.</p><p>"I just need to keep doing what I am doing," Schauffele said. "The course does not care about headlines."</p>`},
+  {id:'mcilroy',cat:'⛳ Pro Tour · Injury',title:"McIlroy Pulls Out With Back Issues. Masters Prep in Serious Jeopardy.",source:'Sky Sports',url:'https://www.skysports.com/golf',time:'3h ago',body:`<p>Rory McIlroy withdrew from The Players Championship on Saturday morning citing recurring lower back pain — the same issue that limited his practice schedule throughout February.</p><p>The timing could not be worse. The Masters is four weeks away, and McIlroy's pursuit of the career Grand Slam remains the biggest story in golf. A healthy McIlroy is a Masters favorite. An injured one is a question mark.</p><p>"It is precautionary," McIlroy's team said in a statement. "Rory wants to ensure he is fully fit for the remainder of the season." Translation: Augusta is all that matters, and TPC Sawgrass is not worth the risk.</p><p>McIlroy was 13 shots off the lead when he pulled out, so the competitive loss is minimal. But the preparation loss could be significant — these are prime tournament reps he is missing.</p>`},
+  {id:'jt',cat:'⛳ Pro Tour · Comeback',title:"Thomas Back From Wrist Surgery and Suddenly in Contention at Sawgrass.",source:'Golf Digest',url:'https://www.golfdigest.com',time:'6h ago',body:`<p>Justin Thomas has not contended since wrist surgery in October 2025. Most people forgot he was even playing this week. Then he posted a Friday 66 and Saturday 68 to climb inside the top 10.</p><p>For a player who once dominated the PGA Tour — two majors, a Players Championship, a FedExCup — the last 18 months have been humbling. The wrist injury affected his release, his confidence, and ultimately his world ranking, which dropped outside the top 50.</p><p>But this week at Sawgrass, the old JT has resurfaced. The trademark fist pumps are back. The aggressive iron play is back. And most importantly, the speed is back — his ball speed numbers are within 2 mph of his pre-surgery peak.</p><p>"I am not going to say I am back because that is a jinx," Thomas told reporters with a grin. "But I can feel it."</p>`},
+  {id:'morikawa',cat:'⛳ Pro Tour · Injury',title:"Morikawa Felt Something Pop on the Range. Withdrew Before Teeing Off.",source:'Golf Week',url:'https://golfweek.usatoday.com',time:'5h ago',body:`<p>Collin Morikawa was on the range Saturday morning, warming up for his third round, when he felt a sharp pop in his lower back during a driver swing. He immediately stopped, consulted with his trainer, and withdrew from the tournament.</p><p>Morikawa, 29, has been one of the most durable players on Tour — he has not missed a cut due to injury since turning professional. This is his first mid-tournament withdrawal.</p><p>"It happened on a normal swing," a source close to Morikawa said. "Nothing unusual about the movement. Just a bad moment." MRI results are expected early next week, and the initial assessment is a muscle strain rather than anything structural.</p><p>Like McIlroy, Morikawa's eyes are on Augusta. Four weeks of recovery should be enough for a muscle strain — but back injuries are unpredictable.</p>`},
+  {id:'livfox',cat:'⛳ LIV Golf · Business',title:"LIV Announces 2027 TV Deal With Fox Sports. The Numbers Are Bigger Than Expected.",source:'Front Office Sports',url:'https://frontofficesports.com',time:'2h ago',body:`<p>LIV Golf has secured a multi-year television deal with Fox Sports reportedly worth $800 million over five years — a significant upgrade from its current CW Network arrangement and a signal that the Saudi-backed league is here to stay.</p><p>The deal gives Fox exclusive U.S. broadcast rights for all LIV Golf events starting in 2027, including the individual championship and team events. Fox will also air a weekly studio show.</p><p>For context, the PGA Tour's current media deal with CBS, NBC, and ESPN is worth approximately $930 million annually. LIV's $160 million per year is still smaller, but the gap is narrowing.</p><p>The real significance is legitimacy. Fox is a major broadcast network with NFL, MLB, and FIFA World Cup rights. LIV being on Fox changes the perception from "streaming experiment" to "real sports league."</p>`},
+  {id:'grip',cat:'🏌️ Swing Tips · Fundamentals',title:"Your Grip Is Too Tight. That is Why You Cannot Hit a Fairway.",source:'GolfWRX',url:'https://www.golfwrx.com',time:'5h ago',body:`<p>A study by Titleist Performance Institute measured grip pressure across 200 amateurs and 50 tour professionals. The findings are stark: amateurs squeeze the club with 40-60% more force than professionals.</p><p>That death grip is costing you distance, accuracy, and consistency. Excessive grip pressure tenses the forearms, which restricts wrist hinge, which reduces clubhead speed, which produces shorter, less accurate shots. It is a chain reaction that starts in your fingers.</p><p>Tour average grip pressure: 4 out of 10. Amateur average: 7 out of 10.</p><p>Try the "two-finger test": after your grip, lift your right pinky and ring finger off the club. If the club moves or drops, you are gripping too tight with your left hand. The left hand holds; the right hand guides.</p>`},
+  {id:'gravity',cat:'🏌️ Swing Tips · Viral',title:"This Guy's Gravity Drop Swing Video Hit 4 Million Views.",source:'Danny Maude · YouTube',url:'https://www.youtube.com/@DannyMaudeGolf',time:'4M views',body:`<p>Danny Maude's latest video — "The Gravity Drop: Stop Swinging and Start Dropping" — has 4 million views in a week. That is more than most golf channels get in a year.</p><p>The concept: instead of thinking about "swinging" the club, you lift it to the top and simply let gravity drop your arms while your body rotates. No pulling, no forcing, no manipulation. Just lift, drop, turn.</p><p>It sounds too simple. It probably is too simple for advanced players. But for the 80% of golfers who overthink their downswing transition — casting, over-the-top, early extension — the gravity drop is a mental reset that produces shockingly solid contact.</p><p>The comment section is full of golfers reporting instant results: "I have been playing 25 years and this is the first tip that actually changed my ball striking."</p>`},
+  {id:'flop',cat:'🏌️ Short Game',title:"The Phil Mickelson Flop Shot Explained in 60 Seconds.",source:'Golf Sidekick · YouTube',url:'https://www.youtube.com/@GolfSidekick',time:'1.2M views',body:`<p>Golf Sidekick breaks the flop into three non-negotiable steps: open the face until it points at the sky, aim your feet 30 degrees left of target, and swing along your foot line — not at the target.</p><p>That last part is where everyone goes wrong. You are not swinging at the pin. You are swinging left and letting the open face redirect the ball high and soft to the right.</p><p>The video shows five amateurs trying it for the first time. Three hit legitimate flop shots within 10 minutes. One skulled it over the green. One hit it perfectly and yelled words that cannot be published here.</p><p>"The flop shot is not hard," Golf Sidekick says. "It is just counterintuitive. Your brain wants to scoop. You have to commit to accelerating through the ball with an open face. Fear is the enemy."</p>`},
+  {id:'arccos',cat:'🏌️ Data · Analytics',title:"We Tracked 10,000 Amateur Drives. The #1 Problem Is Not Your Swing — It Is Where You Aim.",source:'Arccos Golf',url:'https://www.arccosgolf.com',time:'1 day ago',body:`<p>Arccos Golf analyzed driving data from 10,000 amateur rounds and found something that should make every golfer reconsider their tee shot strategy: the average amateur aims at the center of the fairway but aligns 7 yards right of their intended target.</p><p>That means if you think you are aimed at the middle, you are actually aimed at the right edge. Now add in your natural shot shape — 68% of amateurs fade or slice — and you are starting every hole aimed into the rough or worse.</p><p>The fix is embarrassingly simple: aim at the left edge of the fairway. Not the center. The left edge. Your natural alignment bias and shot shape will bring it back to the middle.</p><p>Golfers who implemented this adjustment over 20 rounds saw fairways hit increase by 18% and scores drop by 2.3 strokes. All from changing where they aimed — not how they swung.</p>`},
+  {id:'putting',cat:'🏌️ Putting · Stats',title:"Tour Pros Miss 40% of 8-Footers. Why Are You Mad That You Miss Them?",source:'GolfWRX',url:'https://www.golfwrx.com',time:'12h ago',body:`<p>Here is a number that should immediately make you feel better about your putting: PGA Tour professionals — the best putters on earth — make only 60% of their putts from 8 feet.</p><p>That means the best in the world miss 4 out of every 10 putts from a distance most amateurs consider "makeable." Yet weekend golfers slam their putter every time they miss from this range.</p><p>The data gets worse: from 15 feet, tour pros make only 25%. From 20 feet, just 15%. From 30 feet, a pathetic 7%.</p><p>So what is the takeaway? Stop beating yourself up over missed putts. Start thinking about putting as a proximity game, not a make-everything game. Your goal from 8 feet should be a confident stroke, not an expected make.</p>`},
+  {id:'drivers2026',cat:'🏷 Gear · Showdown',title:"We Tested Every 2026 Driver. One of Them Blew the Others Out of the Water.",source:'MyGolfSpy',url:'https://mygolfspy.com/best-drivers/',time:'3h ago',body:`<p>MyGolfSpy's annual Most Wanted Driver test is the most comprehensive independent driver evaluation in golf. This year, 38 drivers were tested by 50 golfers across three handicap brackets with Trackman data on every swing.</p><p>The winner — for the first time in five years — is not TaylorMade or Callaway. It is the Ping G440 Max. The G440 outperformed every driver in total distance, ball speed consistency, and off-center forgiveness across all three handicap groups.</p><p>The data: average total distance of 267 yards (3 yards more than second place), a ball speed standard deviation of just 1.8 mph (tour-level consistency), and the lowest dispersion of any max-game-improvement driver at 28 yards.</p><p>TaylorMade's Qi35 finished second in accuracy. Callaway's AI Smoke Max finished second in forgiveness. But Ping's G440 won both categories simultaneously — a rare double that makes it the clear overall pick for 2026.</p>`},
+  {id:'training',cat:'🏷 Gear · Trending',title:"A $29 Training Aid Is Outselling Actual Clubs on Amazon Right Now.",source:'Amazon / Golf Digest',url:'https://www.amazon.com/s?k=hackmotion+golf',time:'Affiliate',body:`<p>The HackMotion Lite wrist sensor has been the #1 best-selling golf product on Amazon for three consecutive weeks — outselling actual golf clubs, balls, and gloves. At $29, it is an impulse buy that is converting at a rate Amazon sellers dream about.</p><p>The device clips to your lead wrist and vibrates when your wrist angle exceeds a set threshold during the swing. It targets the #1 amateur swing fault: excessive wrist cupping (extension) at the top of the backswing, which opens the clubface and produces slices.</p><p>We tested it for two weeks. The vibration feedback is surprisingly effective — your brain quickly learns to associate the buzz with "wrong" and adjusts automatically. After a week, the corrections start to feel natural even without the device.</p><p>Is it a magic fix? No. Is it the best $29 you can spend on your golf game right now? Probably yes.</p>`},
+  {id:'kirkland',cat:'🏷 Gear · Ball Test',title:"Kirkland's New $28 Ball vs the $52 Pro V1. The Spin Numbers Tell a Very Awkward Story.",source:'GolfWRX',url:'https://www.golfwrx.com',time:'1 day ago',body:`<p>Costco's Kirkland Signature Performance+ ball has been reformulated for 2026, and the independent testing results are making Titleist very uncomfortable.</p><p>GolfWRX tested both balls on Trackman with a robot and five human testers across driver, 7-iron, and wedge shots. The Kirkland performed within 3% of the Pro V1x in every single category — ball speed, spin rate, launch angle, and total distance.</p><p>With wedges, the Kirkland actually generated MORE spin than the Pro V1x (200 RPM higher on average), which is the metric that matters most for scoring shots.</p><p>The only measurable difference: durability. The Pro V1x maintained its cover integrity better after 36 holes. The Kirkland showed visible scuffing by hole 18. But at $28 per dozen versus $52, you can afford to replace them more often.</p><p>The uncomfortable truth: you are not paying for performance with premium balls. You are paying for branding, tour validation, and the feeling that expensive things must be better.</p>`},
+  {id:'callaway-deal',cat:'🏷 Gear · Deal Alert',title:"Callaway Dropped Last Year's Irons to $499. That Is Half Price.",source:'Golf.com',url:'https://www.golf.com',time:'2h ago',body:`<p>Callaway just slashed the price of the 2025 Paradym Ai Smoke irons from $999 to $499 — a 50% cut to clear inventory for the 2026 models. It is one of the best iron deals we have seen in years.</p><p>Here is who should buy them: any mid-to-high handicapper currently gaming irons more than 3 years old. The technology gap between a 2022 iron and a 2025 iron is significant — better forgiveness, faster ball speeds, and improved turf interaction.</p><p>At $499 for a 7-piece set (5-PW, AW), you are getting tour-quality irons at game-improvement prices. This deal will not last — Callaway typically sells through clearance inventory in 2-3 weeks.</p>`},
+  {id:'garmin',cat:'🏷 Gear · Tech',title:"Garmin's New S72 GPS Watch Reads Greens Like a Tour Caddie. Is It Worth $700?",source:'MyGolfSpy',url:'https://mygolfspy.com',time:'8h ago',body:`<p>Garmin's Approach S72 is the most advanced golf GPS watch ever made. At $700, it better be. The headline feature: real-time green reading with slope visualization that shows you exactly how a putt will break — right on your wrist.</p><p>In testing, the break readings were accurate about 80% of the time on well-mapped courses. On lesser-known tracks, accuracy dropped to about 60%. The watch cannot account for grain, moisture, or recent pin positions.</p><p>Other features include full-color touchscreen, hazard distances, shot tracking, swing tempo analysis, and 20-hour battery life in golf mode.</p><p>Verdict: if you are serious about scoring and play well-mapped courses, the S72 is the best golf GPS available. If you just need yardages, the $300 S42 does 80% of the job at less than half the price.</p>`},
+  {id:'scotty',cat:'🏷 Gear · Putter',title:"Scotty Cameron Just Released a $600 Putter That Sold Out in 11 Minutes.",source:'Titleist',url:'https://www.titleist.com/scotty-cameron',time:'4h ago',body:`<p>Scotty Cameron's Special Select Timeless SSS Newport 2.5 dropped at 10 AM Eastern this morning. By 10:11, every single unit was gone. That is 2,000 putters at $600 each — $1.2 million in revenue in 11 minutes.</p><p>Let us be honest: this putter does not putt any better than the standard Newport 2.5 ($449). The extra $151 buys you exclusivity, collectibility, and the right to flex on your playing partners.</p><p>The secondary market is already active. eBay listings are appearing at $900-$1,200. If you bought one to play with, congratulations on your taste. If you bought one to flip, congratulations on your business sense.</p>`},
+  {id:'korda',cat:'⛳ LPGA',title:"Nelly Korda Was Untouchable for 7 Straight Wins. Then the Founders Cup Happened.",source:'LPGA.com',url:'https://www.lpga.com',time:'5h ago',body:`<p>Nelly Korda's 2025-2026 run will be studied for decades. Seven consecutive LPGA victories — a streak that had not been achieved since Lorena Ochoa in 2008. She was so dominant that betting markets stopped offering odds on anyone else in the field.</p><p>Then the Founders Cup happened. Korda finished T-37, her worst result in two years, after a third-round 76 that included three double bogeys.</p><p>"Streaks end," Korda said afterward, with remarkable composure. "I am not upset about losing. I am proud of what the last four months have been."</p><p>The question now: does the loss liberate or deflate? History suggests the former — Tiger Woods was often more dangerous after a loss than during a streak. Korda's talent has not diminished. The break from perfection might actually help.</p>`},
+  {id:'womensgrowth',cat:"⛳ Women's Golf · Growth",title:"Women's Golf Just Had Its Biggest Growth Decade Ever. The Numbers Are Staggering.",source:'National Golf Foundation',url:'https://www.ngf.org',time:'1 day ago',body:`<p>The National Golf Foundation released its 2026 State of the Industry report, and the women's golf numbers are historic: 7.2 million women played golf in 2025, up 42% from 2015. Women now represent 28% of all golfers in the United States.</p><p>The growth accelerated post-pandemic. Between 2020 and 2025, women's golf participation grew at twice the rate of men's. The biggest growth demographic: women aged 18-34, who increased by 67%.</p><p>Women's golf equipment sales hit $2.1 billion in 2025 — up from $1.2 billion in 2019. Apparel brands are scrambling to catch up with demand for women-specific designs.</p><p>The challenge: only 23% of golf courses offer women's tees that are appropriately placed for average female distances. Forward tee placement remains the biggest barrier to retention.</p>`},
+  {id:'rosezhang',cat:'⛳ LPGA · Rising Star',title:"Rose Zhang Is 22 and Already Has More Wins Than Most LPGA Vets.",source:'Golf Channel',url:'https://www.golfchannel.com',time:'6h ago',body:`<p>Rose Zhang turned professional in June 2023 and won her LPGA debut. Since then, she has accumulated five victories before her 23rd birthday — a pace that puts her ahead of where Nelly Korda, Lydia Ko, and Lexi Thompson were at the same age.</p><p>The Stanford pipeline is real. Zhang brings an analytical approach to course management that reflects her education. She maps every course with shot-tracking data, studies wind patterns from historical databases, and makes yardage decisions based on probability rather than feel.</p><p>"She plays golf like a data scientist," her caddie told Golf Channel. "Every decision has a reason behind it. There is no guessing."</p><p>Zhang's composure under pressure is preternatural. Her heart rate during final-round situations averages just 12 bpm above her resting rate — calmness that sports psychologists say is elite even by tour standards.</p>`},
+  {id:'womensclubs',cat:"⛳ Women's Golf · Investigation",title:"Why Do Women's Clubs Still Cost the Same but Perform Worse? An Investigation.",source:'MyGolfSpy',url:'https://mygolfspy.com',time:'2 days ago',body:`<p>MyGolfSpy's annual women's equipment study reveals an uncomfortable truth: women's golf clubs consistently underperform men's clubs of equivalent price in independent testing — not because women swing slower, but because manufacturers invest less in R&D for women's product lines.</p><p>The data: in head-to-head robot testing, women's drivers from five major manufacturers averaged 4.2% less ball speed and 6.8% less forgiveness than their men's counterparts at the same price point.</p><p>The reason? Men's clubs go through multiple prototype cycles with extensive player testing. Women's clubs are often adapted from men's designs with minimal independent testing — a practice the industry calls "shrink and shift" internally.</p><p>Three manufacturers are breaking this pattern: Callaway, Ping, and Cobra all now run dedicated women's R&D programs with separate prototype cycles. Their women's clubs test within 1% of men's equivalents.</p><p>The takeaway for women golfers: test before you buy, and look for brands that invest in dedicated women's engineering.</p>`}
+];
+
+let cIdx=0;
+function openArticle(id){const i=articles.findIndex(a=>a.id===id);if(i===-1)return;cIdx=i;renderA(i);document.getElementById('articleOverlay').classList.add('active');document.body.style.overflow='hidden';}
+function closeArticle(){document.getElementById('articleOverlay').classList.remove('active');document.body.style.overflow='';}
+function renderA(i){const a=articles[i];const urlBtn=a.url?`<a href="${a.url}" target="_blank" rel="noopener" class="asl">READ ORIGINAL →</a>`:`<span class="asl" style="opacity:.4;cursor:default;">READ ORIGINAL →</span>`;document.getElementById('articleBody').innerHTML=`<div class="acat">${a.cat}</div><div class="atit">${a.title}</div><div class="asb"><span class="asb-source"><strong>${a.source}</strong> · ${a.time}</span>${urlBtn}</div><div class="atx">${a.body}</div>`;document.getElementById('articleOverlay').scrollTop=0;}
+function prevArticle(){cIdx=(cIdx-1+articles.length)%articles.length;renderA(cIdx);}
+function nextArticle(){cIdx=(cIdx+1)%articles.length;renderA(cIdx);}
+
+function openSubscribe(){document.getElementById('subOverlay').classList.add('active');document.body.style.overflow='hidden';}
+function closeSubscribe(){document.getElementById('subOverlay').classList.remove('active');document.body.style.overflow='';}
+
+const sketches=[
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg',cap:'The rules say you get a free drop. The tree says otherwise.',date:'March 15, 2026'}
+];
+function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
+function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
+
+// ═══ OPTIN BAR CAPTURE ═══
+function optinCapture() {
+  var input = document.getElementById('optinEmail');
+  var email = input.value.trim();
+  if (!email || !email.includes('@')) {
+    input.style.border = '1px solid #c0392b';
+    input.setAttribute('placeholder', 'Enter a valid email...');
+    return;
+  }
+  // In production: POST to your email API / Substack / ConvertKit
+  console.log('Optin capture:', email);
+  var inner = document.querySelector('.optin-inner');
+  inner.innerHTML = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#4ade80;font-weight:900;letter-spacing:.03em;text-align:center;padding:4px 0;">⛳ YOU\'RE IN — TOMORROW\'S ROUND HITS YOUR INBOX BEFORE YOUR TEE TIME</div>';
+}
+
+// ═══ SEARCH ═══
+function searchStories(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  const resultsDiv=document.getElementById('searchResults');
+  if(!q){resultsDiv.style.display='none';clearSearchHighlight();return;}
+
+  // Search through all story links on the page
+  const allLinks=document.querySelectorAll('a.L,a.H,a.B');
+  let matches=[];
+
+  // Reset all highlights first
+  clearSearchHighlight();
+
+  allLinks.forEach(link=>{
+    const text=link.textContent.toLowerCase();
+    if(text.includes(q)){
+      matches.push(link);
+      link.style.background='#fffacd';
+      link.style.padding='2px 4px';
+    }
+  });
+
+  // Also search articles array for body content matches
+  const bodyMatches=articles.filter(a=>{
+    const searchable=(a.title+' '+a.cat+' '+a.source+' '+a.body).toLowerCase();
+    return searchable.includes(q);
+  });
+
+  resultsDiv.style.display='block';
+  if(matches.length>0){
+    resultsDiv.innerHTML=`<strong style="color:#1b4332;">${matches.length} headline${matches.length>1?'s':''} found</strong> · ${bodyMatches.length} total stories match "${q}"`;
+    // Scroll to first match
+    matches[0].scrollIntoView({behavior:'smooth',block:'center'});
+  } else if(bodyMatches.length>0){
+    resultsDiv.innerHTML=`<strong style="color:#b8860b;">${bodyMatches.length} stories match "${q}"</strong> — click headlines to read`;
+    // Show clickable results
+    let links=bodyMatches.slice(0,5).map(a=>`<a href="#" onclick="openArticle('${a.id}');return false;" style="display:block;font-size:12px;color:#1b4332;padding:2px 0;">${a.title}</a>`).join('');
+    resultsDiv.innerHTML+=links;
+  } else {
+    resultsDiv.innerHTML=`No stories found for "${q}". Try: tiger, scheffler, LIV, kirkland, driver, putting...`;
+  }
+}
+
+function clearSearchHighlight(){
+  document.querySelectorAll('a.L,a.H,a.B').forEach(link=>{
+    link.style.background='';
+    link.style.padding='';
+  });
+}
+
+// ═══ TIPS BOX ═══
+function submitTip(){
+  const tipText=document.getElementById('tipBox').value.trim();
+  const confirm=document.getElementById('tipConfirm');
+  if(!tipText){
+    confirm.style.display='block';
+    confirm.style.color='#c0392b';
+    confirm.textContent='Write something first — we read every tip.';
+    return;
+  }
+  // In production this would POST to your backend
+  confirm.style.display='block';
+  confirm.style.color='#1b4332';
+  confirm.innerHTML='<span style="font-size:16px;">⛳</span> TIP RECEIVED. The caddie is on it. Thanks for the intel.';
+  document.getElementById('tipBox').value='';
+  // Auto-hide after 5 seconds
+  setTimeout(()=>{confirm.style.display='none';},5000);
+}
+
+// Keyboard
+document.addEventListener('keydown',function(e){
+  if(document.getElementById('articleOverlay').classList.contains('active')){if(e.key==='Escape')closeArticle();if(e.key==='ArrowLeft')prevArticle();if(e.key==='ArrowRight')nextArticle();}
+  if(document.getElementById('sketchViewer').style.display==='flex'){if(e.key==='Escape')closeSketchViewer();}
+  if(document.getElementById('subOverlay').classList.contains('active')){if(e.key==='Escape')closeSubscribe();}
+});
+
+// ═══ TICKER INTEGRATION (Broadcast-Quality) ═══
+const TICKER_API = 'https://linkpulse-tmr.vercel.app/api/tickers';
+var SEP1 = '<span class="t1-sep"></span>';
+var SEP2 = '<span class="t2-sep"></span>';
+var SEP3 = '<span class="t3-sep"></span>';
+
+function t1Item(text, cls) {
+  return '<span class="t1-item' + (cls ? ' ' + cls : '') + '">' + text + '</span>' + SEP1;
+}
+
+function classifyT1(p) {
+  // Tournament name — first item or contains "Championship/Open/Invitational/Players/Masters/PGA"
+  if (/championship|open\b|invitational|players|masters|pga\b|memorial|genesis|arnold palmer/i.test(p)) return 't1-tourney';
+  if (/^-\d|^\+\d|leads|lead\b|T\d/i.test(p)) return 't1-score';
+  if (/OUT|WD|WITHDRAW|ABSENT/i.test(p)) return 't1-out';
+  if (/\$/.test(p)) return 't1-money';
+  if (/field|players|man field|golfers/i.test(p)) return 't1-players';
+  return '';
+}
+
+function classifyT2(p) {
+  if (/°F|°C|rain|storm|thunder|lightning|cloudy|sunny|overcast|showers/i.test(p)) return 't2-weather';
+  if (/stimp|green speed/i.test(p)) return 't2-greens';
+  if (/bermuda|bentgrass|tifEagle|poa|paspalum|zoysia/i.test(p)) return 't2-surface';
+  if (/\$/.test(p)) return 't2-money';
+  if (/signature hole|island green/i.test(p)) return 't2-hole';
+  if (/record|longest|shortest/i.test(p)) return 't2-record';
+  if (/\d[\s,]*yard/i.test(p)) return 't2-yardage';
+  if (/par\s?\d/i.test(p)) return 't2-par';
+  if (/mph|wind|gust/i.test(p)) return 't2-wind';
+  if (/OUT|WD|WITHDRAW|absent|notable/i.test(p)) return 't2-absent';
+  if (/design|architect|redesign|renovation/i.test(p)) return 't2-designer';
+  return '';
+}
+
+function tvItemNew(text) {
+  var s = text;
+  // Highlight time patterns
+  s = s.replace(/(\d{1,2}:\d{2}\s*(?:AM|PM|ET|EST|CT|CST|PT|PST)\s*(?:-\s*\d{1,2}:\d{2}\s*(?:AM|PM|ET|EST|CT|CST|PT|PST))?)/gi, '<span class="t3-time">$1</span>');
+  // Color channel names with glow
+  s = s.replace(/Golf Ch\./gi, '<span class="t3-ch-golf">GOLF CH.</span>');
+  s = s.replace(/Golf Channel/gi, '<span class="t3-ch-golf">GOLF CHANNEL</span>');
+  s = s.replace(/CBS/g, '<span class="t3-ch-cbs">CBS</span>');
+  s = s.replace(/ESPN\+/g, '<span class="t3-ch-espn">ESPN+</span>');
+  s = s.replace(/ESPN/g, '<span class="t3-ch-espn">ESPN</span>');
+  s = s.replace(/PGA Tour Live/gi, '<span class="t3-ch-pga">PGA TOUR LIVE</span>');
+  s = s.replace(/NBC/g, '<span class="t3-ch-nbc">NBC</span>');
+  s = s.replace(/FOX/gi, '<span class="t3-ch-fox">FOX</span>');
+  s = s.replace(/Peacock/gi, '<span class="t3-ch-nbc">PEACOCK</span>');
+  return '<span class="t3-item">' + s + '</span>' + SEP3;
+}
+
+async function loadTickers() {
+  try {
+    var res = await fetch(TICKER_API + '?t=' + Date.now());
+    if (!res.ok) return;
+    var data = await res.json();
+    if (!data || data.error) return;
+
+    // T1: Today's Card
+    if (data.ticker1 && data.ticker1.text) {
+      var t1el = document.getElementById('ticker-1');
+      var parts = data.ticker1.text.split(/\s*·\s*/);
+      var badge = '<span class="t1-badge">TODAY\'S CARD</span>';
+      var h = '';
+      for (var r = 0; r < 4; r++) {
+        h += badge;
+        for (var i = 0; i < parts.length; i++) {
+          var p = parts[i].trim();
+          if (!p) continue;
+          var cls = classifyT1(p);
+          // First item (tournament name) gets tourney class if no other match
+          if (i === 0 && !cls) cls = 't1-tourney';
+          h += t1Item(p, cls);
+        }
+      }
+      t1el.innerHTML = h;
+    }
+
+    // T2: Course Intel
+    if (data.ticker2 && data.ticker2.text) {
+      var t2wrap = document.getElementById('ticker-2-wrap');
+      var t2el = document.getElementById('ticker-2');
+      var parts2 = data.ticker2.text.split(/\s*·\s*/);
+      var badge2 = '<span class="t2-badge">COURSE INTEL</span>';
+      var h2 = '';
+      for (var r2 = 0; r2 < 4; r2++) {
+        h2 += badge2;
+        for (var j = 0; j < parts2.length; j++) {
+          var p2 = parts2[j].trim();
+          if (!p2) continue;
+          var cls2 = classifyT2(p2);
+          h2 += '<span class="t2-item' + (cls2 ? ' ' + cls2 : '') + '">' + p2 + '</span>' + SEP2;
+        }
+      }
+      t2el.innerHTML = h2;
+      t2wrap.style.display = 'block';
+    }
+
+    // T3: Live TV
+    if (data.ticker3 && data.ticker3.text) {
+      var t3wrap = document.getElementById('ticker-3-wrap');
+      var t3el = document.getElementById('ticker-3');
+      var parts3 = data.ticker3.text.split(/\s*·\s*/);
+      var badge3 = '<span class="t3-badge"><span class="t3-dot"></span><span class="t3-badge-label">LIVE TV</span></span>';
+      var h3 = '';
+      for (var r3 = 0; r3 < 4; r3++) {
+        h3 += badge3;
+        for (var k = 0; k < parts3.length; k++) {
+          h3 += tvItemNew(parts3[k].trim());
+        }
+      }
+      t3el.innerHTML = h3;
+      t3wrap.style.display = 'block';
+    }
+
+  } catch (err) {
+    console.log('Ticker fetch skipped:', err.message);
+  }
+}
+
+loadTickers();
+setInterval(loadTickers, 5 * 60 * 1000);
+
+// ═══ LINKPULSE INTEGRATION ═══
+const LINKPULSE_API = 'https://linkpulse-tmr.vercel.app/api/published';
+
+function timeAgo(dateStr) {
+  if (!dateStr) return '';
+  const diff = Date.now() - new Date(dateStr).getTime();
+  if (diff < 3600000) return Math.max(1, Math.floor(diff / 60000)) + 'm ago';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + 'h ago';
+  return Math.floor(diff / 86400000) + 'd ago';
+}
+
+function truncDesc(s, n) {
+  if (!s) return '';
+  const c = s.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ').trim();
+  return c.length > n ? c.slice(0, n) + '…' : c;
+}
+
+function renderFeatured(el, article) {
+  let h = '';
+  if (article.image && article.image.startsWith('http')) {
+    h += '<a href="' + article.link + '" target="_blank" rel="noopener">';
+    h += '<img class="hero-img" src="' + article.image + '" onerror="this.parentElement.style.display=\'none\'" alt="" style="cursor:pointer;">';
+    h += '</a>';
+    h += '<div style="text-align:center;margin-top:2px;margin-bottom:4px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + article.source + '</em></div>';
+  }
+  h += '<a class="hero-hl" href="' + article.link + '" target="_blank" rel="noopener">' + article.title.toUpperCase() + '</a>';
+  h += '<div class="hero-cluster">';
+  if (article.description) {
+    h += '<em>*' + truncDesc(article.description, 140) + '*</em><br>';
+  }
+  h += '<em>' + article.source + ' · ' + timeAgo(article.pubDate) + '</em>';
+  h += '</div>';
+  el.innerHTML = h;
+  el.style.display = 'block';
+}
+
+// ═══ ARTICLE BLOCK RENDERER ═══
+// Renders a flat list of articles into a single container. CSS multi-column
+// layout (.cols-balanced) on the parent splits and balances them across 3
+// columns automatically. Each article is wrapped in a `.col-item` div with
+// `break-inside:avoid` so individual stories never split across a column gap.
+//
+// `injects` is an optional array of subscribe-form configs that get spliced
+// into the stream at specific positions:
+//   [{ at: 8,  title: "...", sub: "..." }, ...]
+// With ~90 articles and column-fill:balance, positions ~8/45/82 reliably
+// land in visual columns 1/2/3 at staggered vertical heights.
+function renderBlock(elId, articles, injects) {
+  var el = document.getElementById(elId);
+  if (!el) return;
+  if (!articles || articles.length === 0) { el.innerHTML = ''; return; }
+  injects = injects || [];
+
+  var h = '';
+  articles.forEach(function(a, i) {
+    var desc = truncDesc(a.description, 120);
+    var hasImg = a.image && a.image.startsWith('http');
+    var titleUp = a.title.toUpperCase();
+    var srcLine = '<span class="src">' + a.source + ' · ' + timeAgo(a.pubDate) + '</span>';
+
+    var chunk = '';
+
+    // Show an image every 5th article (cadence is position-in-stream, not
+    // per-column — browser handles the column placement).
+    if (hasImg && i % 5 === 0) {
+      chunk += '<a href="' + a.link + '" target="_blank" rel="noopener"><img class="col-img" src="' + a.image + '" onerror="this.parentElement.style.display=\'none\'" alt=""></a>';
+      chunk += '<div style="text-align:center;margin-top:1px;margin-bottom:3px;"><em style="font-size:10px;color:#999;font-family:Courier,monospace;">Photo: ' + a.source + '</em></div>';
+    }
+
+    // Headline rhythm: H (big red caps) on the lead and every 7th, B (green
+    // caps) every 3rd, red-L every 4th+2, plain L otherwise.
+    if (i === 0 || i % 7 === 0) {
+      chunk += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
+      if (desc) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += srcLine;
+    } else if (i % 3 === 1) {
+      chunk += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+      if (desc) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += srcLine;
+    } else if (i % 4 === 2) {
+      chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener" style="color:#c0392b;">' + titleUp + '</a>';
+      chunk += srcLine;
+    } else {
+      chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
+      if (desc && i % 2 === 0) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += srcLine;
+    }
+
+    h += '<div class="col-item">' + chunk + '</div>';
+
+    // Drop in any subscribe form whose `at` index matches this article
+    for (var j = 0; j < injects.length; j++) {
+      if (injects[j].at === i) {
+        var inj = injects[j];
+        h += '<div class="col-item">' +
+               '<div class="sb">' +
+                 '<div class="t">' + inj.title + '</div>' +
+                 '<div class="s">' + inj.sub + '</div>' +
+                 '<input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button>' +
+               '</div>' +
+             '</div>';
+      }
+    }
+  });
+
+  el.innerHTML = h;
+}
+
+async function loadLinkPulseEdition() {
+  try {
+    const res = await fetch(LINKPULSE_API + '?t=' + Date.now());
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data || !data.articles || data.articles.length === 0) return;
+
+    const arts = data.articles;
+
+    // ═══ FEATURED HEROES — STRICT POSITIONAL ORDER ═══
+    // Position 1 (newest publish) always wins the top hero slot, even if it
+    // has no image. Position 2 always wins the secondary hero. This lets the
+    // editor decide what's #1 simply by publishing it (newest = top), and
+    // single-article "BREAKING" publishes correctly take over the hero.
+    const feat1 = document.getElementById('lp-featured-1');
+    const feat2 = document.getElementById('lp-featured-2');
+
+    let f1 = arts[0];
+    let f2 = arts[1];
+
+    if (f1) renderFeatured(feat1, f1);
+    if (f2) renderFeatured(feat2, f2);
+
+    // ═══ FEED THE TWO BALANCED BLOCKS ═══
+    // Block 1 = positions 3..92 (90 articles).
+    // Block 2 = positions 93..182 (next 90 articles).
+    // CSS multi-column (.cols-balanced) splits each block into 3 equal-height
+    // columns at the browser level — no manual round-robin needed.
+    //
+    // The injects[] config drops one subscribe form into each visual column
+    // at a different vertical position (early / middle / late in stream)
+    // so they form a diagonal cascade — never paired horizontally.
+    var remaining = arts.slice(2); // everything after the two heroes
+    var BLOCK_SIZE = 90;
+
+    renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE), [
+      { at: 8,  title: "The First Tee",     sub: "Morning briefing — every weekday before you tee off." },
+      { at: 45, title: "Inside The Ropes",  sub: "Hot takes, sketches & golf history — every morning." },
+      { at: 82, title: "Read The Greens",   sub: "Curated golf intel before your first putt." }
+    ]);
+    renderBlock('sec-block-2', remaining.slice(BLOCK_SIZE, BLOCK_SIZE * 2), [
+      { at: 8,  title: "Pro Shop Drops",            sub: "Equipment deals & gear reviews — daily." },
+      { at: 45, title: "The Back 9",                sub: "Gear drops, deal alerts, reviews — free daily." },
+      { at: 82, title: "Don't miss tomorrow's round", sub: "Free. Every morning. Unsubscribe anytime." }
+    ]);
+
+    // After articles render, fix link behavior for mobile (back button works)
+    applyMobileLinkBehavior();
+
+  } catch (err) {
+    console.log('LinkPulse fetch skipped:', err.message);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// MOBILE LINK BEHAVIOR
+// On mobile (≤768px), article links should open in the SAME tab so the
+// back button returns the user to TMR (Aaron + Jess feedback).
+// On desktop, links keep target="_blank" — desktop users expect new-tab
+// behavior and have easy keyboard shortcuts (Cmd-click) for either choice.
+// ═══════════════════════════════════════════════════════════════════════
+function applyMobileLinkBehavior() {
+  if (window.innerWidth > 768) return; // desktop — leave alone
+
+  // Strip target="_blank" from every article link on the page.
+  // We target links that point to external URLs (article content),
+  // NOT internal navigation (popup, search, anchor jumps).
+  var links = document.querySelectorAll('a[target="_blank"]');
+  links.forEach(function(a){
+    var href = a.getAttribute('href') || '';
+    // Keep target=_blank for: legal pages, official rules, mailto, tel,
+    // anchor links, and JS-only (#) handlers. Strip from real article URLs.
+    if (
+      href.indexOf('mailto:') === 0 ||
+      href.indexOf('tel:') === 0 ||
+      href === '#' ||
+      href.indexOf('#') === 0 ||
+      href.indexOf('themulliganreport.com/legal') !== -1 ||
+      href.indexOf('themulliganreport.com/giveaway') !== -1
+    ) {
+      return;
+    }
+    a.removeAttribute('target');
+  });
+}
+
+// Run once on initial load to fix any static article links (hero, etc.)
+// that exist before LinkPulse data fetches.
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', applyMobileLinkBehavior);
+} else {
+  applyMobileLinkBehavior();
+}
+
+loadLinkPulseEdition();
+setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
+</script>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     GIVEAWAY POPUP — quarterly Titleist sweepstakes
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div class="gv-back" id="gvBack" role="dialog" aria-modal="true" aria-labelledby="gvHeadline">
+  <div class="gv-modal" onclick="event.stopPropagation();">
+    <button class="gv-close" onclick="gvClose()" aria-label="Close">✕</button>
+
+    <div class="gv-img">
+      <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1777646963/a49490ec-c48a-4236-8a5b-3b4dec69f6c9_hlip4j.jpg" alt="Three dozen Titleist golf balls stacked in a pyramid" loading="lazy">
+    </div>
+
+    <div class="gv-body" id="gvBody">
+
+      <div class="gv-banner">★ The Mulligan Report Sweepstakes ★</div>
+
+      <h2 class="gv-headline" id="gvHeadline">Win 3 Dozen<br><em>Titleist Golf Balls</em></h2>
+
+      <p class="gv-sub">
+        We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model — every quarter in 2026.<br>
+        <strong>4 winners. 4 chances.</strong> Every reader wins the daily golf briefing.
+      </p>
+
+      <form class="gv-form" id="gvForm" onsubmit="return gvSubmit(event);">
+        <input
+          type="email"
+          name="email"
+          id="gvEmail"
+          placeholder="Your email address"
+          required
+          autocomplete="email"
+        >
+        <button type="submit" id="gvBtn">Enter to Win &amp; Subscribe</button>
+      </form>
+
+      <div class="gv-fine">
+        No purchase necessary · One entry per person per quarter · 18+ U.S. residents only<br>
+        <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
+        &nbsp;·&nbsp;
+        <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy</a>
+        <button class="gv-no" type="button" onclick="gvClose()">No thanks, just the news</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ─── Trigger settings ──────────────────────────────────────────────────
+  // Three triggers run in parallel. Whichever fires first wins.
+  //   1. Timer:        5 seconds elapsed (catches cold traffic before bounce)
+  //   2. Exit-intent:  mouse leaves top of viewport (desktop only)
+  //   3. Scroll-50%:   user scrolls past half the page (mobile only)
+  // After any trigger fires, all others shut off. Once-per-session flag.
+  var SESSION_KEY = 'tmr_gv_seen_v1';   // bump _v1 to _v2 to re-show after dismissal
+  var MOBILE_BREAKPOINT = 768;
+  var SCROLL_THRESHOLD = 0.5;           // 50% of page
+  var TIMER_DELAY_MS = 5000;            // 5 seconds
+  var EXIT_ARM_DELAY_MS = 1500;         // wait before arming exit-intent
+
+  function alreadySeen(){
+    try { return !!sessionStorage.getItem(SESSION_KEY); }
+    catch(e) { return false; }
+  }
+
+  // Cleanup pointers — populated when listeners attach so we can detach all
+  var cleanups = [];
+  function detachAll(){
+    cleanups.forEach(function(fn){ try { fn(); } catch(e){} });
+    cleanups = [];
+  }
+
+  function gvShow(){
+    if (alreadySeen()) return;
+    var back = document.getElementById('gvBack');
+    if (!back) return;
+    back.classList.add('show');
+    document.body.style.overflow = 'hidden'; // prevent scroll behind modal
+    // Mark seen as soon as it shows so close-during-render doesn't double-fire
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+    detachAll(); // shut off remaining triggers
+  }
+
+  window.gvClose = function(){
+    var back = document.getElementById('gvBack');
+    if (!back) return;
+    back.classList.remove('show');
+    document.body.style.overflow = '';
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+  };
+
+  // Click backdrop closes (but not clicks on modal)
+  document.addEventListener('click', function(e){
+    var back = document.getElementById('gvBack');
+    if (back && back.classList.contains('show') && e.target === back) {
+      gvClose();
+    }
+  });
+
+  // ESC key closes
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape') {
+      var back = document.getElementById('gvBack');
+      if (back && back.classList.contains('show')) gvClose();
+    }
+  });
+
+  // ─── Form submit (placeholder — wire to AWeber later) ───────────────────
+  window.gvSubmit = function(ev){
+    ev.preventDefault();
+    var emailEl = document.getElementById('gvEmail');
+    var btn = document.getElementById('gvBtn');
+    var body = document.getElementById('gvBody');
+    var email = (emailEl.value || '').trim();
+
+    // Basic validation
+    if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 0) {
+      emailEl.focus();
+      return false;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    // ───────────────────────────────────────────────────────────────────────
+    // TODO: Replace this fake submission with real AWeber endpoint when ready.
+    //
+    // AWeber's hosted form action looks like:
+    //   POST https://www.aweber.com/scripts/addlead.pl
+    //   Form fields: meta_web_form_id, meta_split_id, listname, redirect, email
+    //
+    // Or use AWeber's API: https://api.aweber.com/1.0/accounts/{id}/lists/{id}/subscribers
+    // (requires OAuth token, server-side only — recommend a Vercel /api/subscribe route)
+    //
+    // For now: simulate success after 600ms.
+    // ───────────────────────────────────────────────────────────────────────
+    setTimeout(function(){
+      body.innerHTML =
+        '<div class="gv-success">' +
+          '<div class="gv-check">✓</div>' +
+          '<h3>You\'re entered.</h3>' +
+          '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
+        '</div>';
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+      // Auto-close after success
+      setTimeout(gvClose, 2800);
+    }, 600);
+
+    return false;
+  };
+
+  // ─── Boot — attach all triggers; first to fire wins ─────────────────────
+  function isMobile(){
+    return window.innerWidth <= MOBILE_BREAKPOINT;
+  }
+
+  function setupTriggers(){
+    if (alreadySeen()) return; // don't bother attaching listeners
+
+    // ── Trigger 1: 5-second timer (works on all devices) ─────────────────
+    var timerId = setTimeout(function(){
+      gvShow();
+    }, TIMER_DELAY_MS);
+    cleanups.push(function(){ clearTimeout(timerId); });
+
+    if (isMobile()) {
+      // ── Trigger 2 (mobile): scroll past 50% of page ────────────────────
+      var scrollHandler = function(){
+        if (alreadySeen()) return;
+        var scrolled = window.scrollY || window.pageYOffset || 0;
+        var docH = Math.max(
+          document.documentElement.scrollHeight,
+          document.body.scrollHeight
+        );
+        var winH = window.innerHeight;
+        var maxScroll = docH - winH;
+        if (maxScroll <= 0) return; // page too short to measure
+        var pct = scrolled / maxScroll;
+        if (pct >= SCROLL_THRESHOLD) {
+          gvShow();
+        }
+      };
+      window.addEventListener('scroll', scrollHandler, { passive: true });
+      cleanups.push(function(){
+        window.removeEventListener('scroll', scrollHandler);
+      });
+
+    } else {
+      // ── Trigger 2 (desktop): exit-intent (mouse leaves top of viewport) ─
+      // Wait 1.5s before arming so we don't fire on the user's initial
+      // mouse path from the address bar to the page content.
+      var armId = setTimeout(function(){
+        var exitHandler = function(e){
+          if (alreadySeen()) return;
+          // Fire only when leaving toward the top (cursor heading for
+          // the close button / URL bar / browser tab), not the sides/bottom.
+          if (e.clientY <= 0) {
+            gvShow();
+          }
+        };
+        document.addEventListener('mouseleave', exitHandler);
+        cleanups.push(function(){
+          document.removeEventListener('mouseleave', exitHandler);
+        });
+      }, EXIT_ARM_DELAY_MS);
+      cleanups.push(function(){ clearTimeout(armId); });
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupTriggers);
+  } else {
+    setupTriggers();
+  }
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     CLUBHOUSE TV / CADDIE'S PICK — Loader
+     Fetches /api/save-picks and renders the dark-band section.
+     ═══════════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  'use strict';
+  var ROOT_ID    = 'caddiesPickRoot';
+  var DATA_URL   = 'https://mulligan-report-clubhouse.vercel.app/api/save-picks';
+  var YT_WATCH   = 'https://www.youtube.com/watch?v=';
+  var YT_THUMB   = 'https://i.ytimg.com/vi/';
+  var ARCHIVE_URL = 'https://mulligan-report-clubhouse.vercel.app/archives.html';
+
+  function esc(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  /* Use server-supplied thumbnail if present; else build from videoId.
+     onerror falls back to hqdefault if maxres returns 404.
+     forceHd=true forces maxresdefault even if the saved thumbnail is low-res
+     (used for the big hero tile so it renders sharp on wide screens). */
+  function thumbHTML(v, alt, forceHd){
+    var src;
+    if (forceHd && v.videoId) {
+      src = YT_THUMB + encodeURIComponent(v.videoId) + '/maxresdefault.jpg';
+    } else if (v.thumbnail) {
+      src = v.thumbnail;
+    } else if (v.videoId) {
+      src = YT_THUMB + encodeURIComponent(v.videoId) + '/maxresdefault.jpg';
+    } else {
+      src = '';
+    }
+    var fallback = v.videoId
+      ? YT_THUMB + encodeURIComponent(v.videoId) + '/hqdefault.jpg'
+      : '';
+    return '<img src="'+esc(src)+'" alt="'+esc(alt)+'" '+
+           (fallback ? 'onerror="if(this.dataset.f!==\'1\'){this.dataset.f=\'1\';this.src=\''+fallback+'\';}"' : '')+'>';
+  }
+
+  /* Internal watch page — keeps viewers on the Mulligan Report site instead
+     of sending them to YouTube. The watch.html page embeds the player and
+     surfaces "More from the Caddie" so session time increases. */
+  function watchURL(v){
+    var id = v.videoId || '';
+    if (!id) return YT_WATCH; /* fallback: YouTube homepage if no id */
+    var url = '/watch.html?v=' + encodeURIComponent(id);
+    /* Append &t= for timestamp jump if set — watch.html forwards this to the embed. */
+    if (v.timestamp && Number.isFinite(Number(v.timestamp))) {
+      url += '&t=' + Number(v.timestamp);
+    }
+    return url;
+  }
+
+  function renderHeroCard(h){
+    var viewsBlock = h.views
+      ? '<span class="cp-views">'+esc(h.views)+'</span>'
+      : '';
+    var durBlock = h.duration
+      ? '<span class="cp-dur">'+esc(h.duration)+'</span>'
+      : '';
+    return ''+
+    '<div class="cp-hero">'+
+      '<a href="'+watchURL(h)+'" class="cp-card">'+
+        thumbHTML(h, h.title, true)+
+        '<span class="cp-badge">Caddie\u2019s Pick</span>'+
+        viewsBlock+
+        '<span class="cp-play"></span>'+
+        '<div class="cp-overlay">'+
+          '<div class="cp-overlay-title">'+esc(h.title)+'</div>'+
+          '<div class="cp-overlay-meta">'+
+            '<span class="cp-overlay-meta-left">'+
+              '<span class="cp-channel-dot"></span>'+
+              '<span class="cp-channel">'+esc(h.channel || '')+'</span>'+
+            '</span>'+
+            durBlock+
+          '</div>'+
+        '</div>'+
+      '</a>'+
+    '</div>';
+  }
+
+  function renderHeroMeta(h){
+    var quoteBlock = '';
+    if (h.comment && h.comment.trim()) {
+      quoteBlock =
+        '<blockquote class="cp-quote">'+
+          '<p>'+esc(h.comment)+'</p>'+
+          '<span class="cp-attr">\u2014 The Caddie</span>'+
+        '</blockquote>';
+    }
+    var metaLineSep = '<span class="sep">\u00b7</span>';
+    var metaParts = [];
+    if (h.channel)  metaParts.push('<span class="cp-channel">'+esc(h.channel)+'</span>');
+    if (h.views)    metaParts.push(esc(h.views) + ' views');
+    if (h.duration) metaParts.push(esc(h.duration));
+    metaParts.push('YouTube');
+    var metaLine = metaParts.join(metaLineSep);
+
+    return ''+
+    '<div class="cp-headline">'+
+      '<a href="'+watchURL(h)+'">'+esc(h.title)+'</a>'+
+      '<div class="cp-meta-line">'+metaLine+'</div>'+
+    '</div>'+
+    quoteBlock;
+  }
+
+  function renderHero(h){
+    return renderHeroCard(h) + renderHeroMeta(h);
+  }
+
+  function renderMini(v){
+    var durBlock = v.duration
+      ? '<span class="cp-thumb-dur">'+esc(v.duration)+'</span>'
+      : '';
+    var metaParts = [];
+    if (v.channel) metaParts.push('<span class="cp-channel">'+esc(v.channel)+'</span>');
+    if (v.views)   metaParts.push(esc(v.views));
+    var meta = metaParts.join(' \u00b7 ');
+
+    return ''+
+    '<a href="'+watchURL(v)+'" class="cp-card-mini">'+
+      '<div class="cp-thumb">'+
+        thumbHTML(v, v.title)+
+        durBlock+
+      '</div>'+
+      '<div class="cp-mini-title">'+esc(v.title)+'</div>'+
+      '<div class="cp-mini-meta">'+meta+'</div>'+
+    '</a>';
+  }
+
+  function renderSection(picks){
+    /* Find featured pick (the hero); fall back to first if none flagged */
+    var hero = null;
+    var rest = [];
+    for (var i = 0; i < picks.length; i++){
+      if (picks[i].featured && !hero) hero = picks[i];
+      else rest.push(picks[i]);
+    }
+    if (!hero && picks.length > 0){
+      hero = picks[0];
+      rest = picks.slice(1);
+    }
+    if (!hero) return ''; /* nothing to render */
+
+    /* Up to 24 supporting picks. All rendered visible inside a fixed-height
+       scrollable viewport; up/down arrows scroll between them. */
+    rest = rest.slice(0, 24);
+
+    var miniHTML = '';
+    for (var j = 0; j < rest.length; j++){
+      miniHTML += '<div class="cp-card-wrap">'+renderMini(rest[j])+'</div>';
+    }
+
+    /* Scroll arrows only appear if there's enough content to overflow.
+       Initial state: up disabled (at top), down enabled. */
+    var scrollControls = (rest.length > 4)
+      ? '<button type="button" class="cp-scroll-btn cp-scroll-btn--up" data-disabled="1" aria-label="Scroll up">'+
+          '<span class="cp-scroll-arrow"></span>'+
+        '</button>'+
+        '<button type="button" class="cp-scroll-btn cp-scroll-btn--down" aria-label="Scroll down">'+
+          '<span class="cp-scroll-arrow"></span>'+
+        '</button>'
+      : '';
+
+    var moreBlock = rest.length > 0
+      ? '<div class="cp-more cp-more--side">'+
+          '<div class="cp-more-head">'+
+            '<span class="cp-more-label">More from the Caddie</span>'+
+            '<span class="cp-more-curated">Curated daily</span>'+
+          '</div>'+
+          '<div class="cp-scroll-wrap" data-at-top="1" data-at-bottom="0">'+
+            scrollControls+
+            '<div class="cp-scroll-viewport">'+
+              '<div class="cp-grid">'+miniHTML+'</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'
+      : '';
+
+    return ''+
+    '<section class="cp-section">'+
+      '<div class="cp-frame">'+
+        '<div class="cp-header">'+
+          '<div class="cp-wordmark">'+
+            '<span class="cp-logo"></span>'+
+            '<span class="cp-wordmark-text">CLUBHOUSE TV</span>'+
+          '</div>'+
+          '<div class="cp-sub">Caddie\u2019s Pick \u00b7 Curated daily</div>'+
+        '</div>'+
+        '<div class="cp-tv-layout">'+
+          '<div class="cp-tv-main">'+
+            renderHeroCard(hero)+
+            renderHeroMeta(hero)+
+          '</div>'+
+          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+'</aside>' : '')+
+        '</div>'+
+        '<div class="cp-cta">'+
+          '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
+        '</div>'+
+      '</div>'+
+    '</section>'+
+    '<div class="cp-ribbon">'+
+      '<div class="cp-ribbon-text">'+
+        '<span class="cp-ribbon-title">Enjoying the Front 9?</span>'+
+        '<span class="cp-ribbon-sub">Get tomorrow\u2019s round delivered before your tee time.</span>'+
+      '</div>'+
+      '<form class="cp-ribbon-form" onsubmit="event.preventDefault();openSubscribe();">'+
+        '<input class="cp-ribbon-input" type="email" placeholder="Your email..." required>'+
+        '<button class="cp-ribbon-btn" type="submit">SUBSCRIBE</button>'+
+      '</form>'+
+    '</div>';
+  }
+
+  function init(){
+    var root = document.getElementById(ROOT_ID);
+    if (!root) return;
+
+    fetch(DATA_URL, { cache: 'no-store' })
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
+      .then(function(data){
+        var picks = (data && Array.isArray(data.picks)) ? data.picks : [];
+        if (picks.length === 0){
+          /* No picks published yet — render nothing (silent) */
+          root.innerHTML = '';
+          return;
+        }
+        root.innerHTML = renderSection(picks);
+        wireLoadMore(root);
+      })
+      .catch(function(err){
+        if (window.console) console.warn('[Clubhouse TV] load failed:', err);
+        root.innerHTML = '';
+      });
+  }
+
+  function wireLoadMore(root){
+    var wrap = root.querySelector('.cp-scroll-wrap');
+    if (!wrap) return;
+    var viewport = wrap.querySelector('.cp-scroll-viewport');
+    var upBtn   = wrap.querySelector('.cp-scroll-btn--up');
+    var downBtn = wrap.querySelector('.cp-scroll-btn--down');
+    if (!viewport) return;
+
+    /* Scroll by one card-row (~110px). Tweak SCROLL_STEP to taste. */
+    var SCROLL_STEP = 220; /* two cards per click feels right on desktop */
+
+    function updateState(){
+      var top = viewport.scrollTop;
+      var max = viewport.scrollHeight - viewport.clientHeight;
+      var atTop = top <= 2;
+      var atBottom = top >= max - 2;
+      wrap.setAttribute('data-at-top',    atTop    ? '1' : '0');
+      wrap.setAttribute('data-at-bottom', atBottom ? '1' : '0');
+      if (upBtn)   upBtn.setAttribute('data-disabled',   atTop    ? '1' : '0');
+      if (downBtn) downBtn.setAttribute('data-disabled', atBottom ? '1' : '0');
+    }
+
+    if (upBtn){
+      upBtn.addEventListener('click', function(){
+        viewport.scrollBy({ top: -SCROLL_STEP, behavior: 'smooth' });
+      });
+    }
+    if (downBtn){
+      downBtn.addEventListener('click', function(){
+        viewport.scrollBy({ top: SCROLL_STEP, behavior: 'smooth' });
+      });
+    }
+    viewport.addEventListener('scroll', updateState, { passive: true });
+
+    /* Initial state — also re-check after a short tick to handle late image loads
+       that change scrollHeight. */
+    updateState();
+    setTimeout(updateState, 300);
+    setTimeout(updateState, 1500);
+  }
+
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
