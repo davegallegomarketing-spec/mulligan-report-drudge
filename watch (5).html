@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now Playing — The Mulligan Report</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/icon-192.png">
+<meta name="theme-color" content="#0a1a0f">
+<meta property="og:site_name" content="The Mulligan Report">
+<meta property="og:type" content="video.other">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --bg-deep:       #0a1a0f;
+    --bg-section:    #0f2218;
+    --bg-card:       #132b1b;
+    --bg-parchment:  #f5f0e8;
+    --gold:          #b8860b;
+    --gold-light:    #d4a828;
+    --gold-glow:     rgba(184,134,11,0.12);
+    --green-border:  #2d5a40;
+    --cream:         #f5f0e8;
+    --cream-dim:     #c8c0b0;
+    --text-body:     #d4cfc4;
+    --text-muted:    #8a8478;
+    --red-live:      #c0392b;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: #0f2218;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ── TARTAN BACKGROUND ── */
+  .tartan-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body > *:not(.tartan-bg) {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER BAR ── */
+  .watch-header {
+    background: var(--bg-section);
+    border-bottom: 1px solid var(--green-border);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .watch-header a { text-decoration: none; }
+  .header-brand {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 18px;
+    color: var(--cream);
+    letter-spacing: 1px;
+  }
+  .header-brand em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+  .header-back {
+    font-size: 13px;
+    color: var(--gold-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .header-back:hover { color: var(--gold); }
+  .header-back svg { width: 14px; height: 14px; }
+
+  /* ── MAIN PLAYER AREA ── */
+  .player-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 20px 0;
+  }
+
+  .video-frame {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 80px var(--gold-glow), 0 8px 32px rgba(0,0,0,0.5);
+    background: #000;
+  }
+  .video-frame iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: 0;
+  }
+
+  /* ── VIDEO META ── */
+  .video-meta {
+    padding: 20px 0 0;
+  }
+  .video-channel {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+  }
+  .video-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+  .video-stats {
+    font-size: 13px;
+    color: var(--text-muted);
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .video-stats span { display: flex; align-items: center; gap: 4px; }
+
+  /* ── ACTION BUTTONS ROW ── */
+  .video-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .watch-youtube-link,
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--cream);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--green-border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .watch-youtube-link:hover,
+  .share-btn:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: var(--gold);
+  }
+  .watch-youtube-link svg { width: 16px; height: 16px; fill: #ff0000; }
+  .share-btn svg { width: 15px; height: 15px; }
+
+  /* Copy link success state */
+  .share-btn.copied {
+    border-color: var(--gold);
+    color: var(--gold-light);
+  }
+
+  /* Share divider */
+  .action-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--green-border);
+    margin: 0 4px;
+  }
+
+  /* ── SUBSCRIBE CTA ── */
+  .subscribe-interstitial {
+    max-width: 900px;
+    margin: 40px auto 0;
+    padding: 0 20px;
+  }
+  .subscribe-card {
+    background: var(--bg-section);
+    border: 1.5px solid var(--green-border);
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .subscribe-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+  .subscribe-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+  }
+  .subscribe-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 8px;
+  }
+  .subscribe-card p {
+    font-size: 14px;
+    color: var(--text-body);
+    margin-bottom: 20px;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+  .subscribe-form {
+    display: flex;
+    gap: 10px;
+    max-width: 440px;
+    margin: 0 auto;
+  }
+  .subscribe-form input[type="email"] {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid var(--green-border);
+    border-radius: 6px;
+    background: rgba(0,0,0,0.3);
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .subscribe-form input[type="email"]::placeholder { color: var(--text-muted); }
+  .subscribe-form input[type="email"]:focus { border-color: var(--gold); }
+  .subscribe-form button {
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gold);
+    color: #1a1a0f;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s;
+  }
+  .subscribe-form button:hover { background: var(--gold-light); }
+  .subscribe-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 12px;
+  }
+  .subscribe-success {
+    display: none;
+    padding: 16px;
+    color: var(--gold-light);
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  /* ── MORE FROM THE CADDIE ── */
+  .more-picks {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 0 20px 60px;
+  }
+  .more-picks h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--cream);
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--green-border);
+  }
+  .more-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+  .more-card {
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--green-border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: var(--bg-card);
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .more-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .more-card.is-current {
+    border-color: var(--gold);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .more-card img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    object-fit: cover;
+    display: block;
+  }
+  .more-card-info {
+    padding: 8px 10px 10px;
+  }
+  .more-card-channel {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gold-light);
+    margin-bottom: 3px;
+  }
+  .more-card-title {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── FOOTER ── */
+  .watch-footer {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    text-align: center;
+  }
+  .watch-footer a {
+    font-size: 13px;
+    color: var(--gold-light);
+    text-decoration: none;
+    border: 1px solid var(--green-border);
+    padding: 10px 28px;
+    border-radius: 6px;
+    transition: all 0.2s;
+    display: inline-block;
+  }
+  .watch-footer a:hover {
+    border-color: var(--gold);
+    background: rgba(184,134,11,0.06);
+  }
+
+  /* ── LOADING STATE ── */
+  .loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+  .loading-state .spinner {
+    width: 32px; height: 32px;
+    border: 3px solid var(--green-border);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── NO VIDEO STATE ── */
+  .no-video {
+    text-align: center;
+    padding: 80px 20px;
+  }
+  .no-video h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--cream);
+    margin-bottom: 12px;
+  }
+  .no-video p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+  .no-video a {
+    color: var(--gold-light);
+    text-decoration: none;
+    border: 1px solid var(--gold);
+    padding: 10px 28px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 700px) {
+    .video-title { font-size: 20px; }
+    .more-grid { grid-template-columns: repeat(2, 1fr); }
+    .subscribe-form { flex-direction: column; }
+    .subscribe-form button { width: 100%; }
+    .subscribe-card { padding: 24px 20px; }
+    .action-divider { display: none; }
+  }
+  @media (max-width: 480px) {
+    .player-section { padding: 16px 12px 0; }
+    .more-picks { padding: 0 12px 40px; }
+    .subscribe-interstitial { padding: 0 12px; }
+    .video-actions { gap: 8px; }
+    .share-btn, .watch-youtube-link { padding: 8px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── TARTAN PATTERN BACKGROUND ── -->
+<svg class="tartan-bg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="tartan" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="#1b3a2a"/>
+      <rect x="0" y="0" width="80" height="6" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="8" width="80" height="1.5" fill="#b8860b" opacity="0.45"/>
+      <rect x="0" y="18" width="80" height="3" fill="#1b4332" opacity="0.7"/>
+      <rect x="0" y="24" width="80" height="1" fill="#d4a828" opacity="0.25"/>
+      <rect x="0" y="36" width="80" height="10" fill="#2d6a4f" opacity="0.35"/>
+      <rect x="0" y="48" width="80" height="1" fill="#d4a828" opacity="0.25"/>
+      <rect x="0" y="56" width="80" height="3" fill="#1b4332" opacity="0.7"/>
+      <rect x="0" y="62" width="80" height="1.5" fill="#b8860b" opacity="0.45"/>
+      <rect x="0" y="72" width="80" height="6" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="0" width="6" height="80" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="8" y="0" width="1.5" height="80" fill="#b8860b" opacity="0.45"/>
+      <rect x="18" y="0" width="3" height="80" fill="#1b4332" opacity="0.7"/>
+      <rect x="24" y="0" width="1" height="80" fill="#d4a828" opacity="0.25"/>
+      <rect x="36" y="0" width="10" height="80" fill="#2d6a4f" opacity="0.35"/>
+      <rect x="48" y="0" width="1" height="80" fill="#d4a828" opacity="0.25"/>
+      <rect x="56" y="0" width="3" height="80" fill="#1b4332" opacity="0.7"/>
+      <rect x="62" y="0" width="1.5" height="80" fill="#b8860b" opacity="0.45"/>
+      <rect x="72" y="0" width="6" height="80" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="0" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="36" y="0" width="10" height="6" fill="#8B4513" opacity="0.15"/>
+      <rect x="72" y="0" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="0" y="36" width="6" height="10" fill="#8B4513" opacity="0.15"/>
+      <rect x="36" y="36" width="10" height="10" fill="#8B4513" opacity="0.1"/>
+      <rect x="72" y="36" width="6" height="10" fill="#8B4513" opacity="0.15"/>
+      <rect x="0" y="72" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="36" y="72" width="10" height="6" fill="#8B4513" opacity="0.15"/>
+      <rect x="72" y="72" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="8" y="8" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="62" y="8" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="8" y="62" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="62" y="62" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#tartan)"/>
+</svg>
+
+<!-- ── HEADER ── -->
+<header class="watch-header">
+  <a href="/">
+    <div class="header-brand">THE MULLIGAN <em>REPORT</em></div>
+  </a>
+  <a href="/" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to Today's Round
+  </a>
+</header>
+
+<!-- ── LOADING ── -->
+<div id="loadingState" class="loading-state">
+  <div class="spinner"></div>
+  Loading video...
+</div>
+
+<!-- ── NO VIDEO ── -->
+<div id="noVideoState" class="no-video" style="display:none;">
+  <h2>Video Not Found</h2>
+  <p>This video isn't in the current lineup. Head back to the clubhouse.</p>
+  <a href="/">← Back to TMR</a>
+</div>
+
+<!-- ── MAIN CONTENT (hidden until loaded) ── -->
+<div id="mainContent" style="display:none;">
+
+  <!-- Player -->
+  <section class="player-section">
+    <div class="video-frame">
+      <iframe id="ytPlayer"
+        src=""
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+    <div class="video-meta">
+      <div class="video-channel" id="videoChannel"></div>
+      <h1 class="video-title" id="videoTitle"></h1>
+      <div class="video-stats" id="videoStats"></div>
+
+      <!-- Action buttons row: YouTube + Share -->
+      <div class="video-actions">
+        <a id="youtubeLink" class="watch-youtube-link" href="#" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+          Watch on YouTube
+        </a>
+
+        <div class="action-divider"></div>
+
+        <!-- Copy Link -->
+        <button class="share-btn" id="copyLinkBtn" onclick="copyWatchLink()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <span id="copyLinkLabel">Copy Link</span>
+        </button>
+
+        <!-- Share on X -->
+        <button class="share-btn" id="shareXBtn" onclick="shareOnX()">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          Share on X
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Subscribe CTA -->
+  <section class="subscribe-interstitial">
+    <div class="subscribe-card">
+      <div class="subscribe-icon">⛳</div>
+      <h3>Never Miss the Caddie's Pick</h3>
+      <p>The best golf videos and stories, curated every morning. Delivered before your tee time.</p>
+      <div id="subscribeFormWrap">
+        <div class="subscribe-form">
+          <input type="email" id="subEmail" placeholder="your@email.com" required>
+          <button onclick="handleSubscribe()">Subscribe Free</button>
+        </div>
+        <div class="subscribe-count">Join 12,847 golfers already subscribed</div>
+      </div>
+      <div class="subscribe-success" id="subscribeSuccess">
+        ✓ You're in! Check your inbox for tomorrow's round.
+      </div>
+    </div>
+  </section>
+
+  <!-- More Picks -->
+  <section class="more-picks" id="morePicksSection" style="display:none;">
+    <h3>More from the Caddie</h3>
+    <div class="more-grid" id="moreGrid"></div>
+  </section>
+
+  <!-- Footer -->
+  <div class="watch-footer">
+    <a href="/archives.html">← Browse the Archives</a>
+  </div>
+
+</div>
+
+<script>
+// ── Store video title globally for share functions ──
+var _shareTitle = '';
+
+(function() {
+  // ── Get video ID from URL ──
+  const params = new URLSearchParams(window.location.search);
+  const videoId = params.get('v');
+  // Optional timestamp jump (seconds) — forwarded as ?start= to the embed.
+  const tParam = params.get('t');
+  let startSeconds = 0;
+  if (tParam) {
+    // Accept "42" or "42s" formats — strip trailing "s".
+    const cleaned = String(tParam).replace(/s$/i, '');
+    const n = Number(cleaned);
+    if (Number.isFinite(n) && n > 0) startSeconds = Math.floor(n);
+  }
+
+  if (!videoId || videoId.length < 5) {
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('noVideoState').style.display = 'block';
+    return;
+  }
+
+  // ── Load the embed immediately (no API cost) ──
+  const startSuffix = startSeconds > 0 ? '&start=' + startSeconds : '';
+  document.getElementById('ytPlayer').src =
+    'https://www.youtube.com/embed/' + videoId + '?rel=0&modestbranding=1&autoplay=1' + startSuffix;
+  document.getElementById('youtubeLink').href =
+    'https://www.youtube.com/watch?v=' + videoId + (startSeconds > 0 ? '&t=' + startSeconds + 's' : '');
+
+  // ── Update page meta ──
+  document.title = 'Now Playing — The Mulligan Report';
+
+  // ── Try to get video info from save-picks ──
+  fetch('/api/save-picks')
+    .then(r => r.json())
+    .then(data => {
+      const picks = data.picks || [];
+      const current = picks.find(p => p.videoId === videoId);
+
+      if (current) {
+        // We have metadata from Aaron's picks
+        document.getElementById('videoChannel').textContent = current.channel || '';
+        document.getElementById('videoTitle').textContent = current.title || '';
+        document.title = current.title + ' — The Mulligan Report';
+        _shareTitle = current.title || 'Check this out';
+
+        // Stats line
+        const statsEl = document.getElementById('videoStats');
+        let statsHTML = '';
+        if (current.views) statsHTML += '<span>👁 ' + current.views + ' views</span>';
+        if (current.duration) statsHTML += '<span>⏱ ' + current.duration + '</span>';
+        statsEl.innerHTML = statsHTML;
+
+        // OG tags for sharing
+        updateMeta('og:title', current.title);
+        updateMeta('og:image', current.thumbnail);
+        updateMeta('og:url', window.location.href);
+
+        // Build "More from the Caddie" grid
+        const others = picks.filter(p => p.videoId !== videoId);
+        if (others.length > 0) {
+          const grid = document.getElementById('moreGrid');
+          const show = others.slice(0, 4); // max 4 cards
+          show.forEach(p => {
+            const card = document.createElement('a');
+            card.className = 'more-card';
+            card.href = '/watch.html?v=' + p.videoId;
+            card.innerHTML =
+              '<img src="' + (p.thumbnail || '') + '" alt="" loading="lazy">' +
+              '<div class="more-card-info">' +
+                '<div class="more-card-channel">' + (p.channel || '') + '</div>' +
+                '<div class="more-card-title">' + (p.title || '') + '</div>' +
+              '</div>';
+            grid.appendChild(card);
+          });
+          document.getElementById('morePicksSection').style.display = 'block';
+        }
+
+      } else {
+        // Video not in picks — still show the embed, hide meta
+        document.getElementById('videoChannel').textContent = '';
+        document.getElementById('videoTitle').textContent = 'Now Playing on The Mulligan Report';
+        _shareTitle = 'Now Playing on The Mulligan Report';
+      }
+
+      // Show main content, hide loading
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    })
+    .catch(() => {
+      // API failed — still show the embed
+      document.getElementById('videoTitle').textContent = 'Now Playing on The Mulligan Report';
+      _shareTitle = 'Now Playing on The Mulligan Report';
+      document.getElementById('loadingState').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+    });
+
+  function updateMeta(property, content) {
+    let tag = document.querySelector('meta[property="' + property + '"]');
+    if (!tag) {
+      tag = document.createElement('meta');
+      tag.setAttribute('property', property);
+      document.head.appendChild(tag);
+    }
+    tag.setAttribute('content', content);
+  }
+
+})();
+
+// ── Copy Link handler ──
+function copyWatchLink() {
+  var url = window.location.href;
+  var btn = document.getElementById('copyLinkBtn');
+  var label = document.getElementById('copyLinkLabel');
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(function() {
+      showCopied();
+    }).catch(function() {
+      fallbackCopy(url);
+    });
+  } else {
+    fallbackCopy(url);
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); showCopied(); }
+    catch(e) { label.textContent = 'Failed'; }
+    document.body.removeChild(ta);
+  }
+
+  function showCopied() {
+    label.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(function() {
+      label.textContent = 'Copy Link';
+      btn.classList.remove('copied');
+    }, 2000);
+  }
+}
+
+// ── Share on X handler ──
+function shareOnX() {
+  var url = window.location.href;
+  var text = _shareTitle + ' — via The Mulligan Report ⛳';
+  var intentUrl = 'https://twitter.com/intent/tweet?text=' +
+    encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+  window.open(intentUrl, '_blank', 'width=550,height=420,noopener');
+}
+
+// ── Subscribe handler ──
+function handleSubscribe() {
+  const email = document.getElementById('subEmail').value.trim();
+  if (!email || !email.includes('@')) {
+    document.getElementById('subEmail').style.borderColor = '#c0392b';
+    return;
+  }
+
+  // For now: visual success + log
+  // TODO: Wire to Beehiiv API or form endpoint
+  console.log('TMR Subscribe:', email);
+
+  document.getElementById('subscribeFormWrap').style.display = 'none';
+  document.getElementById('subscribeSuccess').style.display = 'block';
+
+  // Optional: send to Beehiiv when ready
+  // fetch('https://api.beehiiv.com/...', { method:'POST', body: JSON.stringify({email}) });
+}
+</script>
+
+</body>
+</html>
