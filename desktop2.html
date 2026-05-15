@@ -120,12 +120,14 @@
   .hero-cluster em{font-family:Georgia,serif;color:#666;font-size:13px;text-decoration:none;}
 
   /* ═══ LOGO BAR ═══ */
-  .logo-bar{background:#0f2b1f;padding:30px 20px 36px;text-align:center;border-bottom:2px solid rgba(184,134,11,0.25);position:relative;}
-  .logo-bar .flag{display:block;font-size:22px;line-height:1;color:#c0392b;margin-bottom:14px;}
-  .logo-bar .logo{font-family:'Times New Roman',Times,Georgia,serif;font-size:84px;font-weight:bold;line-height:1;letter-spacing:0.01em;}
-  .logo-bar .logo .word-1{color:#f4ecd8;font-style:normal;}
-  .logo-bar .logo .word-2{color:#d4a828;font-style:italic;margin-left:0.22em;}
-  .logo-bar .tagline{font-family:Georgia,serif;font-size:13px;font-style:italic;color:rgba(244,236,216,0.5);margin-top:18px;letter-spacing:0.01em;}
+  .logo-bar{background:#0f2b1f;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
+  .logo-bar::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.015) 2px,rgba(255,255,255,0.015) 4px);pointer-events:none;}
+  .logo-bar-center{text-align:center;padding:28px 32px 24px;position:relative;}
+  .logo-bar .flag{display:flex;justify-content:center;margin-bottom:6px;}
+  .logo-bar .logo{font-family:'Playfair Display','Times New Roman',Georgia,serif;font-size:54px;font-weight:900;color:#f5f0e8;letter-spacing:0.02em;line-height:1;margin-bottom:6px;}
+  .logo-bar .logo em{font-style:italic;color:#d4a828;font-weight:700;}
+  .logo-bar .tagline{font-family:Georgia,'Source Serif 4',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.35);}
+  .logo-bar-rule{height:2px;background:linear-gradient(to right,transparent,#b8860b,transparent);margin:0 80px;position:relative;}
 
   /* ═══ UTILITY BAR ═══ */
   .util-bar{padding:7px 10px;border-bottom:2px solid #b8860b;background:#ebe4d6;font-family:Arial,sans-serif;font-size:12px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
@@ -307,10 +309,10 @@
     .optin .optin-proof{flex:1 1 100%;text-align:center;font-size:10.5px;}
 
     /* ── LOGO BAR: shrink the masthead so it doesn't eat the screen ── */
-    .logo-bar{padding:22px 14px 26px;}
-    .logo-bar .logo{font-size:42px;}
-    .logo-bar .tagline{font-size:11.5px;margin-top:12px;line-height:1.4;padding:0 14px;}
-    .logo-bar .flag{font-size:18px;margin-bottom:10px;}
+    .logo-bar-center{padding:20px 16px;}
+    .logo-bar .logo{font-size:38px;}
+    .logo-bar .tagline{font-size:11.5px;line-height:1.4;padding:0 14px;}
+    .logo-bar-rule{margin:0 24px;}
 
     /* ── UTILITY BAR: bigger tap targets, comfortable scroll ── */
     .util-bar{padding:10px 8px;}
@@ -1014,9 +1016,18 @@
 
 <!-- LOGO BAR -->
 <div class="logo-bar">
-  <span class="flag">⚑</span>
-  <div class="logo"><span class="word-1">THE MULLIGAN</span><span class="word-2">REPORT</span></div>
-  <div class="tagline">Your daily golf briefing — curated, never automated · <script>document.write(new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}))</script></div>
+  <div class="logo-bar-center">
+    <div class="flag">
+      <svg width="32" height="36" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="4" x2="10" y2="34" stroke="#d4a828" stroke-width="1.5"/>
+        <path d="M10 4 L26 10 L10 16 Z" fill="#c0392b"/>
+        <ellipse cx="10" cy="34" rx="6" ry="2" fill="rgba(255,255,255,0.08)"/>
+      </svg>
+    </div>
+    <div class="logo">THE MULLIGAN <em>REPORT</em></div>
+    <div class="tagline">Your daily golf briefing — curated, never automated · <script>document.write(new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}))</script></div>
+  </div>
+  <div class="logo-bar-rule"></div>
 </div>
 
 <!-- UTILITY BAR (sticky on mobile) -->
