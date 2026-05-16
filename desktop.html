@@ -321,8 +321,19 @@
   }
   .AW-Form-499553532 .privacyPolicy,
   .AW-Form-499553532 .af-clear,
-  .AW-Form-499553532 .af-footer{
+  .AW-Form-499553532 .af-footer,
+  .AW-Form-499553532 .af-header,
+  .AW-Form-499553532 .af-body-bottom,
+  .AW-Form-499553532 .af-poweredby,
+  .AW-Form-499553532 .af-bodyText,
+  .AW-Form-499553532 .af-titleText,
+  .AW-Form-499553532 [class*="poweredBy"],
+  .AW-Form-499553532 [class*="Powered"],
+  .AW-Form-499553532 .af-body-bottom a,
+  .AW-Form-499553532 [id*="awf-header"]{
     display:none !important;
+    height:0 !important;
+    overflow:hidden !important;
   }
 
   /* Subscribe modal — thank-you success state */
@@ -712,8 +723,19 @@
   }
   .AW-Form-279004960 .privacyPolicy,
   .AW-Form-279004960 .af-clear,
-  .AW-Form-279004960 .af-footer{
+  .AW-Form-279004960 .af-footer,
+  .AW-Form-279004960 .af-header,
+  .AW-Form-279004960 .af-body-bottom,
+  .AW-Form-279004960 .af-poweredby,
+  .AW-Form-279004960 .af-bodyText,
+  .AW-Form-279004960 .af-titleText,
+  .AW-Form-279004960 [class*="poweredBy"],
+  .AW-Form-279004960 [class*="Powered"],
+  .AW-Form-279004960 .af-body-bottom a,
+  .AW-Form-279004960 [id*="awf-header"]{
     display:none !important;
+    height:0 !important;
+    overflow:hidden !important;
   }
 
   .gv-fine{
@@ -1520,6 +1542,44 @@ function interceptSubscribeForm(){
   if (!container) return;
   var form = container.querySelector('form');
   if (!form) return;
+
+  // Fix placeholder on email/text input
+  var emailInput = form.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
+  if (emailInput && !emailInput.placeholder) {
+    emailInput.placeholder = 'Your email address';
+  }
+
+  // Override submit button text
+  var submitBtn = form.querySelector('input[type="submit"], button[type="submit"], button:not([type])');
+  if (submitBtn) {
+    if (submitBtn.tagName === 'INPUT') {
+      submitBtn.value = 'SUBSCRIBE';
+    } else {
+      submitBtn.textContent = 'SUBSCRIBE';
+    }
+  }
+
+  // Hide AWeber stray headers / Powered-by elements
+  var strays = container.querySelectorAll('h2, h3, h4, h5, .af-element-header, [style*="background"]');
+  strays.forEach(function(el){
+    var t = (el.textContent || '').toLowerCase();
+    if (t.indexOf('powered') > -1 || t.indexOf('aweber') > -1 ||
+        el.tagName.match(/^H[2-5]$/) ||
+        (el.classList && el.classList.contains('af-element-header'))) {
+      el.style.display = 'none';
+    }
+  });
+
+  // Kill empty gray-bar elements (AWeber's default title block)
+  var headerCandidates = container.querySelectorAll('div');
+  headerCandidates.forEach(function(el){
+    var bg = window.getComputedStyle(el).backgroundColor;
+    if (el.children.length === 0 && el.textContent.trim() === '' &&
+        bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+      el.style.display = 'none';
+    }
+  });
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var data = new FormData(form);
@@ -2014,7 +2074,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
   var SESSION_KEY = 'tmr_gv_seen_v1';   // bump _v1 to _v2 to re-show after dismissal
   var MOBILE_BREAKPOINT = 768;
   var SCROLL_THRESHOLD = 0.5;           // 50% of page
-  var TIMER_DELAY_MS = 5000;            // 5 seconds
+  var TIMER_DELAY_MS = 3000;            // 3 seconds
   var EXIT_ARM_DELAY_MS = 1500;         // wait before arming exit-intent
 
   function alreadySeen(){
@@ -2073,6 +2133,46 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     if (!container) return;
     var form = container.querySelector('form');
     if (!form) return;
+
+    // Fix placeholder on email/text input (AWeber doesn't always render one)
+    var emailInput = form.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
+    if (emailInput && !emailInput.placeholder) {
+      emailInput.placeholder = 'Your email address';
+    }
+
+    // Override submit button text
+    var submitBtn = form.querySelector('input[type="submit"], button[type="submit"], button:not([type])');
+    if (submitBtn) {
+      if (submitBtn.tagName === 'INPUT') {
+        submitBtn.value = 'ENTER TO WIN & SUBSCRIBE';
+      } else {
+        submitBtn.textContent = 'ENTER TO WIN & SUBSCRIBE';
+      }
+    }
+
+    // Hide stray AWeber branding/header elements that classes don't catch
+    var strays = container.querySelectorAll('h2, h3, h4, h5, .af-element-header, [style*="background"]');
+    strays.forEach(function(el){
+      var t = (el.textContent || '').toLowerCase();
+      // Hide AWeber headers/titles and "Powered by" notices
+      if (t.indexOf('powered') > -1 || t.indexOf('aweber') > -1 ||
+          el.tagName.match(/^H[2-5]$/) ||
+          (el.classList && el.classList.contains('af-element-header'))) {
+        el.style.display = 'none';
+      }
+    });
+
+    // Hide any element whose only purpose is the gray title bar
+    var headerCandidates = container.querySelectorAll('div');
+    headerCandidates.forEach(function(el){
+      var bg = window.getComputedStyle(el).backgroundColor;
+      // AWeber's default header has a gray gradient — kill solid grays
+      if (el.children.length === 0 && el.textContent.trim() === '' &&
+          bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+        el.style.display = 'none';
+      }
+    });
+
     form.addEventListener('submit', function(e){
       e.preventDefault();
       var data = new FormData(form);
