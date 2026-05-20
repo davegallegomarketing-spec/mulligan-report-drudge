@@ -174,6 +174,36 @@
   /* Inline article image inside a column — responsive, never overflows */
   .col-img{display:block;width:100%;max-width:240px;height:auto;aspect-ratio:4/3;object-fit:cover;margin:6px auto;border:2px solid #1b4332;background:#0f2b1f;}
 
+  /* Inline ad inside an article column — small, with SPONSORED badge */
+  .col-ad{
+    position:relative;display:block;margin:8px auto;
+    max-width:300px;border:2px solid #c9bfa8;background:#1a1a1a;
+    text-decoration:none;line-height:0;
+  }
+  .col-ad img{width:100%;height:auto;display:block;}
+  .col-ad::before{
+    content:"SPONSORED";
+    position:absolute;top:6px;left:6px;z-index:2;
+    background:rgba(0,0,0,0.72);color:#d4a828;
+    font-family:Arial,sans-serif;font-size:9px;font-weight:bold;
+    letter-spacing:.14em;padding:3px 7px;line-height:1.2;
+  }
+
+  /* Ad inside the Caddie's Pick side column */
+  .cp-side-ad{
+    position:relative;display:block;margin:14px 0 0;
+    border:1px solid rgba(184,134,11,0.4);background:#1a1a1a;
+    text-decoration:none;line-height:0;
+  }
+  .cp-side-ad img{width:100%;height:auto;display:block;}
+  .cp-side-ad::before{
+    content:"SPONSORED";
+    position:absolute;top:6px;left:6px;z-index:2;
+    background:rgba(15,43,31,0.88);color:#d4a828;
+    font-family:Arial,sans-serif;font-size:9px;font-weight:bold;
+    letter-spacing:.14em;padding:3px 7px;line-height:1.2;
+  }
+
   /* Hot take */
   .ht{text-align:left;border-left:3px solid #b8860b;padding:5px 10px;margin:3px 0;background:rgba(184,134,11,.04);font-family:Georgia,serif;font-size:13px;font-style:italic;color:#333;line-height:1.5;}
   .ht .tag{font-family:Arial,sans-serif;font-size:11px;font-style:normal;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:2px;}
@@ -1860,11 +1890,16 @@ function renderFeatured(el, article) {
 //   [{ at: 8,  title: "...", sub: "..." }, ...]
 // With ~90 articles and column-fill:balance, positions ~8/45/82 reliably
 // land in visual columns 1/2/3 at staggered vertical heights.
-function renderBlock(elId, articles, injects) {
+//
+// `ads` is an optional array of inline-ad configs in the same shape but
+// with `image` and `link` instead of title/sub:
+//   [{ at: 18, image: "...", link: "..." }, ...]
+function renderBlock(elId, articles, injects, ads) {
   var el = document.getElementById(elId);
   if (!el) return;
   if (!articles || articles.length === 0) { el.innerHTML = ''; return; }
   injects = injects || [];
+  ads = ads || [];
 
   var h = '';
   articles.forEach(function(a, i) {
@@ -1916,6 +1951,18 @@ function renderBlock(elId, articles, injects) {
              '</div>';
       }
     }
+
+    // Drop in any ad whose `at` index matches this article
+    for (var k = 0; k < ads.length; k++) {
+      if (ads[k].at === i) {
+        var ad = ads[k];
+        h += '<div class="col-item">' +
+               '<a class="col-ad" href="' + (ad.link || '#') + '" target="_blank" rel="noopener sponsored">' +
+                 '<img src="' + ad.image + '" alt="Sponsored" loading="lazy">' +
+               '</a>' +
+             '</div>';
+      }
+    }
   });
 
   el.innerHTML = h;
@@ -1956,10 +2003,24 @@ async function loadLinkPulseEdition() {
     var remaining = arts.slice(2); // everything after the two heroes
     var BLOCK_SIZE = 90;
 
+    // Ad image used in Block 1 (random col-1 + col-3 placement) and
+    // also in the Caddie's Pick side rail (rendered by its own loader).
+    var AD_IMAGE = 'https://res.cloudinary.com/df8ibmjdu/image/upload/v1779285095/grok-image-68ad1e12-c532-4bc8-95ef-da2bb6064455_qbfnsu.jpg';
+    var AD_LINK  = '#';
+
+    // Random ad positions that stay clear of the subscribe slots (8, 45, 82).
+    // Range 15-28 reliably lands in visual column 1.
+    // Range 65-78 reliably lands in visual column 3.
+    var ad1At = 15 + Math.floor(Math.random() * 14); // 15..28
+    var ad2At = 65 + Math.floor(Math.random() * 14); // 65..78
+
     renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE), [
       { at: 8,  title: "The First Tee",     sub: "Morning briefing — every weekday before you tee off." },
       { at: 45, title: "Inside The Ropes",  sub: "Hot takes, sketches & golf history — every morning." },
       { at: 82, title: "Read The Greens",   sub: "Curated golf intel before your first putt." }
+    ], [
+      { at: ad1At, image: AD_IMAGE, link: AD_LINK },
+      { at: ad2At, image: AD_IMAGE, link: AD_LINK }
     ]);
     renderBlock('sec-block-2', remaining.slice(BLOCK_SIZE, BLOCK_SIZE * 2), [
       { at: 8,  title: "Pro Shop Drops",            sub: "Equipment deals & gear reviews — daily." },
@@ -2471,7 +2532,11 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
             renderHeroCard(hero)+
             renderHeroMeta(hero)+
           '</div>'+
-          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+'</aside>' : '')+
+          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+
+            '<a class="cp-side-ad" href="#" target="_blank" rel="noopener sponsored">'+
+              '<img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1779285095/grok-image-68ad1e12-c532-4bc8-95ef-da2bb6064455_qbfnsu.jpg" alt="Sponsored" loading="lazy">'+
+            '</a>'+
+          '</aside>' : '')+
         '</div>'+
         '<div class="cp-cta">'+
           '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
