@@ -189,6 +189,50 @@
     letter-spacing:.14em;padding:3px 7px;line-height:1.2;
   }
 
+  /* Inline sweepstakes box — visual replica of the giveaway popup, sized to
+     fit inside a sidebar column. Image stacks on top, form below.
+     Submitting opens the real popup (which has the AWeber form). */
+  .gv-inline{
+    background:#f4ecd8;
+    border:3px solid #1b4332;
+    box-shadow:0 0 0 1px #b8860b, 4px 4px 0 rgba(0,0,0,0.12);
+    margin:6px 0;
+    font-family:Georgia,'Times New Roman',serif;
+    overflow:hidden;
+    color:#1b4332;
+  }
+  .gv-inline-img{background:#1b4332;width:100%;line-height:0;}
+  .gv-inline-img img{width:100%;height:200px;object-fit:cover;display:block;}
+  .gv-inline-body{padding:16px 18px 14px;}
+  .gv-inline .gv-banner{margin-bottom:12px;font-size:9px;letter-spacing:.16em;}
+  .gv-inline .gv-headline{font-size:20px;line-height:1.15;margin:0 0 8px;}
+  .gv-inline .gv-headline em{font-style:italic;color:#1b4332;font-weight:normal;}
+  .gv-inline .gv-sub{font-size:13px;line-height:1.45;margin:0 0 12px;text-align:center;color:#1b4332;}
+  .gv-inline .gv-sub strong{color:#c0392b;}
+  .gv-inline .gv-form{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+  .gv-inline .gv-form input[type="email"]{
+    padding:9px 11px;border:2px solid #1b4332;background:#fff;
+    font-family:Georgia,serif;font-size:13px;color:#222;
+    box-sizing:border-box;width:100%;
+  }
+  .gv-inline .gv-form input[type="email"]:focus{
+    outline:none;border-color:#b8860b;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2);
+  }
+  .gv-inline .gv-form button{
+    padding:10px 14px;background:#1b4332;color:#f4ecd8;
+    border:none;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;
+    text-transform:uppercase;letter-spacing:.12em;cursor:pointer;
+    transition:background .15s;
+  }
+  .gv-inline .gv-form button:hover{background:#0f2b1f;}
+  .gv-inline .gv-fine{
+    font-family:Arial,sans-serif;font-size:10px;line-height:1.5;
+    color:#666;text-align:center;margin-top:4px;
+  }
+  .gv-inline .gv-fine a{color:#1b4332;text-decoration:underline;}
+  .gv-inline .gv-fine a:hover{color:#b8860b;}
+
   /* Ad inside the Caddie's Pick side column — extra top gap so it reads as
      a separate unit from the "More from the Caddie" thumbnail list above. */
   .cp-side-ad{
@@ -1356,13 +1400,29 @@
 
     <span class="d"></span>
 
-    <div class="sb" style="padding:24px 18px;">
-      <div style="font-family:Arial,sans-serif;font-size:10px;color:#d4a828;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;font-weight:900;">⛳ Gear Desk Brief</div>
-      <div class="t" style="font-size:18px;line-height:1.2;margin-bottom:8px;">Don't miss tomorrow's round</div>
-      <div class="s" style="font-size:13px;line-height:1.5;margin:0 0 14px;">Drops, deals & reviews from the gear desk. Equipment news, ball tests, driver shootouts — every weekday morning.</div>
-      <input type="text" placeholder="Your email..." style="display:block;width:90%;margin:0 auto 8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
-      <button onclick="openSubscribe()" style="display:block;width:90%;margin:0 auto;padding:11px 12px;font-size:13px;box-sizing:border-box;">SUBSCRIBE FREE</button>
-      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:14px;font-style:italic;font-family:Georgia,serif;">12,847 golfers · No spam · Unsubscribe anytime</div>
+    <!-- Inline sweepstakes — visual replica of the giveaway popup -->
+    <div class="gv-inline">
+      <div class="gv-inline-img">
+        <img src="https://i.imgur.com/lYPavvn.png" alt="Three dozen Titleist golf balls stacked in a pyramid" loading="lazy">
+      </div>
+      <div class="gv-inline-body">
+        <div class="gv-banner">★ The Mulligan Report Sweepstakes ★</div>
+        <h3 class="gv-headline">Win 3 Dozen<br><em>Titleist Golf Balls</em></h3>
+        <p class="gv-sub">
+          We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model — every quarter in 2026.<br>
+          <strong>4 winners. 4 chances.</strong> Every reader wins the daily golf briefing.
+        </p>
+        <form class="gv-form" onsubmit="event.preventDefault();gvOpenFromInline(this);">
+          <input type="email" name="email" placeholder="Your email address" required autocomplete="email">
+          <button type="submit">Enter to Win &amp; Subscribe</button>
+        </form>
+        <div class="gv-fine">
+          No purchase necessary · One entry per person per quarter · 18+ U.S. residents only<br>
+          <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
+          &nbsp;·&nbsp;
+          <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy</a>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -2232,6 +2292,31 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     back.classList.remove('show');
     document.body.style.overflow = '';
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+  };
+
+  // Inline sweepstakes box (in Strip Col 2) routes here on submit.
+  // Bypasses the once-per-session gate and pre-fills the AWeber input
+  // with whatever email the user typed inline.
+  window.gvOpenFromInline = function(form){
+    var emailField = form ? form.querySelector('input[type="email"]') : null;
+    var email = emailField ? emailField.value.trim() : '';
+    var back = document.getElementById('gvBack');
+    if (back){
+      back.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+      detachAll();
+      gvArmIntercept();
+    }
+    // Defer the pre-fill so AWeber has time to mount its form if it hasn't yet.
+    setTimeout(function(){
+      var container = document.querySelector('.AW-Form-279004960');
+      if (!container) return;
+      var aweberEmail = container.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
+      if (!aweberEmail) return;
+      if (email) aweberEmail.value = email;
+      try { aweberEmail.focus(); } catch(e) {}
+    }, 120);
   };
 
   // Click backdrop closes (but not clicks on modal)
