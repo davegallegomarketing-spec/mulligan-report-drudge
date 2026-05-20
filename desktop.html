@@ -2289,8 +2289,9 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
   };
 
   // Inline sweepstakes box (in Strip Col 2) routes here on submit.
-  // Bypasses the once-per-session gate and pre-fills the AWeber input
-  // with whatever email the user typed inline.
+  // Bypasses the once-per-session gate, pre-fills the AWeber input
+  // with whatever email the user typed inline, and AUTO-SUBMITS so the
+  // user doesn't have to click "Enter to Win" a second time.
   window.gvOpenFromInline = function(form){
     var emailField = form ? form.querySelector('input[type="email"]') : null;
     var email = emailField ? emailField.value.trim() : '';
@@ -2302,15 +2303,43 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
       detachAll();
       gvArmIntercept();
     }
-    // Defer the pre-fill so AWeber has time to mount its form if it hasn't yet.
-    setTimeout(function(){
+    // Wait for AWeber's script to mount its form, then pre-fill and auto-submit.
+    // We poll for up to ~5s in case AWeber's CDN is slow.
+    var attempts = 0;
+    var pollAndSubmit = setInterval(function(){
+      attempts++;
       var container = document.querySelector('.AW-Form-279004960');
-      if (!container) return;
-      var aweberEmail = container.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
-      if (!aweberEmail) return;
-      if (email) aweberEmail.value = email;
-      try { aweberEmail.focus(); } catch(e) {}
-    }, 120);
+      var aweberForm = container ? container.querySelector('form') : null;
+      var aweberEmail = aweberForm ? aweberForm.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])') : null;
+
+      if (aweberForm && aweberEmail) {
+        clearInterval(pollAndSubmit);
+        if (email) aweberEmail.value = email;
+        // Submit the AWeber form. Our interceptor (attached by gvArmIntercept)
+        // will catch this and POST silently to AWeber, then call gvShowSuccess.
+        // Use requestSubmit if available for proper validation + intercept-friendly behavior.
+        setTimeout(function(){
+          try {
+            if (typeof aweberForm.requestSubmit === 'function') {
+              aweberForm.requestSubmit();
+            } else {
+              // Fallback for older browsers: dispatch a submit event so our
+              // interceptor's submit-listener fires.
+              var ev = new Event('submit', { bubbles:true, cancelable:true });
+              aweberForm.dispatchEvent(ev);
+            }
+          } catch(e) {
+            // If submit fails for any reason, just focus the field so the user
+            // can click the AWeber submit button manually.
+            try { aweberEmail.focus(); } catch(_) {}
+          }
+        }, 80); // tiny defer so the interceptor's submit listener is attached
+      } else if (attempts > 25) {
+        // ~5s elapsed and AWeber's form never appeared. Give up gracefully —
+        // user sees the popup with no pre-fill and can retype if they want.
+        clearInterval(pollAndSubmit);
+      }
+    }, 200);
   };
 
   // Click backdrop closes (but not clicks on modal)
@@ -2394,11 +2423,13 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     body.innerHTML =
       '<div class="gv-success">' +
         '<div class="gv-check">✓</div>' +
-        '<h3>You\'re entered.</h3>' +
-        '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
+        '<h3>Check your inbox.</h3>' +
+        '<p>Click the confirmation link in the email we just sent to <strong>complete your entry</strong>. ' +
+        'Takes 30 seconds.</p>' +
+        '<p style="font-size:13px;color:#5a5043;margin-top:10px;">Your daily golf briefing arrives tomorrow morning.</p>' +
       '</div>';
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
-    setTimeout(gvClose, 2800);
+    setTimeout(gvClose, 5000); // give them more time to read the new instruction
   }
 
   // Attempt to attach the AWeber intercept whenever the popup shows
