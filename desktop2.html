@@ -94,19 +94,7 @@
   .top-ad .pa-body strong{color:#1b4332;font-weight:700;}
   .top-ad .pa-body a{color:#1b4332;text-decoration:underline;font-size:13px;font-weight:900;}
 
-  /* ═══ OPTIN — PRIMARY EMAIL CAPTURE ═══ */
-  .optin{background:linear-gradient(135deg,#1b4332,#0f2b1f);padding:6px 20px;border-bottom:2px solid #b8860b;border-top:1px solid #2d6a4f;}
-  .optin .optin-inner{display:flex;align-items:center;justify-content:center;gap:14px;max-width:900px;margin:0 auto;}
-  .optin .optin-text{font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,.7);white-space:nowrap;}
-  .optin .optin-text strong{color:#faf6ef;font-size:13px;font-weight:900;}
-  .optin .optin-text .optin-sub{font-size:12px;color:rgba(255,255,255,.4);display:inline;margin-left:6px;}
-  .optin .optin-cta{display:flex;align-items:center;gap:0;flex-shrink:0;}
-  .optin .optin-cta input{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-right:none;padding:6px 12px;color:#fff;font-size:12px;font-family:Courier,monospace;width:170px;outline:none;border-radius:2px 0 0 2px;}
-  .optin .optin-cta input::placeholder{color:rgba(255,255,255,.3);}
-  .optin .optin-cta input:focus{border-color:#b8860b;background:rgba(255,255,255,.12);}
-  .optin .optin-cta button{background:#b8860b;color:#0f2b1f;font-family:'Arial Black',Arial,sans-serif;font-size:10px;font-weight:900;padding:7px 14px;border:none;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;white-space:nowrap;border-radius:0 2px 2px 0;}
-  .optin .optin-cta button:hover{background:#d4a828;}
-  .optin .optin-proof{font-family:Georgia,serif;font-size:10px;color:rgba(255,255,255,.25);font-style:italic;white-space:nowrap;}
+  /* ═══ OPTIN — REMOVED (dormant top bar, no HTML element existed) ═══ */
 
   /* ═══ HERO ═══ */
   .hero{padding:14px 16px 10px;border-bottom:1px solid #c9bfa8;}
@@ -120,13 +108,9 @@
   .hero-cluster em{font-family:Georgia,serif;color:#666;font-size:13px;text-decoration:none;}
 
   /* ═══ LOGO BAR ═══ */
-  .logo-bar{background:#0f2b1f;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.1);}
-  .logo-bar::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,0.015) 2px,rgba(255,255,255,0.015) 4px);pointer-events:none;}
-  .logo-bar-center{text-align:center;padding:28px 32px 24px;position:relative;}
-  .logo-bar .logo{font-family:'Playfair Display','Times New Roman',Georgia,serif;font-size:54px;font-weight:900;color:#f5f0e8;letter-spacing:0.02em;line-height:1;margin-bottom:6px;}
-  .logo-bar .logo em{font-style:italic;color:#d4a828;font-weight:700;}
-  .logo-bar .tagline{font-family:Georgia,'Source Serif 4',serif;font-size:13px;font-style:italic;color:rgba(255,255,255,0.35);}
-  .logo-bar-rule{height:2px;background:linear-gradient(to right,transparent,#b8860b,transparent);margin:0 80px;position:relative;}
+  .logo-bar{padding:14px 0 10px;border-bottom:1px solid #c9bfa8;}
+  .logo-bar .logo{font-family:'Times New Roman',Times,Georgia,serif;font-size:72px;font-weight:bold;color:#1b4332;letter-spacing:.06em;line-height:1;text-shadow:3px 3px 0px #c9bfa8,5px 5px 0px rgba(15,43,31,.15);}
+  .logo-bar .tagline{font-family:Georgia,serif;font-size:13px;font-style:italic;color:#999;margin-top:4px;}
 
   /* ═══ UTILITY BAR ═══ */
   .util-bar{padding:7px 10px;border-bottom:2px solid #b8860b;background:#ebe4d6;font-family:Arial,sans-serif;font-size:12px;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;}
@@ -189,6 +173,81 @@
 
   /* Inline article image inside a column — responsive, never overflows */
   .col-img{display:block;width:100%;max-width:240px;height:auto;aspect-ratio:4/3;object-fit:cover;margin:6px auto;border:2px solid #1b4332;background:#0f2b1f;}
+
+  /* Inline ad inside an article column — small, with SPONSORED badge */
+  .col-ad{
+    position:relative;display:block;margin:8px auto;
+    max-width:300px;border:2px solid #c9bfa8;background:#1a1a1a;
+    text-decoration:none;line-height:0;
+  }
+  .col-ad img{width:100%;height:auto;display:block;}
+  .col-ad::before{
+    content:"SPONSORED";
+    position:absolute;top:6px;left:6px;z-index:2;
+    background:rgba(0,0,0,0.72);color:#d4a828;
+    font-family:Arial,sans-serif;font-size:9px;font-weight:bold;
+    letter-spacing:.14em;padding:3px 7px;line-height:1.2;
+  }
+
+  /* Inline sweepstakes box — visual replica of the giveaway popup, sized to
+     fit inside a sidebar column. Image stacks on top, form below.
+     Submitting opens the real popup (which has the AWeber form). */
+  .gv-inline{
+    background:#f4ecd8;
+    border:3px solid #1b4332;
+    box-shadow:0 0 0 1px #b8860b, 4px 4px 0 rgba(0,0,0,0.12);
+    margin:6px 0;
+    font-family:Georgia,'Times New Roman',serif;
+    overflow:hidden;
+    color:#1b4332;
+  }
+  .gv-inline-img{background:#1b4332;width:100%;line-height:0;}
+  .gv-inline-img img{width:100%;height:200px;object-fit:cover;display:block;}
+  .gv-inline-body{padding:16px 18px 14px;}
+  .gv-inline .gv-banner{margin-bottom:12px;font-size:9px;letter-spacing:.16em;}
+  .gv-inline .gv-headline{font-size:20px;line-height:1.15;margin:0 0 8px;}
+  .gv-inline .gv-headline em{font-style:italic;color:#1b4332;font-weight:normal;}
+  .gv-inline .gv-sub{font-size:13px;line-height:1.45;margin:0 0 12px;text-align:center;color:#1b4332;}
+  .gv-inline .gv-sub strong{color:#c0392b;}
+  .gv-inline .gv-form{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+  .gv-inline .gv-form input[type="email"]{
+    padding:9px 11px;border:2px solid #1b4332;background:#fff;
+    font-family:Georgia,serif;font-size:13px;color:#222;
+    box-sizing:border-box;width:100%;
+  }
+  .gv-inline .gv-form input[type="email"]:focus{
+    outline:none;border-color:#b8860b;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2);
+  }
+  .gv-inline .gv-form button{
+    padding:10px 14px;background:#1b4332;color:#f4ecd8;
+    border:none;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;
+    text-transform:uppercase;letter-spacing:.12em;cursor:pointer;
+    transition:background .15s;
+  }
+  .gv-inline .gv-form button:hover{background:#0f2b1f;}
+  .gv-inline .gv-fine{
+    font-family:Arial,sans-serif;font-size:10px;line-height:1.5;
+    color:#666;text-align:center;margin-top:4px;
+  }
+  .gv-inline .gv-fine a{color:#1b4332;text-decoration:underline;}
+  .gv-inline .gv-fine a:hover{color:#b8860b;}
+
+  /* Ad inside the Caddie's Pick side column — extra top gap so it reads as
+     a separate unit from the "More from the Caddie" thumbnail list above. */
+  .cp-side-ad{
+    position:relative;display:block;margin:32px 0 0;
+    border:1px solid rgba(184,134,11,0.4);background:#1a1a1a;
+    text-decoration:none;line-height:0;
+  }
+  .cp-side-ad img{width:100%;height:auto;display:block;}
+  .cp-side-ad::before{
+    content:"SPONSORED";
+    position:absolute;top:6px;left:6px;z-index:2;
+    background:rgba(15,43,31,0.88);color:#d4a828;
+    font-family:Arial,sans-serif;font-size:9px;font-weight:bold;
+    letter-spacing:.14em;padding:3px 7px;line-height:1.2;
+  }
 
   /* Hot take */
   .ht{text-align:left;border-left:3px solid #b8860b;padding:5px 10px;margin:3px 0;background:rgba(184,134,11,.04);font-family:Georgia,serif;font-size:13px;font-style:italic;color:#333;line-height:1.5;}
@@ -265,7 +324,122 @@
   /* ═══ SUBSCRIBE MODAL ═══ */
   .so{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(15,43,31,.93);z-index:10001;overflow-y:auto;}
   .so.active{display:flex;justify-content:center;align-items:center;}
-  .si{background:#faf6ef;border:2px solid #b8860b;padding:28px;max-width:400px;width:92%;text-align:center;position:relative;}
+  .si{background:#faf6ef;border:2px solid #b8860b;padding:28px;max-width:420px;width:92%;text-align:center;position:relative;}
+
+  /* AWeber form 499553532 — blend into TMR subscribe modal (cream/green) */
+  #af-form-499553532,
+  #af-form-499553532 .af-body,
+  #af-form-499553532 .af-form-wrapper,
+  .AW-Form-499553532 form,
+  .AW-Form-499553532 .af-form,
+  .AW-Form-499553532 .af-body{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-shadow:none !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    width:100% !important;
+  }
+  .AW-Form-499553532 .af-element{
+    margin:0 0 10px !important;
+    padding:0 !important;
+  }
+  .AW-Form-499553532 label.previewLabel{
+    display:none !important;
+  }
+  .AW-Form-499553532 .af-textWrap{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+  }
+  .AW-Form-499553532 input[type="text"],
+  .AW-Form-499553532 input[type="email"],
+  .AW-Form-499553532 .af-textWrap input{
+    width:100% !important;
+    padding:10px 12px !important;
+    border:1px solid #c9bfa8 !important;
+    background:#fff !important;
+    font-family:Courier,monospace !important;
+    font-size:14px !important;
+    color:#222 !important;
+    box-sizing:border-box !important;
+    border-radius:0 !important;
+    outline:none !important;
+  }
+  .AW-Form-499553532 input[type="text"]:focus,
+  .AW-Form-499553532 input[type="email"]:focus{
+    border-color:#b8860b !important;
+  }
+  .AW-Form-499553532 input[type="submit"],
+  .AW-Form-499553532 .buttonContainer input[type="submit"],
+  .AW-Form-499553532 button{
+    width:100% !important;
+    background:#1b4332 !important;
+    color:#d4a828 !important;
+    font-family:Arial,sans-serif !important;
+    font-size:12px !important;
+    font-weight:bold !important;
+    padding:11px 16px !important;
+    border:none !important;
+    text-transform:uppercase !important;
+    letter-spacing:.1em !important;
+    cursor:pointer !important;
+    border-radius:0 !important;
+    margin-top:4px !important;
+    transition:background 0.15s !important;
+  }
+  .AW-Form-499553532 input[type="submit"]:hover,
+  .AW-Form-499553532 button:hover{
+    background:#0f2b1f !important;
+  }
+  .AW-Form-499553532 .privacyPolicy,
+  .AW-Form-499553532 .af-clear,
+  .AW-Form-499553532 .af-footer,
+  .AW-Form-499553532 .af-header,
+  .AW-Form-499553532 .af-body-bottom,
+  .AW-Form-499553532 .af-poweredby,
+  .AW-Form-499553532 .af-bodyText,
+  .AW-Form-499553532 .af-titleText,
+  .AW-Form-499553532 [class*="poweredBy"],
+  .AW-Form-499553532 [class*="Powered"],
+  .AW-Form-499553532 .af-body-bottom a,
+  .AW-Form-499553532 [id*="awf-header"]{
+    display:none !important;
+    height:0 !important;
+    overflow:hidden !important;
+  }
+
+  /* Subscribe modal — thank-you success state */
+  .sub-thankyou{
+    text-align:center;
+    padding:18px 4px;
+  }
+  .sub-thankyou .sub-check{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:#1b4332;
+    color:#d4a828;
+    font-size:28px;
+    line-height:50px;
+    margin:0 auto 14px;
+    font-weight:bold;
+  }
+  .sub-thankyou h3{
+    font-family:'Times New Roman',serif;
+    font-size:22px;
+    color:#1b4332;
+    margin:0 0 8px;
+  }
+  .sub-thankyou p{
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:#555;
+    line-height:1.45;
+    margin:0;
+  }
 
   /* ═══ SKETCH VIEWER ═══ */
   .sv{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(15,43,31,.95);z-index:10000;justify-content:center;align-items:center;flex-direction:column;}
@@ -297,21 +471,12 @@
     .top-ad .pa-badge{padding:6px 14px;justify-content:center;}
     .top-ad .pa-body{padding:8px 14px;font-size:13px;flex-wrap:wrap;justify-content:center;line-height:1.4;}
 
-    /* ── OPTIN: wrap gracefully so email input doesn't overflow ── */
-    .optin{padding:10px 14px;}
-    .optin .optin-inner{flex-wrap:wrap;gap:8px 12px;}
-    .optin .optin-text{white-space:normal;text-align:center;flex:1 1 100%;font-size:13px;line-height:1.35;}
-    .optin .optin-text .optin-sub{display:block;margin-left:0;margin-top:2px;font-size:11.5px;}
-    .optin .optin-cta{flex:1 1 100%;justify-content:center;}
-    .optin .optin-cta input{flex:1;width:auto;min-width:0;padding:10px 12px;font-size:14px;}
-    .optin .optin-cta button{padding:10px 14px;font-size:11px;}
-    .optin .optin-proof{flex:1 1 100%;text-align:center;font-size:10.5px;}
+    /* ── OPTIN: removed (dormant top bar, no HTML element existed) ── */
 
     /* ── LOGO BAR: shrink the masthead so it doesn't eat the screen ── */
-    .logo-bar-center{padding:20px 16px;}
-    .logo-bar .logo{font-size:38px;}
+    .logo-bar{padding:14px 10px 8px;}
+    .logo-bar .logo{font-size:38px;letter-spacing:.04em;text-shadow:2px 2px 0 #c9bfa8,3px 3px 0 rgba(15,43,31,.15);}
     .logo-bar .tagline{font-size:11.5px;line-height:1.4;padding:0 14px;}
-    .logo-bar-rule{margin:0 24px;}
 
     /* ── UTILITY BAR: bigger tap targets, comfortable scroll ── */
     .util-bar{padding:10px 8px;}
@@ -561,6 +726,92 @@
   }
   .gv-form button:hover{background:#0f2b1f;}
   .gv-form button:disabled{background:#888;cursor:wait;}
+
+  /* AWeber form 279004960 — blend into TMR sweepstakes popup (cream/Courier) */
+  #af-form-279004960,
+  #af-form-279004960 .af-body,
+  #af-form-279004960 .af-form-wrapper,
+  .AW-Form-279004960 form,
+  .AW-Form-279004960 .af-form,
+  .AW-Form-279004960 .af-body{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-shadow:none !important;
+    max-width:100% !important;
+    min-width:0 !important;
+    width:100% !important;
+  }
+  .AW-Form-279004960 .af-element{
+    margin:0 0 8px !important;
+    padding:0 !important;
+  }
+  .AW-Form-279004960 label.previewLabel{
+    display:none !important;
+  }
+  .AW-Form-279004960 .af-textWrap{
+    background:transparent !important;
+    border:none !important;
+    padding:0 !important;
+  }
+  .AW-Form-279004960 input[type="text"],
+  .AW-Form-279004960 input[type="email"],
+  .AW-Form-279004960 .af-textWrap input{
+    width:100% !important;
+    padding:11px 12px !important;
+    border:2px solid #1b4332 !important;
+    background:#fff !important;
+    font-family:Georgia,serif !important;
+    font-size:15px !important;
+    color:#222 !important;
+    box-sizing:border-box !important;
+    border-radius:0 !important;
+    outline:none !important;
+  }
+  .AW-Form-279004960 input[type="text"]:focus,
+  .AW-Form-279004960 input[type="email"]:focus{
+    border-color:#b8860b !important;
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2) !important;
+  }
+  .AW-Form-279004960 input[type="submit"],
+  .AW-Form-279004960 .buttonContainer input[type="submit"],
+  .AW-Form-279004960 button{
+    width:100% !important;
+    background:#1b4332 !important;
+    color:#f4ecd8 !important;
+    font-family:Arial,sans-serif !important;
+    font-size:13px !important;
+    font-weight:bold !important;
+    padding:12px 18px !important;
+    border:none !important;
+    text-transform:uppercase !important;
+    letter-spacing:.12em !important;
+    cursor:pointer !important;
+    border-radius:0 !important;
+    margin-top:4px !important;
+    transition:background 0.15s !important;
+  }
+  .AW-Form-279004960 input[type="submit"]:hover,
+  .AW-Form-279004960 button:hover{
+    background:#0f2b1f !important;
+  }
+  .AW-Form-279004960 .privacyPolicy,
+  .AW-Form-279004960 .af-clear,
+  .AW-Form-279004960 .af-footer,
+  .AW-Form-279004960 .af-header,
+  .AW-Form-279004960 .af-body-bottom,
+  .AW-Form-279004960 .af-poweredby,
+  .AW-Form-279004960 .af-bodyText,
+  .AW-Form-279004960 .af-titleText,
+  .AW-Form-279004960 [class*="poweredBy"],
+  .AW-Form-279004960 [class*="Powered"],
+  .AW-Form-279004960 .af-body-bottom a,
+  .AW-Form-279004960 [id*="awf-header"]{
+    display:none !important;
+    height:0 !important;
+    overflow:hidden !important;
+  }
 
   .gv-fine{
     font-family:Arial,sans-serif;
@@ -1015,16 +1266,13 @@
 
 <!-- LOGO BAR -->
 <div class="logo-bar">
-  <div class="logo-bar-center">
-    <div class="logo">THE MULLIGAN <em>REPORT</em></div>
-    <div class="tagline">Your daily golf briefing — curated, never automated · <script>document.write(new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}))</script></div>
-  </div>
-  <div class="logo-bar-rule"></div>
+  <div class="logo">THE MULLIGAN REPORT</div>
+  <div class="tagline">Curated, never automated · <script>document.write(new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}))</script></div>
 </div>
 
 <!-- UTILITY BAR (sticky on mobile) -->
 <div class="util-bar">
-  <a href="https://www.pgatour.com/leaderboard" rel="noopener">LIVE LEADERBOARD</a><span class="sep"> | </span><a href="https://www.pgatour.com/tournaments" rel="noopener">TEE TIMES</a><span class="sep"> | </span><a href="https://www.vegasinsider.com/golf/odds/futures/" rel="noopener">BETTING ODDS</a><span class="sep"> | </span><a href="https://www.golfwrx.com/witb" rel="noopener">WHAT'S IN THE BAG</a><span class="sep"> | </span><a href="https://www.golfchannel.com/tv" rel="noopener">TV SCHEDULE</a><span class="sep"> | </span><a href="https://www.pgatour.com/tournaments" rel="noopener">COURSE FLYOVER</a><span class="sep"> | </span><a href="https://weather.com/sports/golf" rel="noopener">WEATHER</a><span class="sep"> | </span><a href="https://www.pgatour.com/fantasy" rel="noopener">FANTASY</a><span class="sep"> | </span><a href="https://sportsbook.draftkings.com/leagues/golf" rel="noopener">DRAFTKINGS</a><span class="sep"> | </span><a href="https://www.pgatour.com/tournaments/2026/the-players-championship/R2026011" rel="noopener">HOLE #17</a>
+  <a href="#sec-block-1">LIVE LEADERBOARD</a><span class="sep"> | </span><a href="#sec-block-1">TEE TIMES</a><span class="sep"> | </span><a href="#sec-block-1">BETTING ODDS</a><span class="sep"> | </span><a href="#sec-block-1">WHAT'S IN THE BAG</a><span class="sep"> | </span><a href="#sec-block-1">TV SCHEDULE</a><span class="sep"> | </span><a href="#sec-block-1">COURSE FLYOVER</a><span class="sep"> | </span><a href="#sec-block-1">WEATHER</a><span class="sep"> | </span><a href="#sec-block-1">FANTASY</a><span class="sep"> | </span><a href="#sec-block-1">DRAFTKINGS</a><span class="sep"> | </span><a href="#sec-block-1">HOLE #17</a>
 </div>
 
 <!-- ═══ LINKPULSE FEATURED #2 (dynamic, below nav) ═══ -->
@@ -1146,13 +1394,29 @@
 
     <span class="d"></span>
 
-    <div class="sb" style="padding:24px 18px;">
-      <div style="font-family:Arial,sans-serif;font-size:10px;color:#d4a828;letter-spacing:.18em;text-transform:uppercase;margin-bottom:10px;font-weight:900;">⛳ Gear Desk Brief</div>
-      <div class="t" style="font-size:18px;line-height:1.2;margin-bottom:8px;">Don't miss tomorrow's round</div>
-      <div class="s" style="font-size:13px;line-height:1.5;margin:0 0 14px;">Drops, deals & reviews from the gear desk. Equipment news, ball tests, driver shootouts — every weekday morning.</div>
-      <input type="text" placeholder="Your email..." style="display:block;width:90%;margin:0 auto 8px;padding:10px 12px;font-size:14px;box-sizing:border-box;">
-      <button onclick="openSubscribe()" style="display:block;width:90%;margin:0 auto;padding:11px 12px;font-size:13px;box-sizing:border-box;">SUBSCRIBE FREE</button>
-      <div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:14px;font-style:italic;font-family:Georgia,serif;">12,847 golfers · No spam · Unsubscribe anytime</div>
+    <!-- Inline sweepstakes — visual replica of the giveaway popup -->
+    <div class="gv-inline">
+      <div class="gv-inline-img">
+        <img src="https://i.imgur.com/lYPavvn.png" alt="Three dozen Titleist golf balls stacked in a pyramid" loading="lazy">
+      </div>
+      <div class="gv-inline-body">
+        <div class="gv-banner">★ The Mulligan Report Sweepstakes ★</div>
+        <h3 class="gv-headline">Win 3 Dozen<br><em>Titleist Golf Balls</em></h3>
+        <p class="gv-sub">
+          We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model — every quarter in 2026.<br>
+          <strong>4 winners. 4 chances.</strong> Every reader wins the daily golf briefing.
+        </p>
+        <form class="gv-form" onsubmit="event.preventDefault();gvOpenFromInline(this);">
+          <input type="email" name="email" placeholder="Your email address" required autocomplete="email">
+          <button type="submit">Enter to Win &amp; Subscribe</button>
+        </form>
+        <div class="gv-fine">
+          No purchase necessary · One entry per person per quarter · 18+ U.S. residents only<br>
+          <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
+          &nbsp;·&nbsp;
+          <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy</a>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -1270,15 +1534,27 @@
   </div>
 </div>
 
-<!-- ═══ SUBSCRIBE ═══ -->
+<!-- ═══ SUBSCRIBE — AWeber form 499553532 (general newsletter) ═══ -->
 <div class="so" id="subOverlay" onclick="if(event.target===this)closeSubscribe()">
   <div class="si">
-    <button onclick="closeSubscribe()" style="position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;">✕</button>
-    <div style="font-family:'Times New Roman',serif;font-size:26px;font-weight:bold;color:#1b4332;">THE MULLIGAN REPORT</div>
-    <div style="font-family:Georgia,serif;font-size:12px;color:#999;font-style:italic;margin:3px 0 12px;">Get inside the ropes. Every morning before your tee time.</div>
-    <input type="text" placeholder="Your email..." style="padding:8px 10px;border:1px solid #c9bfa8;font-size:14px;width:58%;font-family:Courier,monospace;">
-    <button style="background:#1b4332;color:#d4a828;font-family:Arial,sans-serif;font-size:11px;font-weight:bold;padding:9px 16px;border:none;text-transform:uppercase;cursor:pointer;">Subscribe</button>
-    <div style="font-size:12px;color:#999;margin-top:6px;">12,847 golfers · Free · Unsubscribe anytime</div>
+    <button onclick="closeSubscribe()" style="position:absolute;top:6px;right:10px;background:none;border:none;font-size:18px;cursor:pointer;color:#999;z-index:5;">✕</button>
+    <div class="sub-modal-body">
+      <div class="sub-mast" style="font-family:'Times New Roman',serif;font-size:26px;font-weight:bold;color:#1b4332;">THE MULLIGAN REPORT</div>
+      <div class="sub-tag" style="font-family:Georgia,serif;font-size:12px;color:#666;font-style:italic;margin:3px 0 14px;">Get inside the ropes. Every morning before your tee time.</div>
+
+      <!-- AWeber Signup Form 499553532 -->
+      <div class="AW-Form-499553532"></div>
+      <script type="text/javascript">(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//forms.aweber.com/form/32/499553532.js";
+          fjs.parentNode.insertBefore(js, fjs);
+          }(document, "script", "aweber-wjs-tmrsub01"));
+      </script>
+
+      <div class="sub-trust" style="font-size:12px;color:#888;margin-top:10px;font-family:Georgia,serif;">12,847 golfers · Free · Unsubscribe anytime</div>
+    </div>
   </div>
 </div>
 
@@ -1329,29 +1605,104 @@ function renderA(i){const a=articles[i];const urlBtn=a.url?`<a href="${a.url}" t
 function prevArticle(){cIdx=(cIdx-1+articles.length)%articles.length;renderA(cIdx);}
 function nextArticle(){cIdx=(cIdx+1)%articles.length;renderA(cIdx);}
 
-function openSubscribe(){document.getElementById('subOverlay').classList.add('active');document.body.style.overflow='hidden';}
-function closeSubscribe(){document.getElementById('subOverlay').classList.remove('active');document.body.style.overflow='';}
+function openSubscribe(){
+  // Reset to form view if returning after a previous submit
+  var body = document.querySelector('#subOverlay .sub-modal-body');
+  if (body) {
+    var ty = document.getElementById('subThankYou');
+    if (ty) ty.remove();
+    var formParts = body.querySelectorAll('.sub-mast, .sub-tag, .AW-Form-499553532, .sub-trust');
+    formParts.forEach(function(el){ el.style.display = ''; });
+  }
+  document.getElementById('subOverlay').classList.add('active');
+  document.body.style.overflow='hidden';
+  // Intercept the AWeber form so we can show our own thank-you state
+  setTimeout(interceptSubscribeForm, 400);
+  setTimeout(interceptSubscribeForm, 1200);
+}
+function closeSubscribe(){
+  document.getElementById('subOverlay').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+// Intercept AWeber subscribe form (499553532) submit → custom thank-you
+var subInterceptDone = false;
+function interceptSubscribeForm(){
+  if (subInterceptDone) return;
+  var container = document.querySelector('.AW-Form-499553532');
+  if (!container) return;
+  var form = container.querySelector('form');
+  if (!form) return;
+
+  // Fix placeholder on email/text input
+  var emailInput = form.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
+  if (emailInput && !emailInput.placeholder) {
+    emailInput.placeholder = 'Your email address';
+  }
+
+  // Override submit button text
+  var submitBtn = form.querySelector('input[type="submit"], button[type="submit"], button:not([type])');
+  if (submitBtn) {
+    if (submitBtn.tagName === 'INPUT') {
+      submitBtn.value = 'SUBSCRIBE';
+    } else {
+      submitBtn.textContent = 'SUBSCRIBE';
+    }
+  }
+
+  // Hide AWeber stray headers / Powered-by elements
+  var strays = container.querySelectorAll('h2, h3, h4, h5, .af-element-header, [style*="background"]');
+  strays.forEach(function(el){
+    var t = (el.textContent || '').toLowerCase();
+    if (t.indexOf('powered') > -1 || t.indexOf('aweber') > -1 ||
+        el.tagName.match(/^H[2-5]$/) ||
+        (el.classList && el.classList.contains('af-element-header'))) {
+      el.style.display = 'none';
+    }
+  });
+
+  // Kill empty gray-bar elements (AWeber's default title block)
+  var headerCandidates = container.querySelectorAll('div');
+  headerCandidates.forEach(function(el){
+    var bg = window.getComputedStyle(el).backgroundColor;
+    if (el.children.length === 0 && el.textContent.trim() === '' &&
+        bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+      el.style.display = 'none';
+    }
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    fetch(form.action, { method:'POST', body:data, mode:'no-cors' })
+      .then(function(){ showSubThankYou(); })
+      .catch(function(){ showSubThankYou(); });
+  });
+  subInterceptDone = true;
+}
+
+function showSubThankYou(){
+  var body = document.querySelector('#subOverlay .sub-modal-body');
+  if (!body) return;
+  var formParts = body.querySelectorAll('.sub-mast, .sub-tag, .AW-Form-499553532, .sub-trust');
+  formParts.forEach(function(el){ el.style.display = 'none'; });
+  var existing = document.getElementById('subThankYou');
+  if (existing) existing.remove();
+  var ty = document.createElement('div');
+  ty.id = 'subThankYou';
+  ty.className = 'sub-thankyou';
+  ty.innerHTML = '<div class="sub-check">✓</div>' +
+    '<h3>You\'re in.</h3>' +
+    '<p>Check your inbox to confirm. Your daily golf briefing arrives tomorrow morning.</p>';
+  body.appendChild(ty);
+  setTimeout(closeSubscribe, 3500);
+}
 
 const sketches=[
   {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg',cap:'The rules say you get a free drop. The tree says otherwise.',date:'March 15, 2026'}
 ];
 function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
 function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
-
-// ═══ OPTIN BAR CAPTURE ═══
-function optinCapture() {
-  var input = document.getElementById('optinEmail');
-  var email = input.value.trim();
-  if (!email || !email.includes('@')) {
-    input.style.border = '1px solid #c0392b';
-    input.setAttribute('placeholder', 'Enter a valid email...');
-    return;
-  }
-  // In production: POST to your email API / Substack / ConvertKit
-  console.log('Optin capture:', email);
-  var inner = document.querySelector('.optin-inner');
-  inner.innerHTML = '<div style="font-family:Arial,sans-serif;font-size:14px;color:#4ade80;font-weight:900;letter-spacing:.03em;text-align:center;padding:4px 0;">⛳ YOU\'RE IN — TOMORROW\'S ROUND HITS YOUR INBOX BEFORE YOUR TEE TIME</div>';
-}
 
 // ═══ SEARCH ═══
 function searchStories(){
@@ -1556,6 +1907,58 @@ setInterval(loadTickers, 5 * 60 * 1000);
 // ═══ LINKPULSE INTEGRATION ═══
 const LINKPULSE_API = 'https://linkpulse-tmr.vercel.app/api/published';
 
+// ═══ AD IMAGE POOL ═══
+// All ad slots on the page (Block 1 dynamic ads, Block 3 static ads,
+// Caddie's Pick side ad) pull a random image from this pool. Exposed
+// on window so the Caddie's Pick IIFE (separate script tag) can use it.
+window.MR_AD_IMAGES = [
+  'https://i.imgur.com/ylOBg1t.png',
+  'https://res.cloudinary.com/df8ibmjdu/image/upload/v1779285095/grok-image-68ad1e12-c532-4bc8-95ef-da2bb6064455_qbfnsu.jpg'
+];
+window.MR_pickAd = function() {
+  return window.MR_AD_IMAGES[Math.floor(Math.random() * window.MR_AD_IMAGES.length)];
+};
+
+// Returns N images with no duplicates within the returned set. If N exceeds
+// the pool size, the extras wrap with random picks (collisions allowed only
+// once the unique pool is exhausted). Call once per "block" to keep all ads
+// within that block visually distinct.
+window.MR_pickAds = function(n) {
+  var pool = window.MR_AD_IMAGES.slice();
+  // Fisher-Yates shuffle
+  for (var i = pool.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+  }
+  if (n <= pool.length) return pool.slice(0, n);
+  var out = pool.slice();
+  while (out.length < n) out.push(window.MR_pickAd());
+  return out;
+};
+
+// Fill src for any static .col-ad img elements (Block 3 sidebar ads) with a
+// random image from the pool. Runs once on DOM ready. Dynamic ads rendered
+// later by renderBlock() already get their src at render time and are skipped.
+//
+// Picks are scoped per block-container so the ads within a single block are
+// guaranteed unique relative to each other (Block 3 col-1 vs col-3, etc.).
+(function fillStaticAds(){
+  function go(){
+    var containers = document.querySelectorAll('#colsWrap, #colsWrap2, #colsWrap3, #caddiesPickRoot');
+    containers.forEach(function(c){
+      var emptyImgs = c.querySelectorAll('.col-ad img:not([src]), .cp-side-ad img:not([src])');
+      if (emptyImgs.length === 0) return;
+      var picks = window.MR_pickAds(emptyImgs.length);
+      emptyImgs.forEach(function(img, i){ img.src = picks[i]; });
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', go);
+  } else {
+    go();
+  }
+})();
+
 function timeAgo(dateStr) {
   if (!dateStr) return '';
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -1600,11 +2003,16 @@ function renderFeatured(el, article) {
 //   [{ at: 8,  title: "...", sub: "..." }, ...]
 // With ~90 articles and column-fill:balance, positions ~8/45/82 reliably
 // land in visual columns 1/2/3 at staggered vertical heights.
-function renderBlock(elId, articles, injects) {
+//
+// `ads` is an optional array of inline-ad configs in the same shape but
+// with `image` and `link` instead of title/sub:
+//   [{ at: 18, image: "...", link: "..." }, ...]
+function renderBlock(elId, articles, injects, ads) {
   var el = document.getElementById(elId);
   if (!el) return;
   if (!articles || articles.length === 0) { el.innerHTML = ''; return; }
   injects = injects || [];
+  ads = ads || [];
 
   var h = '';
   articles.forEach(function(a, i) {
@@ -1656,6 +2064,18 @@ function renderBlock(elId, articles, injects) {
              '</div>';
       }
     }
+
+    // Drop in any ad whose `at` index matches this article
+    for (var k = 0; k < ads.length; k++) {
+      if (ads[k].at === i) {
+        var ad = ads[k];
+        h += '<div class="col-item">' +
+               '<a class="col-ad" href="' + (ad.link || '#') + '" target="_blank" rel="noopener sponsored">' +
+                 '<img src="' + ad.image + '" alt="Sponsored" loading="lazy">' +
+               '</a>' +
+             '</div>';
+      }
+    }
   });
 
   el.innerHTML = h;
@@ -1696,15 +2116,34 @@ async function loadLinkPulseEdition() {
     var remaining = arts.slice(2); // everything after the two heroes
     var BLOCK_SIZE = 90;
 
+    // Random ad positions that stay clear of the subscribe slots (8, 45, 82).
+    // Range 15-28 reliably lands in visual column 1.
+    // Range 65-78 reliably lands in visual column 3.
+    // Each block pulls its own shuffled pick so col-1 and col-3 within the
+    // same block are guaranteed to show different ad images on each load.
+    var AD_LINK = '#';
+    var b1Ad1At = 15 + Math.floor(Math.random() * 14); // 15..28
+    var b1Ad2At = 65 + Math.floor(Math.random() * 14); // 65..78
+    var b2Ad1At = 15 + Math.floor(Math.random() * 14);
+    var b2Ad2At = 65 + Math.floor(Math.random() * 14);
+    var block1AdImages = window.MR_pickAds(2);
+    var block2AdImages = window.MR_pickAds(2);
+
     renderBlock('sec-block-1', remaining.slice(0, BLOCK_SIZE), [
       { at: 8,  title: "The First Tee",     sub: "Morning briefing — every weekday before you tee off." },
       { at: 45, title: "Inside The Ropes",  sub: "Hot takes, sketches & golf history — every morning." },
       { at: 82, title: "Read The Greens",   sub: "Curated golf intel before your first putt." }
+    ], [
+      { at: b1Ad1At, image: block1AdImages[0], link: AD_LINK },
+      { at: b1Ad2At, image: block1AdImages[1], link: AD_LINK }
     ]);
     renderBlock('sec-block-2', remaining.slice(BLOCK_SIZE, BLOCK_SIZE * 2), [
       { at: 8,  title: "Pro Shop Drops",            sub: "Equipment deals & gear reviews — daily." },
       { at: 45, title: "The Back 9",                sub: "Gear drops, deal alerts, reviews — free daily." },
       { at: 82, title: "Don't miss tomorrow's round", sub: "Free. Every morning. Unsubscribe anytime." }
+    ], [
+      { at: b2Ad1At, image: block2AdImages[0], link: AD_LINK },
+      { at: b2Ad2At, image: block2AdImages[1], link: AD_LINK }
     ]);
 
     // After articles render, fix link behavior for mobile (back button works)
@@ -1780,24 +2219,23 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         <strong>4 winners. 4 chances.</strong> Every reader wins the daily golf briefing.
       </p>
 
-      <form class="gv-form" id="gvForm" onsubmit="return gvSubmit(event);">
-        <input
-          type="email"
-          name="email"
-          id="gvEmail"
-          placeholder="Your email address"
-          required
-          autocomplete="email"
-        >
-        <button type="submit" id="gvBtn">Enter to Win &amp; Subscribe</button>
-      </form>
+      <!-- AWeber Sweepstakes Step 1 form 279004960 -->
+      <div class="AW-Form-279004960" id="gvAweberContainer"></div>
+      <script type="text/javascript">(function(d, s, id) {
+          var js, fjs = d.getElementsByTagName(s)[0];
+          if (d.getElementById(id)) return;
+          js = d.createElement(s); js.id = id;
+          js.src = "//forms.aweber.com/form/60/279004960.js";
+          fjs.parentNode.insertBefore(js, fjs);
+          }(document, "script", "aweber-wjs-tmrsweep01"));
+      </script>
 
       <div class="gv-fine">
         No purchase necessary · One entry per person per quarter · 18+ U.S. residents only<br>
         <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
         &nbsp;·&nbsp;
         <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy</a>
-        <button class="gv-no" type="button" onclick="gvClose()">No thanks, just the news</button>
+        <button class="gv-no" type="button" onclick="gvClose(); setTimeout(openSubscribe, 300);">No thanks, just the news</button>
       </div>
 
     </div>
@@ -1815,7 +2253,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
   var SESSION_KEY = 'tmr_gv_seen_v1';   // bump _v1 to _v2 to re-show after dismissal
   var MOBILE_BREAKPOINT = 768;
   var SCROLL_THRESHOLD = 0.5;           // 50% of page
-  var TIMER_DELAY_MS = 5000;            // 5 seconds
+  var TIMER_DELAY_MS = 3000;            // 3 seconds
   var EXIT_ARM_DELAY_MS = 1500;         // wait before arming exit-intent
 
   function alreadySeen(){
@@ -1839,6 +2277,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     // Mark seen as soon as it shows so close-during-render doesn't double-fire
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
     detachAll(); // shut off remaining triggers
+    gvArmIntercept(); // attach our submit interceptor to AWeber's form
   }
 
   window.gvClose = function(){
@@ -1847,6 +2286,31 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     back.classList.remove('show');
     document.body.style.overflow = '';
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+  };
+
+  // Inline sweepstakes box (in Strip Col 2) routes here on submit.
+  // Bypasses the once-per-session gate and pre-fills the AWeber input
+  // with whatever email the user typed inline.
+  window.gvOpenFromInline = function(form){
+    var emailField = form ? form.querySelector('input[type="email"]') : null;
+    var email = emailField ? emailField.value.trim() : '';
+    var back = document.getElementById('gvBack');
+    if (back){
+      back.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+      detachAll();
+      gvArmIntercept();
+    }
+    // Defer the pre-fill so AWeber has time to mount its form if it hasn't yet.
+    setTimeout(function(){
+      var container = document.querySelector('.AW-Form-279004960');
+      if (!container) return;
+      var aweberEmail = container.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
+      if (!aweberEmail) return;
+      if (email) aweberEmail.value = email;
+      try { aweberEmail.focus(); } catch(e) {}
+    }, 120);
   };
 
   // Click backdrop closes (but not clicks on modal)
@@ -1865,49 +2329,89 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
     }
   });
 
-  // ─── Form submit (placeholder — wire to AWeber later) ───────────────────
-  window.gvSubmit = function(ev){
-    ev.preventDefault();
-    var emailEl = document.getElementById('gvEmail');
-    var btn = document.getElementById('gvBtn');
-    var body = document.getElementById('gvBody');
-    var email = (emailEl.value || '').trim();
+  // ─── Form submit — intercept AWeber form 279004960 ─────────────────────
+  var gvInterceptDone = false;
+  function gvInterceptAweber(){
+    if (gvInterceptDone) return;
+    var container = document.querySelector('.AW-Form-279004960');
+    if (!container) return;
+    var form = container.querySelector('form');
+    if (!form) return;
 
-    // Basic validation
-    if (!email || email.indexOf('@') < 1 || email.indexOf('.') < 0) {
-      emailEl.focus();
-      return false;
+    // Fix placeholder on email/text input (AWeber doesn't always render one)
+    var emailInput = form.querySelector('input[type="email"], input[type="text"]:not([type="hidden"]):not([type="submit"])');
+    if (emailInput && !emailInput.placeholder) {
+      emailInput.placeholder = 'Your email address';
     }
 
-    btn.disabled = true;
-    btn.textContent = 'Submitting…';
+    // Override submit button text
+    var submitBtn = form.querySelector('input[type="submit"], button[type="submit"], button:not([type])');
+    if (submitBtn) {
+      if (submitBtn.tagName === 'INPUT') {
+        submitBtn.value = 'ENTER TO WIN & SUBSCRIBE';
+      } else {
+        submitBtn.textContent = 'ENTER TO WIN & SUBSCRIBE';
+      }
+    }
 
-    // ───────────────────────────────────────────────────────────────────────
-    // TODO: Replace this fake submission with real AWeber endpoint when ready.
-    //
-    // AWeber's hosted form action looks like:
-    //   POST https://www.aweber.com/scripts/addlead.pl
-    //   Form fields: meta_web_form_id, meta_split_id, listname, redirect, email
-    //
-    // Or use AWeber's API: https://api.aweber.com/1.0/accounts/{id}/lists/{id}/subscribers
-    // (requires OAuth token, server-side only — recommend a Vercel /api/subscribe route)
-    //
-    // For now: simulate success after 600ms.
-    // ───────────────────────────────────────────────────────────────────────
-    setTimeout(function(){
-      body.innerHTML =
-        '<div class="gv-success">' +
-          '<div class="gv-check">✓</div>' +
-          '<h3>You\'re entered.</h3>' +
-          '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
-        '</div>';
-      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
-      // Auto-close after success
-      setTimeout(gvClose, 2800);
-    }, 600);
+    // Hide stray AWeber branding/header elements that classes don't catch
+    var strays = container.querySelectorAll('h2, h3, h4, h5, .af-element-header, [style*="background"]');
+    strays.forEach(function(el){
+      var t = (el.textContent || '').toLowerCase();
+      // Hide AWeber headers/titles and "Powered by" notices
+      if (t.indexOf('powered') > -1 || t.indexOf('aweber') > -1 ||
+          el.tagName.match(/^H[2-5]$/) ||
+          (el.classList && el.classList.contains('af-element-header'))) {
+        el.style.display = 'none';
+      }
+    });
 
-    return false;
-  };
+    // Hide any element whose only purpose is the gray title bar
+    var headerCandidates = container.querySelectorAll('div');
+    headerCandidates.forEach(function(el){
+      var bg = window.getComputedStyle(el).backgroundColor;
+      // AWeber's default header has a gray gradient — kill solid grays
+      if (el.children.length === 0 && el.textContent.trim() === '' &&
+          bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent') {
+        el.style.display = 'none';
+      }
+    });
+
+    form.addEventListener('submit', function(e){
+      e.preventDefault();
+      var data = new FormData(form);
+      // Submit silently to AWeber
+      fetch(form.action, { method:'POST', body:data, mode:'no-cors' })
+        .then(function(){ gvShowSuccess(); })
+        .catch(function(){ gvShowSuccess(); }); // no-cors won't return readable response
+    });
+    gvInterceptDone = true;
+  }
+
+  function gvShowSuccess(){
+    var body = document.getElementById('gvBody');
+    if (!body) return;
+    body.innerHTML =
+      '<div class="gv-success">' +
+        '<div class="gv-check">✓</div>' +
+        '<h3>You\'re entered.</h3>' +
+        '<p>Check your inbox for confirmation. Your daily golf briefing arrives tomorrow morning.</p>' +
+      '</div>';
+    try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+    setTimeout(gvClose, 2800);
+  }
+
+  // Attempt to attach the AWeber intercept whenever the popup shows
+  // (AWeber's script may not have rendered the form by the time the modal opens,
+  //  so we retry a few times)
+  function gvArmIntercept(){
+    var tries = 0;
+    var t = setInterval(function(){
+      gvInterceptAweber();
+      tries++;
+      if (gvInterceptDone || tries > 20) clearInterval(t); // give up after ~4s
+    }, 200);
+  }
 
   // ─── Boot — attach all triggers; first to fire wins ─────────────────────
   function isMobile(){
@@ -2171,7 +2675,11 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
             renderHeroCard(hero)+
             renderHeroMeta(hero)+
           '</div>'+
-          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+'</aside>' : '')+
+          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+
+            '<a class="cp-side-ad" href="#" target="_blank" rel="noopener sponsored">'+
+              '<img src="'+ (window.MR_pickAd ? window.MR_pickAd() : 'https://res.cloudinary.com/df8ibmjdu/image/upload/v1779285095/grok-image-68ad1e12-c532-4bc8-95ef-da2bb6064455_qbfnsu.jpg') +'" alt="Sponsored" loading="lazy">'+
+            '</a>'+
+          '</aside>' : '')+
         '</div>'+
         '<div class="cp-cta">'+
           '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
