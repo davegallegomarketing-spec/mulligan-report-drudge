@@ -222,6 +222,25 @@
   .submit-btn:hover{background:#0f2b1f;}
   .submit-btn:disabled{background:#888;cursor:wait;}
 
+  /* Inline message slot — shown when form submission fails. */
+  .form-message{
+    font-family:Georgia,serif;
+    font-size:14px;
+    line-height:1.45;
+    margin-top:6px;
+    padding:0;
+    color:#c0392b;
+    display:none;
+  }
+  .form-message.show{
+    display:block;
+    padding:10px 12px;
+    background:#fdf2f0;
+    border:1px solid #e8c4be;
+    border-radius:0;
+  }
+  .form-message a{color:#c0392b;text-decoration:underline;}
+
   /* ─── Trust strip ──────────────────────────────────────────────────── */
   .trust{
     font-family:Arial,sans-serif;
@@ -312,33 +331,18 @@
     <hr class="rule">
 
     <!-- ════════════════════════════════════════════════════════════════
-         Sweepstakes Step 2 form — posts DIRECTLY to AWeber's endpoint
-         using the real values pulled from form 463086401's raw HTML.
+         Sweepstakes Step 2 form — posts to our own Vercel serverless
+         endpoint at /api/sweepstakes-entry. The endpoint:
+           1. Validates required fields
+           2. Saves the entry to Vercel KV under key entry:<quarter>:<email>
+           3. Best-effort posts to AWeber's Step 2 form (tag entry-complete)
+              for accounts that allow re-submissions
 
-         Field name conventions are AWeber's own (e.g. "custom ball_choice",
-         "custom Street Address" with capitals + spaces — that's how AWeber
-         named them in the form configuration, don't "fix" them).
-
-         List: awlist6949115 (same list as Step 1 form 279004960)
-         Tag added on submit: entry-complete (tag_118699418)
-         Ad Tracking: Sweepstakes_Step_2
+         Field names here are the clean ones used by our API. The endpoint
+         also accepts AWeber-style names (custom Street Address, etc.) for
+         backwards compatibility.
          ════════════════════════════════════════════════════════════════ -->
-    <form class="manual-form" id="manualForm"
-          action="https://www.aweber.com/scripts/addlead.pl"
-          method="post" target="_self">
-
-      <!-- AWeber hidden config — pulled from form 463086401 raw HTML -->
-      <input type="hidden" name="meta_web_form_id" value="463086401">
-      <input type="hidden" name="meta_split_id" value="">
-      <input type="hidden" name="listname" value="awlist6949115">
-      <input type="hidden" name="redirect" value="https://themulliganreport.com/giveaway-complete.html?status=ok" id="redirect_step2">
-      <input type="hidden" name="meta_redirect_onlist" value="https://themulliganreport.com/giveaway-complete.html?status=ok">
-      <input type="hidden" name="meta_adtracking" value="Sweepstakes_Step_2">
-      <input type="hidden" name="meta_message" value="1">
-      <input type="hidden" name="meta_required" value="name,email,custom ball_choice,custom Street Address,custom City,custom State,custom zip_code">
-      <input type="hidden" name="meta_tooltip" value="">
-      <!-- Add entry-complete tag on submit -->
-      <input type="hidden" name="tag_118699418" value="entry-complete">
+    <form class="manual-form" id="manualForm" method="post" action="/api/sweepstakes-entry">
 
       <div class="field">
         <label>EMAIL <span class="req">*</span></label>
@@ -352,58 +356,55 @@
 
       <div class="field">
         <label>STREET ADDRESS <span class="req">*</span></label>
-        <input type="text" name="custom Street Address" required placeholder="123 Fairway Lane">
+        <input type="text" name="street" required placeholder="123 Fairway Lane">
       </div>
 
       <div class="field-row">
         <div class="field">
           <label>CITY <span class="req">*</span></label>
-          <input type="text" name="custom City" required>
+          <input type="text" name="city" required>
         </div>
         <div class="field" style="flex:0 0 110px;">
           <label>STATE <span class="req">*</span></label>
-          <input type="text" name="custom State" required maxlength="2" placeholder="CA" style="text-transform:uppercase;">
+          <input type="text" name="state" required maxlength="2" placeholder="CA" style="text-transform:uppercase;">
         </div>
         <div class="field" style="flex:0 0 130px;">
           <label>ZIP <span class="req">*</span></label>
-          <input type="text" name="custom zip_code" required maxlength="10" placeholder="90210">
+          <input type="text" name="zip" required maxlength="10" placeholder="90210">
         </div>
       </div>
 
       <div class="field">
         <label>PHONE <span style="color:#5a5043;font-weight:normal;font-style:italic;text-transform:none;letter-spacing:normal;font-size:12px;">(optional, for winner notification)</span></label>
-        <input type="tel" name="custom Phone Number" placeholder="(555) 555-5555">
+        <input type="tel" name="phone" placeholder="(555) 555-5555">
       </div>
 
       <div class="field">
         <label>HANDICAP <span style="color:#5a5043;font-weight:normal;font-style:italic;text-transform:none;letter-spacing:normal;font-size:12px;">(optional)</span></label>
-        <input type="text" name="custom handicap_range" placeholder="e.g. 12, or scratch">
+        <input type="text" name="handicap" placeholder="e.g. 12, or scratch">
       </div>
 
       <div class="field">
         <label>YOUR TITLEIST BALL CHOICE <span class="req">*</span></label>
         <div class="ball-picker">
           <label class="ball-option">
-            <input type="radio" name="custom ball_choice" value="Pro V1" required>
+            <input type="radio" name="ballChoice" value="Pro V1" required>
             <span class="name">Pro V1</span>
             <span class="tag">Tour-proven. Soft feel.</span>
           </label>
           <label class="ball-option">
-            <input type="radio" name="custom ball_choice" value="Pro V1x" required>
+            <input type="radio" name="ballChoice" value="Pro V1x" required>
             <span class="name">Pro V1x</span>
             <span class="tag">Longer. Higher flight.</span>
           </label>
           <label class="ball-option">
-            <input type="radio" name="custom ball_choice" value="AVX" required>
+            <input type="radio" name="ballChoice" value="AVX" required>
             <span class="name">AVX</span>
             <span class="tag">Softest feel. Low spin.</span>
           </label>
         </div>
       </div>
 
-      <!-- Page-side gate. Not stored in AWeber, but blocks submit until checked.
-           If you later want to capture this in AWeber, add a custom field and
-           rename to "custom rules_agreed". -->
       <label class="agree">
         <input type="checkbox" id="rulesAgreed" required>
         <span>
@@ -413,6 +414,9 @@
           <a href="https://themulliganreport.com/legal.html#privacy" target="_blank" rel="noopener">Privacy Policy</a>.
         </span>
       </label>
+
+      <!-- Inline error/info message slot (populated by JS) -->
+      <div id="formMessage" class="form-message" role="status" aria-live="polite"></div>
 
       <button type="submit" class="submit-btn">COMPLETE MY ENTRY</button>
     </form>
@@ -478,45 +482,75 @@
 
   // ─── Form submit handler ────────────────────────────────────────────
   var manual = document.getElementById('manualForm');
+  var msgBox = document.getElementById('formMessage');
+
+  function showError(text){
+    if (!msgBox) { alert(text); return; }
+    msgBox.textContent = text;
+    msgBox.classList.add('show');
+  }
+  function clearError(){
+    if (!msgBox) return;
+    msgBox.textContent = '';
+    msgBox.classList.remove('show');
+  }
+
   if (manual) {
     manual.addEventListener('submit', function(e){
       e.preventDefault();
+      clearError();
 
       // Ball choice gate (radio "required" can be flaky across browsers)
-      var chosen = manual.querySelector('input[name="custom ball_choice"]:checked');
+      var chosen = manual.querySelector('input[name="ballChoice"]:checked');
       if (!chosen) {
-        alert('Please pick your Titleist ball model.');
+        showError('Please pick your Titleist ball model.');
         return;
       }
 
       // Agreement gate
       var agreed = document.getElementById('rulesAgreed');
       if (agreed && !agreed.checked) {
-        alert('Please confirm you are 18+ and agree to the Official Rules.');
+        showError('Please confirm you are 18+ and agree to the Official Rules.');
         agreed.focus();
         return;
       }
 
-      // Force state to uppercase before submit (we already lowercase-style it,
-      // but make sure the stored value matches what AWeber expects)
-      var stateField = manual.querySelector('input[name="custom State"]');
-      if (stateField && stateField.value) {
-        stateField.value = stateField.value.toUpperCase().trim();
-      }
+      // Build a clean JSON payload (rather than form-encoded). Easier to
+      // read on the server side and keeps the API consistent.
+      var fd = new FormData(manual);
+      var payload = {};
+      fd.forEach(function(v, k){ payload[k] = v; });
+      // Force state to uppercase
+      if (payload.state) payload.state = String(payload.state).toUpperCase().trim();
 
-      var data = new FormData(manual);
       var btn = manual.querySelector('.submit-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'SUBMITTING…'; }
 
-      // Silent POST to AWeber. mode:no-cors means we can't read the response,
-      // so we treat both success and error as "showSuccess" — AWeber will have
-      // received the data either way. If the submission was rejected (e.g. by
-      // captcha for flagged IPs), the user still sees success but the entry
-      // won't appear in AWeber. Worth periodically spot-checking AWeber to
-      // confirm submissions are landing.
-      fetch(manual.action, { method:'POST', body:data, mode:'no-cors' })
-        .then(showSuccess)
-        .catch(showSuccess);
+      fetch('/api/sweepstakes-entry', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      .then(function(r){
+        return r.json().then(function(body){ return { ok: r.ok, body: body }; });
+      })
+      .then(function(res){
+        if (res.ok && res.body && res.body.ok) {
+          showSuccess();
+          return;
+        }
+        // Server-side validation error
+        var err = (res.body && res.body.error) || 'Something went wrong. Please try again.';
+        if (res.body && Array.isArray(res.body.missing) && res.body.missing.length) {
+          err += ' Missing: ' + res.body.missing.join(', ') + '.';
+        }
+        showError(err);
+        if (btn) { btn.disabled = false; btn.textContent = 'COMPLETE MY ENTRY'; }
+      })
+      .catch(function(err){
+        showError('Network problem submitting your entry. Please check your connection and try again.');
+        if (btn) { btn.disabled = false; btn.textContent = 'COMPLETE MY ENTRY'; }
+      });
     });
   }
 
