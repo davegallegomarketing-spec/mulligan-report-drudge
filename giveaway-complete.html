@@ -183,9 +183,27 @@
   .AW-Form-463086401 button[type="submit"]:hover{
     background:#0f2b1f !important;
   }
-  /* Hide AWeber's default header bar / "Powered by" footer */
+  /* Hide AWeber's default header bar, "Powered by" footer, and
+     "We respect your email privacy" line. AWeber renders these
+     across several class names depending on form version, so we
+     target them broadly. */
   .AW-Form-463086401 .af-header,
-  .AW-Form-463086401 .af-footer{
+  .AW-Form-463086401 .af-footer,
+  .AW-Form-463086401 .af-element-button + div,
+  .AW-Form-463086401 .af-quirksMode,
+  .AW-Form-463086401 .af-standards,
+  .AW-Form-463086401 div[class*="powered"],
+  .AW-Form-463086401 div[class*="privacy"],
+  .AW-Form-463086401 a[href*="aweber.com"],
+  .AW-Form-463086401 a[href*="email-privacy"]{
+    display:none !important;
+  }
+  /* Catch any stray <p> or <div> that contains the literal AWeber
+     branding/privacy strings — uses :has() which is supported in
+     all modern browsers. */
+  .AW-Form-463086401 p:has(a[href*="aweber.com"]),
+  .AW-Form-463086401 p:has(a[href*="email-privacy"]),
+  .AW-Form-463086401 div:has(> a[href*="aweber.com"]):not(#awContainer){
     display:none !important;
   }
 
@@ -570,15 +588,35 @@
   // ─── Intercept the injected AWeber form (same pattern as Step 1) ────
   // Strip stray headers, swap submit text, show success state on submit.
   function armAWeberIntercept(form){
-    // Hide AWeber's auto-injected header/title cruft
     var container = document.querySelector('.AW-Form-463086401');
-    var strays = container.querySelectorAll('h2, h3, h4, h5, .af-element-header');
+
+    // Hide AWeber's auto-injected header/title cruft AND the
+    // "Powered by AWeber" / "We respect your email privacy" lines
+    // that sit outside the form's labeled sections.
+    var strays = container.querySelectorAll(
+      'h2, h3, h4, h5, .af-element-header, p, a, div'
+    );
     strays.forEach(function(el){
-      var t = (el.textContent || '').toLowerCase();
-      if (t.indexOf('powered') > -1 || t.indexOf('aweber') > -1 ||
-          el.tagName.match(/^H[2-5]$/) ||
-          (el.classList && el.classList.contains('af-element-header'))) {
-        el.style.display = 'none';
+      // Skip our own form fields and the submit button
+      if (el.closest && (el.closest('.af-element-text') ||
+                         el.closest('.af-element-select') ||
+                         el.closest('.af-element-radio') ||
+                         el.closest('.af-element-checkbox') ||
+                         el.closest('.af-element-button'))) {
+        return;
+      }
+      var t = (el.textContent || '').toLowerCase().trim();
+      var isStrayHeader = el.tagName.match(/^H[2-5]$/);
+      var isAWeberText  = t.indexOf('powered by aweber') > -1 ||
+                          t.indexOf('we respect your email privacy') > -1 ||
+                          t.indexOf('email privacy') > -1 ||
+                          t === 'aweber';
+      var isAWeberLink  = el.tagName === 'A' &&
+                          (el.href || '').toLowerCase().indexOf('aweber.com') > -1;
+      if (isStrayHeader || isAWeberText || isAWeberLink) {
+        // Hide the closest container so we get the whole line, not just the link
+        var hideTarget = el.closest('p, div') || el;
+        hideTarget.style.display = 'none';
       }
     });
 
