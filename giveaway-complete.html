@@ -344,6 +344,15 @@
          ════════════════════════════════════════════════════════════════ -->
     <form class="manual-form" id="manualForm" method="post" action="/api/sweepstakes-entry">
 
+      <!-- Honeypot field — invisible to real users (positioned offscreen and
+           hidden from assistive tech). Bots that auto-fill all fields will
+           populate it, and the API will silently reject those submissions.
+           Real users never see this and never type in it. -->
+      <div style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+        <label for="hp_website">Website (leave blank)</label>
+        <input type="text" id="hp_website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
       <div class="field">
         <label>EMAIL <span class="req">*</span></label>
         <input type="email" name="email" required placeholder="Your email address">
