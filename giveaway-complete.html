@@ -114,108 +114,12 @@
   }
 
   /* ─── AWeber form blend — strip default AWeber chrome ─────────────── */
-  /* AWeber form 463086401 — Step 2 sweepstakes entry */
-  #af-form-463086401,
-  #af-form-463086401 .af-body,
-  #af-form-463086401 .af-form-wrapper,
-  .AW-Form-463086401 form,
-  .AW-Form-463086401 .af-form,
-  .AW-Form-463086401 .af-body{
-    background:transparent !important;
-    border:none !important;
-    padding:0 !important;
-    margin:0 !important;
-    box-shadow:none !important;
-    max-width:100% !important;
-    min-width:0 !important;
-    width:100% !important;
-  }
-  .AW-Form-463086401 .af-element{
-    margin:0 0 12px !important;
-    padding:0 !important;
-  }
-  .AW-Form-463086401 label.previewLabel{
-    display:block !important;
-    font-family:Arial,sans-serif !important;
-    font-size:11px !important;
-    text-transform:uppercase !important;
-    letter-spacing:.12em !important;
-    color:#1b4332 !important;
-    font-weight:bold !important;
-    margin-bottom:4px !important;
-  }
-  .AW-Form-463086401 .af-textWrap,
-  .AW-Form-463086401 .af-selectWrap{
-    background:transparent !important;
-    border:none !important;
-    padding:0 !important;
-  }
-  .AW-Form-463086401 input[type="text"],
-  .AW-Form-463086401 input[type="email"],
-  .AW-Form-463086401 input[type="tel"],
-  .AW-Form-463086401 select,
-  .AW-Form-463086401 textarea{
-    padding:10px 12px !important;
-    border:2px solid #1b4332 !important;
-    background:#fff !important;
-    font-family:Georgia,serif !important;
-    font-size:15px !important;
-    color:#222 !important;
-    width:100% !important;
-    box-sizing:border-box !important;
-    border-radius:0 !important;
-  }
-  .AW-Form-463086401 input[type="submit"],
-  .AW-Form-463086401 button[type="submit"]{
-    padding:14px 18px !important;
-    background:#1b4332 !important;
-    color:#f4ecd8 !important;
-    border:none !important;
-    font-family:Arial,sans-serif !important;
-    font-size:13px !important;
-    font-weight:bold !important;
-    text-transform:uppercase !important;
-    letter-spacing:.14em !important;
-    cursor:pointer !important;
-    width:100% !important;
-    border-radius:0 !important;
-  }
-  .AW-Form-463086401 input[type="submit"]:hover,
-  .AW-Form-463086401 button[type="submit"]:hover{
-    background:#0f2b1f !important;
-  }
-  /* Hide AWeber's default header bar, "Powered by" footer, and
-     "We respect your email privacy" line. AWeber renders these
-     across several class names depending on form version, so we
-     target them broadly. */
-  .AW-Form-463086401 .af-header,
-  .AW-Form-463086401 .af-footer,
-  .AW-Form-463086401 .af-element-button + div,
-  .AW-Form-463086401 .af-quirksMode,
-  .AW-Form-463086401 .af-standards,
-  .AW-Form-463086401 div[class*="powered"],
-  .AW-Form-463086401 div[class*="privacy"],
-  .AW-Form-463086401 a[href*="aweber.com"],
-  .AW-Form-463086401 a[href*="email-privacy"]{
-    display:none !important;
-  }
-  /* Catch any stray <p> or <div> that contains the literal AWeber
-     branding/privacy strings — uses :has() which is supported in
-     all modern browsers. */
-  .AW-Form-463086401 p:has(a[href*="aweber.com"]),
-  .AW-Form-463086401 p:has(a[href*="email-privacy"]),
-  .AW-Form-463086401 div:has(> a[href*="aweber.com"]):not(#awContainer){
-    display:none !important;
-  }
-
-  /* ─── Manual fallback form (in case AWeber script fails to inject) ── */
+  /* ─── Form styling (posts direct to AWeber addlead.pl) ──────────── */
   .manual-form{
-    display:none; /* shown only if .show-fallback class added by JS */
+    display:flex;
     flex-direction:column;
     gap:14px;
   }
-  .show-fallback .manual-form{display:flex;}
-  .show-fallback .AW-Form-463086401{display:none;}
 
   .field{display:flex;flex-direction:column;gap:4px;}
   .field-row{display:flex;gap:12px;}
@@ -408,43 +312,33 @@
     <hr class="rule">
 
     <!-- ════════════════════════════════════════════════════════════════
-         AWeber Sweepstakes Step 2 form — ID 463086401
-         Form in AWeber must be configured to:
-           - Add tag:    entry-complete
-           - Remove tag: entry-incomplete
-           - Same list as Step 1 (form 279004960)
-           - Ad Tracking: sweepstakes_step_2
-         ════════════════════════════════════════════════════════════════ -->
-    <div class="AW-Form-463086401" id="awContainer"></div>
-    <script type="text/javascript">(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//forms.aweber.com/form/01/463086401.js";
-        fjs.parentNode.insertBefore(js, fjs);
-        }(document, "script", "aweber-wjs-bv3mex7f4"));
-    </script>
+         Sweepstakes Step 2 form — posts DIRECTLY to AWeber's endpoint
+         using the real values pulled from form 463086401's raw HTML.
 
-    <!-- Manual fallback form. Hidden by default. Activates only if AWeber's
-         JS embed fails to load within ~4s. To enable real fallback submissions,
-         replace the two REPLACE_ME hidden field values below with the
-         meta_web_form_id and listname from AWeber's "Raw HTML Version"
-         of form 463086401. Otherwise the fallback will render but submissions
-         won't post to the right list. -->
+         Field name conventions are AWeber's own (e.g. "custom ball_choice",
+         "custom Street Address" with capitals + spaces — that's how AWeber
+         named them in the form configuration, don't "fix" them).
+
+         List: awlist6949115 (same list as Step 1 form 279004960)
+         Tag added on submit: entry-complete (tag_118699418)
+         Ad Tracking: Sweepstakes_Step_2
+         ════════════════════════════════════════════════════════════════ -->
     <form class="manual-form" id="manualForm"
           action="https://www.aweber.com/scripts/addlead.pl"
           method="post" target="_self">
 
-      <!-- AWeber hidden fields — fill in real values from your Step 2 form's
-           raw HTML in AWeber once created. Pull these from AWeber's
-           "Raw HTML Version" of the Step 2 form. -->
-      <input type="hidden" name="meta_web_form_id" value="REPLACE_ME">
+      <!-- AWeber hidden config — pulled from form 463086401 raw HTML -->
+      <input type="hidden" name="meta_web_form_id" value="463086401">
       <input type="hidden" name="meta_split_id" value="">
-      <input type="hidden" name="listname" value="REPLACE_ME">
+      <input type="hidden" name="listname" value="awlist6949115">
       <input type="hidden" name="redirect" value="https://themulliganreport.com/giveaway-complete.html?status=ok" id="redirect_step2">
-      <input type="hidden" name="meta_adtracking" value="sweepstakes_step_2">
+      <input type="hidden" name="meta_redirect_onlist" value="https://themulliganreport.com/giveaway-complete.html?status=ok">
+      <input type="hidden" name="meta_adtracking" value="Sweepstakes_Step_2">
       <input type="hidden" name="meta_message" value="1">
-      <input type="hidden" name="meta_required" value="from,name,custom address,custom city,custom state,custom zip,custom ball_choice">
+      <input type="hidden" name="meta_required" value="name,email,custom ball_choice,custom Street Address,custom City,custom State,custom zip_code">
+      <input type="hidden" name="meta_tooltip" value="">
+      <!-- Add entry-complete tag on submit -->
+      <input type="hidden" name="tag_118699418" value="entry-complete">
 
       <div class="field">
         <label>EMAIL <span class="req">*</span></label>
@@ -457,28 +351,33 @@
       </div>
 
       <div class="field">
-        <label>SHIPPING ADDRESS <span class="req">*</span></label>
-        <input type="text" name="custom address" required placeholder="Street address">
+        <label>STREET ADDRESS <span class="req">*</span></label>
+        <input type="text" name="custom Street Address" required placeholder="123 Fairway Lane">
       </div>
 
       <div class="field-row">
         <div class="field">
           <label>CITY <span class="req">*</span></label>
-          <input type="text" name="custom city" required>
+          <input type="text" name="custom City" required>
         </div>
-        <div class="field" style="flex:0 0 90px;">
+        <div class="field" style="flex:0 0 110px;">
           <label>STATE <span class="req">*</span></label>
-          <input type="text" name="custom state" required maxlength="2" placeholder="CA">
+          <input type="text" name="custom State" required maxlength="2" placeholder="CA" style="text-transform:uppercase;">
         </div>
-        <div class="field" style="flex:0 0 120px;">
+        <div class="field" style="flex:0 0 130px;">
           <label>ZIP <span class="req">*</span></label>
-          <input type="text" name="custom zip" required maxlength="10" placeholder="90210">
+          <input type="text" name="custom zip_code" required maxlength="10" placeholder="90210">
         </div>
       </div>
 
       <div class="field">
-        <label>PHONE <span style="color:#5a5043;font-weight:normal;font-style:italic;">(optional, for winner notification)</span></label>
-        <input type="tel" name="custom phone" placeholder="(555) 555-5555">
+        <label>PHONE <span style="color:#5a5043;font-weight:normal;font-style:italic;text-transform:none;letter-spacing:normal;font-size:12px;">(optional, for winner notification)</span></label>
+        <input type="tel" name="custom Phone Number" placeholder="(555) 555-5555">
+      </div>
+
+      <div class="field">
+        <label>HANDICAP <span style="color:#5a5043;font-weight:normal;font-style:italic;text-transform:none;letter-spacing:normal;font-size:12px;">(optional)</span></label>
+        <input type="text" name="custom handicap_range" placeholder="e.g. 12, or scratch">
       </div>
 
       <div class="field">
@@ -502,8 +401,11 @@
         </div>
       </div>
 
+      <!-- Page-side gate. Not stored in AWeber, but blocks submit until checked.
+           If you later want to capture this in AWeber, add a custom field and
+           rename to "custom rules_agreed". -->
       <label class="agree">
-        <input type="checkbox" name="custom rules_agreed" value="yes" required>
+        <input type="checkbox" id="rulesAgreed" required>
         <span>
           I am 18+ and a legal U.S. resident. I have read and agree to the
           <a href="https://themulliganreport.com/giveaway-rules.html" target="_blank" rel="noopener">Official Rules</a>
@@ -570,91 +472,48 @@
   });
 
   // ─── AWeber form availability check + fallback ──────────────────────
-  // Wait up to 4s for AWeber's script to inject the form. If it doesn't,
-  // show the manual fallback form (which posts directly to AWeber).
-  var awContainer = document.getElementById('awContainer');
-  var tries = 0;
-  var checkAW = setInterval(function(){
-    tries++;
-    var awForm = awContainer && awContainer.querySelector('form');
-    if (awForm) {
-      clearInterval(checkAW);
-      armAWeberIntercept(awForm);
-    } else if (tries > 20) { // ~4s
-      clearInterval(checkAW);
-      document.body.classList.add('show-fallback');
-    }
-  }, 200);
+  // (Removed — we now post directly to AWeber's addlead.pl endpoint using
+  // the values from form 463086401's raw HTML. No JS embed, no waiting
+  // for AWeber's CDN, no fragile interception.)
 
-  // ─── Intercept the injected AWeber form (same pattern as Step 1) ────
-  // Strip stray headers, swap submit text, show success state on submit.
-  function armAWeberIntercept(form){
-    var container = document.querySelector('.AW-Form-463086401');
-
-    // Hide AWeber's auto-injected header/title cruft AND the
-    // "Powered by AWeber" / "We respect your email privacy" lines
-    // that sit outside the form's labeled sections.
-    var strays = container.querySelectorAll(
-      'h2, h3, h4, h5, .af-element-header, p, a, div'
-    );
-    strays.forEach(function(el){
-      // Skip our own form fields and the submit button
-      if (el.closest && (el.closest('.af-element-text') ||
-                         el.closest('.af-element-select') ||
-                         el.closest('.af-element-radio') ||
-                         el.closest('.af-element-checkbox') ||
-                         el.closest('.af-element-button'))) {
-        return;
-      }
-      var t = (el.textContent || '').toLowerCase().trim();
-      var isStrayHeader = el.tagName.match(/^H[2-5]$/);
-      var isAWeberText  = t.indexOf('powered by aweber') > -1 ||
-                          t.indexOf('we respect your email privacy') > -1 ||
-                          t.indexOf('email privacy') > -1 ||
-                          t === 'aweber';
-      var isAWeberLink  = el.tagName === 'A' &&
-                          (el.href || '').toLowerCase().indexOf('aweber.com') > -1;
-      if (isStrayHeader || isAWeberText || isAWeberLink) {
-        // Hide the closest container so we get the whole line, not just the link
-        var hideTarget = el.closest('p, div') || el;
-        hideTarget.style.display = 'none';
-      }
-    });
-
-    // Override submit button text
-    var submitBtn = form.querySelector('input[type="submit"], button[type="submit"]');
-    if (submitBtn) {
-      if (submitBtn.tagName === 'INPUT') {
-        submitBtn.value = 'COMPLETE MY ENTRY';
-      } else {
-        submitBtn.textContent = 'COMPLETE MY ENTRY';
-      }
-    }
-
-    // Submit silently and show our success card
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      var data = new FormData(form);
-      fetch(form.action, { method:'POST', body:data, mode:'no-cors' })
-        .then(showSuccess)
-        .catch(showSuccess);
-    });
-  }
-
-  // ─── Manual fallback form submit handler (same silent POST pattern) ─
+  // ─── Form submit handler ────────────────────────────────────────────
   var manual = document.getElementById('manualForm');
   if (manual) {
     manual.addEventListener('submit', function(e){
       e.preventDefault();
-      // Basic ball-choice required check (radio "required" sometimes misses)
+
+      // Ball choice gate (radio "required" can be flaky across browsers)
       var chosen = manual.querySelector('input[name="custom ball_choice"]:checked');
       if (!chosen) {
         alert('Please pick your Titleist ball model.');
         return;
       }
+
+      // Agreement gate
+      var agreed = document.getElementById('rulesAgreed');
+      if (agreed && !agreed.checked) {
+        alert('Please confirm you are 18+ and agree to the Official Rules.');
+        agreed.focus();
+        return;
+      }
+
+      // Force state to uppercase before submit (we already lowercase-style it,
+      // but make sure the stored value matches what AWeber expects)
+      var stateField = manual.querySelector('input[name="custom State"]');
+      if (stateField && stateField.value) {
+        stateField.value = stateField.value.toUpperCase().trim();
+      }
+
       var data = new FormData(manual);
       var btn = manual.querySelector('.submit-btn');
       if (btn) { btn.disabled = true; btn.textContent = 'SUBMITTING…'; }
+
+      // Silent POST to AWeber. mode:no-cors means we can't read the response,
+      // so we treat both success and error as "showSuccess" — AWeber will have
+      // received the data either way. If the submission was rejected (e.g. by
+      // captcha for flagged IPs), the user still sees success but the entry
+      // won't appear in AWeber. Worth periodically spot-checking AWeber to
+      // confirm submissions are landing.
       fetch(manual.action, { method:'POST', body:data, mode:'no-cors' })
         .then(showSuccess)
         .catch(showSuccess);
