@@ -287,6 +287,36 @@
     line-height:1.5;
     margin:0 0 8px;
   }
+  /* Prominent "read the newsletter" CTA on the success state.
+     Visually equal weight to a primary submit button so the user
+     has an obvious next action. */
+  .success .back-btn{
+    display:inline-block;
+    margin-top:24px;
+    padding:14px 28px;
+    background:#1b4332;
+    color:#f4ecd8 !important;
+    text-decoration:none;
+    font-family:Arial,sans-serif;
+    font-size:13px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    border:2px solid #1b4332;
+    transition:background .15s, color .15s;
+  }
+  .success .back-btn:hover{
+    background:#f4ecd8;
+    color:#1b4332 !important;
+  }
+  @media (max-width:560px){
+    .success .back-btn{
+      display:block;
+      margin-left:16px;
+      margin-right:16px;
+      padding:14px 18px;
+    }
+  }
 
   /* ─── Footer ───────────────────────────────────────────────────────── */
   .footnote{
@@ -446,9 +476,11 @@
     <p>You're in the running for 3 dozen Titleist golf balls.</p>
     <p>Winners are drawn at the end of each quarter and notified by email.</p>
     <p style="margin-top:18px;font-size:13px;color:#5a5043;">
-      Meanwhile, your daily golf briefing arrives tomorrow morning.<br>
-      <a href="https://themulliganreport.com/" style="color:#1b4332;">← Back to The Mulligan Report</a>
+      Meanwhile, your daily golf briefing arrives tomorrow morning.
     </p>
+    <a href="https://themulliganreport.com/" class="back-btn">
+      ← READ THE MULLIGAN REPORT
+    </a>
   </div>
 
 </div>
