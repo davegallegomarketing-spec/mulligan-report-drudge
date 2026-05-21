@@ -493,6 +493,18 @@
 
 <script>
 (function(){
+  // ─── Suppress homepage sweepstakes popup ────────────────────────────
+  // Anyone who lands here has already submitted Step 1 (they came from
+  // AWeber's confirmation link). Set the same persistent flag the popup
+  // uses to suppress itself, so they don't see the popup again this
+  // quarter — even if they originally did Step 1 on a different device.
+  // Quarter key must match the one in index.html and the SWEEPS_QUARTER
+  // env var on the API. Rotate together at quarter boundaries.
+  var SWEEPS_QUARTER = 'Q1-2026';
+  try {
+    localStorage.setItem('tmr_sweeps_entered_' + SWEEPS_QUARTER, '1');
+  } catch(e) {}
+
   // ─── Pre-fill email from URL ?email= or ?from= ──────────────────────
   // AWeber confirmation success-page URLs sometimes pass email via query.
   // Helps users not retype it.
