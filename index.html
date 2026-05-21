@@ -2252,14 +2252,36 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
   //   3. Scroll-50%:   user scrolls past half the page (mobile only)
   // After any trigger fires, all others shut off. Once-per-session flag.
   var SESSION_KEY = 'tmr_gv_seen_v1';   // bump _v1 to _v2 to re-show after dismissal
+  // Persistent suppression: once a user successfully submits Step 1 (or lands
+  // on the Step 2 page in /giveaway-complete.html), we set this localStorage
+  // flag. It survives browser restarts, so the popup won't keep nagging
+  // entrants every visit. The key includes the quarter — when a new quarter
+  // starts (e.g. Q2-2026), the flag check misses and the popup re-shows
+  // automatically for everyone (now there's a new prize to be excited about).
+  // To rotate: update SWEEPS_QUARTER here AND in /api env vars + giveaway-complete.html.
+  var SWEEPS_QUARTER = 'Q1-2026';
+  var PERSIST_KEY = 'tmr_sweeps_entered_' + SWEEPS_QUARTER;
   var MOBILE_BREAKPOINT = 768;
   var SCROLL_THRESHOLD = 0.5;           // 50% of page
   var TIMER_DELAY_MS = 3000;            // 3 seconds
   var EXIT_ARM_DELAY_MS = 1500;         // wait before arming exit-intent
 
   function alreadySeen(){
-    try { return !!sessionStorage.getItem(SESSION_KEY); }
-    catch(e) { return false; }
+    // Two ways to be "seen": dismissed this session (sessionStorage), or
+    // already entered this quarter (localStorage). Either one suppresses.
+    try {
+      if (sessionStorage.getItem(SESSION_KEY)) return true;
+    } catch(e) {}
+    try {
+      if (localStorage.getItem(PERSIST_KEY)) return true;
+    } catch(e) {}
+    return false;
+  }
+
+  function markEntered(){
+    // Called when user successfully submits Step 1. Sets the persistent flag
+    // so they don't see the popup again this quarter on this browser.
+    try { localStorage.setItem(PERSIST_KEY, '1'); } catch(e) {}
   }
 
   // Cleanup pointers — populated when listeners attach so we can detach all
@@ -2430,6 +2452,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         '<p style="font-size:13px;color:#5a5043;margin-top:10px;">Your daily golf briefing arrives tomorrow morning.</p>' +
       '</div>';
     try { sessionStorage.setItem(SESSION_KEY, '1'); } catch(e) {}
+    markEntered(); // persistent suppression — no more popup this quarter
     setTimeout(gvClose, 5000); // give them more time to read the new instruction
   }
 
