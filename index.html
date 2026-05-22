@@ -1526,7 +1526,7 @@ function renderA(i){const a=articles[i];const urlBtn=a.url?`<a href="${a.url}" t
 function prevArticle(){cIdx=(cIdx-1+articles.length)%articles.length;renderA(cIdx);}
 function nextArticle(){cIdx=(cIdx+1)%articles.length;renderA(cIdx);}
 
-function openSubscribe(){
+function openSubscribe(prefillEmail){
   // Reset to form view if returning after a previous submit
   var body = document.querySelector('#subOverlay .sub-modal-body');
   if (body) {
@@ -1539,6 +1539,27 @@ function openSubscribe(){
   }
   document.getElementById('subOverlay').classList.add('active');
   document.body.style.overflow='hidden';
+
+  // If an email was typed in an inline box, carry it into the modal.
+  var emailField = document.getElementById('tmrSubEmail');
+  if (emailField && typeof prefillEmail === 'string' && prefillEmail.trim()) {
+    var email = prefillEmail.trim();
+    emailField.value = email;
+    // Valid email → submit immediately so the user is done in one step.
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      var subForm = document.getElementById('tmrSubForm');
+      if (subForm) {
+        if (typeof subForm.requestSubmit === 'function') {
+          subForm.requestSubmit();
+        } else {
+          subForm.dispatchEvent(new Event('submit', {cancelable:true, bubbles:true}));
+        }
+      }
+    } else {
+      // Not a valid email — just leave it pre-filled for the user to fix.
+      emailField.focus();
+    }
+  }
 }
 function closeSubscribe(){
   document.getElementById('subOverlay').classList.remove('active');
@@ -1963,7 +1984,7 @@ function renderBlock(elId, articles, injects, ads) {
                '<div class="sb">' +
                  '<div class="t">' + inj.title + '</div>' +
                  '<div class="s">' + inj.sub + '</div>' +
-                 '<input type="text" placeholder="Your email..."><button onclick="openSubscribe()">SUBSCRIBE</button>' +
+                 '<input type="email" class="sb-email" placeholder="Your email..."><button onclick="openSubscribe(this.previousElementSibling.value)">SUBSCRIBE</button>' +
                '</div>' +
              '</div>';
       }
@@ -2648,7 +2669,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         '<span class="cp-ribbon-title">Enjoying the Front 9?</span>'+
         '<span class="cp-ribbon-sub">Get tomorrow\u2019s round delivered before your tee time.</span>'+
       '</div>'+
-      '<form class="cp-ribbon-form" onsubmit="event.preventDefault();openSubscribe();">'+
+      '<form class="cp-ribbon-form" onsubmit="event.preventDefault();openSubscribe(this.querySelector(\'.cp-ribbon-input\').value);">'+
         '<input class="cp-ribbon-input" type="email" placeholder="Your email..." required>'+
         '<button class="cp-ribbon-btn" type="submit">SUBSCRIBE</button>'+
       '</form>'+
