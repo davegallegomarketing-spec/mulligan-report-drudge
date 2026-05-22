@@ -1232,8 +1232,10 @@
 
     <span class="sl">✏️ THE ROUGH SKETCH</span>
 
-    <img src="https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg" style="width:85%;max-width:220px;border:2px solid #1b4332;cursor:pointer;margin:4px auto;display:block;" onclick="openSketchViewer(0)" alt="Rough sketch cartoon">
-    <span class="aside">"The rules say you get a free drop. The tree says otherwise."</span>
+    <img id="sketchFeatured" src="" style="width:85%;max-width:220px;border:2px solid #1b4332;cursor:pointer;margin:4px auto;display:block;" onclick="openSketchViewer(0)" alt="Rough sketch cartoon">
+    <span class="aside" id="sketchFeaturedCap"></span>
+
+    <div id="sketchThumbs" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:85%;max-width:220px;margin:7px auto 2px;"></div>
 
     <span class="d"></span>
 
@@ -1654,10 +1656,32 @@ function showSubThankYou(){
 
 
 const sketches=[
-  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1773597063/de7ee4b3-92bd-404a-8c3e-4d628daabc1b_czcwgs.jpg',cap:'The rules say you get a free drop. The tree says otherwise.',date:'March 15, 2026'}
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370088/2c481beb-89ed-4f58-a60f-98d0a25097bd_rkor6m.jpg',cap:'The fitting took 3 hours. The swing is still the same.',date:'April 22, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370087/grok-image-619ddbb7-e297-417b-9316-8247f408f95d_qn42ar.jpg',cap:'He plays alone every Saturday. The bag is great company.',date:'April 21, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370088/a0649ceb-a18f-41b0-9ad5-f25a822024f5_xihyey.jpg',cap:'The scorecard was edited more than a Wikipedia page.',date:'April 20, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370088/grok-image-987579ce-f86e-42c9-88f4-4f4535f8e7b0_nj9qdj.jpg',cap:'In Florida, the hazards have teeth.',date:'April 19, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776026879/grok-image-2760f0bb-bee5-450a-82df-72b6b2fae1de_gskgzy.jpg',cap:'Masters week is over. Back to the muni. The azaleas are dandelions here.',date:'April 18, 2026'}
 ];
 function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
 function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
+
+// ═══ ROUGH SKETCH WIDGET ═══
+function renderSketchWidget(){
+  if(!sketches.length)return;
+  var feat=document.getElementById('sketchFeatured');
+  var featCap=document.getElementById('sketchFeaturedCap');
+  if(feat){feat.src=sketches[0].src;feat.setAttribute('onclick','openSketchViewer(0)');}
+  if(featCap){featCap.textContent='"'+sketches[0].cap+'"';}
+  var box=document.getElementById('sketchThumbs');
+  if(!box)return;
+  var html='';
+  for(var i=1;i<sketches.length&&i<=4;i++){
+    html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
+          'style="width:100%;height:62px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;">';
+  }
+  box.innerHTML=html;
+}
+renderSketchWidget();
 
 // ═══ SEARCH ═══
 function searchStories(){
