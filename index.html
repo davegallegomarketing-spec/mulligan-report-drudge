@@ -1153,6 +1153,7 @@
     .cp-quote p{font-size:14px;}
     .cp-mini-title{font-size:12px;}
   }
+#sketchThumbs::-webkit-scrollbar{display:none;}
 
 </style>
 </head>
@@ -1232,10 +1233,14 @@
 
     <span class="sl">✏️ THE ROUGH SKETCH</span>
 
-    <img id="sketchFeatured" src="" style="width:85%;max-width:220px;border:2px solid #1b4332;cursor:pointer;margin:4px auto;display:block;" onclick="openSketchViewer(0)" alt="Rough sketch cartoon">
+    <img id="sketchFeatured" src="" style="width:100%;cursor:pointer;margin:4px auto 0;display:block;border:2px solid #1b4332;" onclick="openSketchViewer(0)" alt="Rough sketch cartoon">
     <span class="aside" id="sketchFeaturedCap"></span>
 
-    <div id="sketchThumbs" style="display:grid;grid-template-columns:1fr 1fr;gap:5px;width:85%;max-width:220px;margin:7px auto 2px;"></div>
+    <div style="display:flex;align-items:center;gap:4px;width:100%;margin:8px auto 2px;">
+      <button type="button" id="sketchPrev" onclick="scrollSketchStrip(-1)" aria-label="Previous cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">‹</button>
+      <div id="sketchThumbs" style="flex:1 1 auto;display:flex;gap:5px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;"></div>
+      <button type="button" id="sketchNext" onclick="scrollSketchStrip(1)" aria-label="More cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">›</button>
+    </div>
 
     <span class="d"></span>
 
@@ -1660,7 +1665,10 @@ const sketches=[
   {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370087/grok-image-619ddbb7-e297-417b-9316-8247f408f95d_qn42ar.jpg',cap:'He plays alone every Saturday. The bag is great company.',date:'April 21, 2026'},
   {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370088/a0649ceb-a18f-41b0-9ad5-f25a822024f5_xihyey.jpg',cap:'The scorecard was edited more than a Wikipedia page.',date:'April 20, 2026'},
   {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776370088/grok-image-987579ce-f86e-42c9-88f4-4f4535f8e7b0_nj9qdj.jpg',cap:'In Florida, the hazards have teeth.',date:'April 19, 2026'},
-  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776026879/grok-image-2760f0bb-bee5-450a-82df-72b6b2fae1de_gskgzy.jpg',cap:'Masters week is over. Back to the muni. The azaleas are dandelions here.',date:'April 18, 2026'}
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776026879/grok-image-2760f0bb-bee5-450a-82df-72b6b2fae1de_gskgzy.jpg',cap:'Masters week is over. Back to the muni. The azaleas are dandelions here.',date:'April 18, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776026625/3090457a-2e30-400f-9f1b-1798d791fbe6_bhmqyc.jpg',cap:'The Masters ended Sunday. On Monday, every golfer in America had a new swing.',date:'April 17, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776026337/18c1f76c-bb67-43ed-af86-db57b3356c0e_zyxfo1.jpg',cap:'He started 12 shots back. Shot 65. Suddenly everyone remembered who he was.',date:'April 16, 2026'},
+  {src:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1776025534/grok-image-ad1380ae-e06f-4963-9689-2f097361889a_d9f8ti.jpg',cap:'One hole-in-one at Augusta is magic. Two is just showing off.',date:'April 15, 2026'}
 ];
 function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i].src;document.getElementById('sketchCap').textContent=sketches[i].cap;document.getElementById('sketchDate').textContent='The Rough Sketch · '+sketches[i].date;document.getElementById('sketchViewer').style.display='flex';document.body.style.overflow='hidden';}
 function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
@@ -1675,11 +1683,15 @@ function renderSketchWidget(){
   var box=document.getElementById('sketchThumbs');
   if(!box)return;
   var html='';
-  for(var i=1;i<sketches.length&&i<=4;i++){
+  for(var i=1;i<sketches.length;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="width:100%;height:62px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;">';
+          'style="flex:0 0 auto;width:88px;height:62px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;">';
   }
   box.innerHTML=html;
+}
+function scrollSketchStrip(dir){
+  var box=document.getElementById('sketchThumbs');
+  if(box)box.scrollLeft+=dir*186;
 }
 renderSketchWidget();
 
