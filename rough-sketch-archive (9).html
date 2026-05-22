@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Rough Sketch — Full Archive | The Mulligan Report</title>
+<meta name="theme-color" content="#0f2b1f">
+<link rel="icon" href="/icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --augusta: #0f2b1f;
+    --augusta-deep: #091a12;
+    --augusta-light: #1a4a2e;
+    --gold: #b8860b;
+    --gold-light: #d4a828;
+    --cream: #f5f0e8;
+    --ink: #1a1a1a;
+    --ink-2: #333;
+    --ink-4: #888;
+    --rule: #ddd5c4;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* Header */
+  .arch-header {
+    background: var(--augusta);
+    padding: 20px 32px;
+    border-bottom: 3px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .arch-header-left {
+    display: flex; align-items: center; gap: 16px;
+  }
+
+  .arch-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--cream);
+    text-decoration: none;
+  }
+
+  .arch-logo em { color: var(--gold-light); font-weight: 700; }
+
+  .arch-logo:hover { opacity: 0.9; }
+
+  .arch-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255,255,255,0.15);
+  }
+
+  .arch-section-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .arch-section-icon {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .arch-section-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--cream);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .arch-back {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold-light);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .arch-back:hover {
+    border-color: var(--gold);
+    background: rgba(184,134,11,0.15);
+  }
+
+  /* Body */
+  .arch-body {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px;
+  }
+
+  /* Month filter */
+  .arch-months {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .arch-month {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border: 1px solid var(--rule);
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 3px;
+    color: var(--ink-4);
+  }
+
+  .arch-month:hover { border-color: var(--gold); color: var(--ink); }
+
+  .arch-month.active {
+    background: var(--augusta);
+    color: var(--gold-light);
+    border-color: var(--augusta);
+  }
+
+  /* Stats bar */
+  .arch-stats {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .arch-stats-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-4);
+  }
+
+  .arch-stats-left strong { color: var(--ink); }
+
+  /* Grid */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+
+  @media (max-width: 700px) {
+    .arch-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  /* Card */
+  .arch-card {
+    background: #fff;
+    border: 1px solid #e0dbd0;
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    position: relative;
+  }
+
+  .arch-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+    border-color: var(--gold);
+  }
+
+  .arch-card::after {
+    content: '🔍 View';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(15,43,31,0.85);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 4px 8px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.25s;
+    z-index: 2;
+  }
+
+  .arch-card:hover::after { opacity: 1; }
+
+  .arch-card img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+    border-bottom: 2px solid var(--gold);
+    transition: transform 0.3s;
+  }
+
+  .arch-card:hover img {
+    transform: scale(1.03);
+  }
+
+  .arch-card-info {
+    padding: 12px 14px;
+  }
+
+  .arch-card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--augusta);
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+  }
+
+  .arch-card-caption {
+    font-family: 'Source Serif 4', serif;
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-2);
+    line-height: 1.45;
+    margin-top: 8px;
+  }
+
+  .arch-card-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-4);
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid #f0ebe0;
+  }
+
+  /* Viewer overlay */
+  .arch-viewer {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15,43,31,0.93);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .arch-viewer.open { display: flex; }
+
+  .arch-viewer img {
+    max-width: 90%;
+    max-height: 70vh;
+    border: 3px solid var(--gold);
+  }
+
+  .arch-viewer-caption {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--cream);
+    margin-top: 16px;
+    text-align: center;
+    max-width: 500px;
+    line-height: 1.5;
+  }
+
+  .arch-viewer-date {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold);
+    margin-top: 6px;
+  }
+
+  .arch-viewer-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--augusta);
+    border: 1px solid var(--gold);
+    color: var(--cream);
+    width: 44px; height: 44px;
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    transition: background 0.2s;
+  }
+
+  .arch-viewer-nav:hover { background: #1a4a2e; }
+
+  .arch-viewer-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    background: none;
+    border: none;
+    color: var(--cream);
+    font-size: 28px;
+    cursor: pointer;
+    z-index: 10001;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="arch-header">
+  <div class="arch-header-left">
+    <a href="mulligan-report-compressed.html" class="arch-logo">THE MULLIGAN <em>REPORT</em></a>
+    <div class="arch-divider"></div>
+    <div class="arch-section-title">
+      <div class="arch-section-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0f2b1f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+      </div>
+      <div class="arch-section-name">The Rough Sketch — Full Archive</div>
+    </div>
+  </div>
+  <a href="/" class="arch-back">← Back to Report</a>
+</div>
+
+<!-- Body -->
+<div class="arch-body">
+
+  <!-- Month filter -->
+  <div class="arch-months" id="month-filter">
+    <span class="arch-month active" onclick="filterMonth('all', this)">All</span>
+    <span class="arch-month" onclick="filterMonth('2026-04', this)">April 2026</span>
+    <span class="arch-month" onclick="filterMonth('2026-03', this)">March 2026</span>
+    <span class="arch-month" onclick="filterMonth('2026-02', this)">February 2026</span>
+  </div>
+
+  <!-- Stats -->
+  <div class="arch-stats">
+    <div class="arch-stats-left"><strong id="cartoon-count">49</strong> cartoons · A new one every morning</div>
+  </div>
+
+  <!-- Grid -->
+  <div class="arch-grid" id="arch-grid"></div>
+
+  <!-- Subscribe Banner -->
+  <div style="margin: 32px 0; padding: 28px 32px; background: var(--augusta); border-radius: 6px; border: 2px solid var(--gold); text-align: center;">
+    <div style="font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; color: var(--cream); margin-bottom: 6px;">A New Cartoon Every Morning</div>
+    <div style="font-family: 'Source Serif 4', serif; font-size: 14px; font-style: italic; color: rgba(255,255,255,0.6); margin-bottom: 16px;">The Rough Sketch + the best golf stories, delivered free before your tee time.</div>
+    <div onclick="openRskSubscribe()" style="display: inline-block; background: var(--gold); color: var(--augusta-deep); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; padding: 10px 28px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s;" onmouseenter="this.style.background='#d4a828'" onmouseleave="this.style.background='var(--gold)'">Subscribe</div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 10px;">12,847 golfers already get it daily</div>
+  </div>
+
+</div>
+
+<!-- Sticky bottom subscribe bar -->
+<div id="sticky-sub" style="position: fixed; bottom: 0; left: 0; right: 0; background: var(--augusta-deep); border-top: 2px solid var(--gold); padding: 10px 24px; display: flex; align-items: center; justify-content: center; gap: 16px; z-index: 9999; transform: translateY(100%); transition: transform 0.4s;">
+  <div style="font-family: 'Source Serif 4', serif; font-size: 13px; color: var(--cream); font-style: italic;">Get <strong style="font-style: normal; color: var(--gold-light);">The Rough Sketch</strong> + daily golf news — free.</div>
+  <div onclick="openRskSubscribe()" style="background: var(--gold); color: var(--augusta-deep); font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; padding: 7px 18px; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border-radius: 3px; white-space: nowrap;">Subscribe</div>
+  <div onclick="document.getElementById('sticky-sub').style.display='none'" style="color: rgba(255,255,255,0.4); cursor: pointer; font-size: 18px; margin-left: 8px;">✕</div>
+</div>
+
+<!-- Subscribe popup -->
+<div id="sub-popup" style="display:none; position:fixed; inset:0; background:rgba(15,43,31,0.9); z-index:10002; justify-content:center; align-items:center;" onclick="if(event.target===this)this.style.display='none'">
+  <div style="background: var(--cream); padding: 36px 32px; border-radius: 8px; max-width: 420px; width: 90%; text-align: center; border: 3px solid var(--gold); position: relative;">
+    <div onclick="document.getElementById('sub-popup').style.display='none'" style="position:absolute; top:12px; right:16px; cursor:pointer; font-size:20px; color: var(--ink-4);">✕</div>
+    <div style="font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 900; color: var(--augusta); margin-bottom: 8px;">Get Inside the Ropes</div>
+    <div style="font-family: 'Source Serif 4', serif; font-size: 14px; color: var(--ink-2); font-style: italic; margin-bottom: 20px;">The best golf stories + a daily cartoon, delivered every morning before your tee time.</div>
+    <!-- AWeber Signup Form -->
+    <div class="AW-Form-499553532"></div>
+    <script type="text/javascript">(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//forms.aweber.com/form/32/499553532.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, "script", "aweber-wjs-tkjdh236l"));
+    </script>
+    <style>
+      #sub-popup #af-form-499553532, #sub-popup #af-form-499553532 .af-body { background:transparent !important; border:none !important; padding:0 !important; margin:0 !important; max-width:100% !important; min-width:0 !important; }
+      #sub-popup #af-form-499553532 .af-element { margin-bottom:8px !important; padding:0 !important; }
+      #sub-popup #af-form-499553532 label.previewLabel { display:block !important; font-family:'DM Sans',sans-serif !important; font-size:11px !important; font-weight:600 !important; color:var(--ink-4) !important; letter-spacing:0.06em !important; text-transform:uppercase !important; margin-bottom:4px !important; }
+      #sub-popup #af-form-499553532 .af-textWrap input, #sub-popup #af-form-499553532 input[type="text"], #sub-popup #af-form-499553532 input[type="email"] { width:100% !important; padding:10px 14px !important; border:1px solid var(--rule) !important; border-radius:4px !important; font-family:'DM Sans',sans-serif !important; font-size:14px !important; margin-bottom:8px !important; box-sizing:border-box !important; background:#fff !important; color:#1a1a1a !important; }
+      #sub-popup #af-form-499553532 .af-textWrap input:focus, #sub-popup #af-form-499553532 input[type="text"]:focus, #sub-popup #af-form-499553532 input[type="email"]:focus { border-color:var(--gold) !important; background:#fff !important; }
+      #sub-popup #af-form-499553532 .af-textWrap { background:transparent !important; border:none !important; padding:0 !important; }
+      #sub-popup #af-form-499553532 .buttonContainer input[type="submit"], #sub-popup #af-form-499553532 .af-element input[type="submit"], #sub-popup #af-form-499553532 button { width:100% !important; background:var(--augusta) !important; color:var(--gold-light) !important; font-family:'DM Sans',sans-serif !important; font-size:14px !important; font-weight:700 !important; padding:12px 24px !important; letter-spacing:0.06em !important; text-transform:uppercase !important; cursor:pointer !important; border:none !important; border-radius:4px !important; transition:background 0.2s; }
+      #sub-popup #af-form-499553532 .buttonContainer input[type="submit"]:hover, #sub-popup #af-form-499553532 button:hover { background:#1a4a2e !important; }
+      #sub-popup #af-form-499553532 .privacyPolicy, #sub-popup #af-form-499553532 .af-clear { display:none !important; }
+      #sub-popup #af-form-499553532 .af-form-wrapper { background:transparent !important; border:none !important; padding:0 !important; }
+    </style>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--ink-4); margin-top: 12px;">Free · Daily · No spam · Unsubscribe anytime</div>
+  </div>
+</div>
+
+<script>
+var rskAweberIntercepted = false;
+function openRskSubscribe() {
+  var popup = document.getElementById('sub-popup');
+  // Reset to form view
+  var ty = document.getElementById('rskThankYou');
+  if (ty) ty.style.display = 'none';
+  var inner = popup.querySelector('div');
+  var formParts = inner.querySelectorAll('.AW-Form-499553532, [style*="JetBrains"]');
+  formParts.forEach(function(el) { el.style.display = ''; });
+  var heading = inner.querySelector('[style*="Playfair"]');
+  if (heading) heading.style.display = '';
+  var pitch = inner.querySelectorAll('[style*="Source Serif"]');
+  pitch.forEach(function(el) { if (!el.closest('#rskThankYou')) el.style.display = ''; });
+
+  popup.style.display = 'flex';
+  setTimeout(function() { interceptRskForm(); }, 500);
+}
+function interceptRskForm() {
+  if (rskAweberIntercepted) return;
+  var realForm = document.querySelector('#sub-popup .af-form-wrapper');
+  if (!realForm || realForm.tagName !== 'FORM') return;
+  realForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    fetch(realForm.action, { method:'POST', body:new FormData(realForm), mode:'no-cors' })
+      .then(function() { showRskThankYou(); })
+      .catch(function() { showRskThankYou(); });
+  });
+  rskAweberIntercepted = true;
+}
+function showRskThankYou() {
+  var popup = document.getElementById('sub-popup');
+  var inner = popup.querySelector('div');
+  // Hide form elements
+  var formParts = inner.querySelectorAll('.AW-Form-499553532, [style*="JetBrains"]');
+  formParts.forEach(function(el) { el.style.display = 'none'; });
+  // Hide heading + pitch
+  var heading = inner.querySelector('[style*="Playfair"]');
+  if (heading) heading.style.display = 'none';
+  var pitchEls = inner.querySelectorAll('[style*="Source Serif"]');
+  pitchEls.forEach(function(el) { if (!el.closest('#rskThankYou')) el.style.display = 'none'; });
+
+  var ty = document.getElementById('rskThankYou');
+  if (!ty) {
+    ty = document.createElement('div');
+    ty.id = 'rskThankYou';
+    ty.style.cssText = 'text-align:center; padding:8px 0;';
+    ty.innerHTML =
+      '<div style="font-size:48px; margin-bottom:12px;">⛳</div>' +
+      '<div style="font-family:\'Playfair Display\',serif; font-size:22px; font-weight:900; color:var(--augusta); margin-bottom:8px;">You\'re Inside the Ropes</div>' +
+      '<div style="font-family:\'Source Serif 4\',serif; font-size:14px; color:var(--ink-2); line-height:1.6; margin-bottom:20px;">Check your inbox — your first Mulligan Report<br>drops tomorrow morning.</div>' +
+      '<div onclick="document.getElementById(\'sub-popup\').style.display=\'none\'" style="display:inline-block; background:var(--augusta); color:var(--gold-light); font-family:\'DM Sans\',sans-serif; font-size:13px; font-weight:700; padding:10px 28px; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; border-radius:4px; transition:background 0.2s;" onmouseenter="this.style.background=\'#1a4a2e\'" onmouseleave="this.style.background=\'var(--augusta)\'">Back to Cartoons</div>';
+    inner.appendChild(ty);
+  }
+  ty.style.display = 'block';
+}
+</script>
+<div class="arch-viewer" id="viewer" onclick="if(event.target===this)closeViewer()">
+  <button class="arch-viewer-close" onclick="closeViewer()">✕</button>
+  <button class="arch-viewer-nav" style="left:16px;" onclick="navViewer(-1)">‹</button>
+  <button class="arch-viewer-nav" style="right:16px;" onclick="navViewer(1)">›</button>
+  <img id="viewer-img" src="" alt="">
+  <div class="arch-viewer-caption" id="viewer-caption"></div>
+  <div class="arch-viewer-date" id="viewer-date"></div>
+  <div style="margin-top:16px; padding-top:12px; border-top:1px solid rgba(184,134,11,0.2); text-align:center;">
+    <div style="font-family:'Source Serif 4',serif; font-size:13px; color:rgba(245,240,232,0.5); font-style:italic;">A new cartoon every morning — delivered free with your daily golf briefing.</div>
+    <div onclick="openRskSubscribe(); closeViewer();" style="display:inline-block; margin-top:12px; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:700; color:#d4a828; letter-spacing:0.06em; text-transform:uppercase; cursor:pointer; padding:12px 32px; border:2px solid rgba(212,168,40,0.5); border-radius:4px; transition:all 0.2s;" onmouseenter="this.style.background='rgba(212,168,40,0.15)';this.style.borderColor='#d4a828'" onmouseleave="this.style.background='';this.style.borderColor='rgba(212,168,40,0.5)'">Subscribe Free →</div>
+  </div>
+</div>
+
+<script>
+// Show sticky bar after scrolling
+window.addEventListener('scroll', function() {
+  const sticky = document.getElementById('sticky-sub');
+  if (sticky && window.scrollY > 600) {
+    sticky.style.transform = 'translateY(0)';
+  } else if (sticky) {
+    sticky.style.transform = 'translateY(100%)';
+  }
+});
+
+// All cartoons — loaded from shared cartoons.json
+let cartoons = [];
+let filtered = [];
+let currentIdx = 0;
+
+fetch('cartoons.json')
+  .then(r => r.json())
+  .then(data => {
+    // Add num field based on position (newest = highest number)
+    var allCartoons = data.map((c, i) => ({ ...c, num: data.length - i }));
+    // Only show cartoons up to today
+    var today = new Date();
+    today.setHours(23,59,59,999);
+    cartoons = allCartoons.filter(c => new Date(c.date) <= today);
+    filtered = [...cartoons];
+    renderGrid();
+  })
+  .catch(() => {
+    console.warn('Could not load cartoons.json');
+  });
+
+// Optimize Cloudinary URLs — add auto-format, quality, and width
+function optimizeCloudinary(url, width) {
+  if (!url || url.indexOf('res.cloudinary.com') === -1 || url.indexOf('/upload/') === -1) return url;
+  return url.replace('/upload/', '/upload/f_auto,q_auto,w_' + (width || 800) + ',c_fill/');
+}
+
+function renderGrid() {
+  const grid = document.getElementById('arch-grid');
+  grid.innerHTML = '';
+  document.getElementById('cartoon-count').textContent = filtered.length;
+
+  filtered.forEach((c, i) => {
+    const card = document.createElement('div');
+    card.className = 'arch-card';
+    card.onclick = () => openViewer(i);
+    card.innerHTML = `
+      <img src="${optimizeCloudinary(c.src, 400)}" alt="Rough Sketch #${c.num}" loading="lazy">
+      <div class="arch-card-info">
+        <div class="arch-card-num">#${c.num}</div>
+        <div class="arch-card-caption">${c.caption}</div>
+        <div class="arch-card-date">${c.date}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function filterMonth(month, btn) {
+  document.querySelectorAll('.arch-month').forEach(m => m.classList.remove('active'));
+  btn.classList.add('active');
+
+  if (month === 'all') {
+    filtered = [...cartoons];
+  } else {
+    filtered = cartoons.filter(c => c.month === month);
+  }
+  renderGrid();
+}
+
+function openViewer(idx) {
+  currentIdx = idx;
+  const c = filtered[idx];
+  document.getElementById('viewer-img').src = optimizeCloudinary(c.src, 1000);
+  document.getElementById('viewer-caption').textContent = c.caption;
+  document.getElementById('viewer-date').textContent = 'The Rough Sketch #' + c.num + ' · ' + c.date;
+  document.getElementById('viewer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeViewer() {
+  document.getElementById('viewer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function navViewer(dir) {
+  currentIdx = (currentIdx + dir + filtered.length) % filtered.length;
+  openViewer(currentIdx);
+}
+
+document.addEventListener('keydown', function(e) {
+  if (document.getElementById('viewer').classList.contains('open')) {
+    if (e.key === 'Escape') closeViewer();
+    if (e.key === 'ArrowLeft') navViewer(-1);
+    if (e.key === 'ArrowRight') navViewer(1);
+  }
+});
+
+renderGrid();
+</script>
+
+</body>
+</html>
