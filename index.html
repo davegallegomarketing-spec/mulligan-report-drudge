@@ -1238,7 +1238,7 @@
 
     <div style="display:flex;align-items:center;gap:4px;width:100%;margin:8px auto 2px;">
       <button type="button" id="sketchPrev" onclick="scrollSketchStrip(-1)" aria-label="Previous cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">‹</button>
-      <div id="sketchThumbs" style="flex:1 1 auto;display:flex;gap:5px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;"></div>
+      <div id="sketchThumbs" style="flex:1 1 auto;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;"></div>
       <button type="button" id="sketchNext" onclick="scrollSketchStrip(1)" aria-label="More cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">›</button>
     </div>
 
@@ -1674,6 +1674,7 @@ function openSketchViewer(i){document.getElementById('sketchImg').src=sketches[i
 function closeSketchViewer(){document.getElementById('sketchViewer').style.display='none';document.body.style.overflow='';}
 
 // ═══ ROUGH SKETCH WIDGET ═══
+var sketchAutoTimer=null;
 function renderSketchWidget(){
   if(!sketches.length)return;
   var feat=document.getElementById('sketchFeatured');
@@ -1685,13 +1686,24 @@ function renderSketchWidget(){
   var html='';
   for(var i=1;i<sketches.length;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:88px;height:62px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;">';
+          'style="flex:0 0 auto;width:130px;height:90px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;">';
   }
   box.innerHTML=html;
+  // auto-scroll while the mouse is over the strip
+  box.onmouseenter=function(){
+    if(sketchAutoTimer)return;
+    sketchAutoTimer=setInterval(function(){
+      if(box.scrollLeft+box.clientWidth>=box.scrollWidth-1){box.scrollLeft=0;}
+      else{box.scrollLeft+=1;}
+    },20);
+  };
+  box.onmouseleave=function(){
+    clearInterval(sketchAutoTimer);sketchAutoTimer=null;
+  };
 }
 function scrollSketchStrip(dir){
   var box=document.getElementById('sketchThumbs');
-  if(box)box.scrollLeft+=dir*186;
+  if(box)box.scrollBy({left:dir*270,behavior:'smooth'});
 }
 renderSketchWidget();
 
