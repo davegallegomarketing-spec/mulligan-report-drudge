@@ -1713,9 +1713,9 @@ function renderSketchWidget(){
   var box=document.getElementById('sketchThumbs');
   if(!box)return;
   var html='';
-  for(var i=1;i<sketches.length&&i<=8;i++){
+  for(var i=1;i<sketches.length&&i<=12;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:190px;height:130px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
+          'style="flex:0 0 auto;width:220px;height:150px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
   }
   box.innerHTML=html;
   // auto-scroll while the mouse is over the strip
@@ -1732,7 +1732,7 @@ function renderSketchWidget(){
 }
 function scrollSketchStrip(dir){
   var box=document.getElementById('sketchThumbs');
-  if(box)box.scrollBy({left:dir*390,behavior:'smooth'});
+  if(box)box.scrollBy({left:dir*450,behavior:'smooth'});
 }
 
 // ═══ SEARCH ═══
