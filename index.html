@@ -1715,7 +1715,7 @@ function renderSketchWidget(){
   var html='';
   for(var i=1;i<sketches.length&&i<=8;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:130px;height:90px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;">';
+          'style="flex:0 0 auto;width:130px;height:90px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
   }
   box.innerHTML=html;
   // auto-scroll while the mouse is over the strip
