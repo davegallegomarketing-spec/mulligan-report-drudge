@@ -1526,6 +1526,31 @@ function renderA(i){const a=articles[i];const urlBtn=a.url?`<a href="${a.url}" t
 function prevArticle(){cIdx=(cIdx-1+articles.length)%articles.length;renderA(cIdx);}
 function nextArticle(){cIdx=(cIdx+1)%articles.length;renderA(cIdx);}
 
+// ─── Subscribed-state memory (per browser) ───────────────────────────
+// Once a visitor subscribes we set this flag so the opt-in boxes stop
+// showing on future visits. Bump _v1 to _v2 to re-show boxes to everyone.
+// NOTE: this is per-browser only — a different device/browser, or cleared
+// storage, will see the boxes again (no backend/login on this site).
+var TMR_SUB_KEY = 'tmr_subscribed_v1';
+function tmrIsSubscribed(){
+  try { return !!localStorage.getItem(TMR_SUB_KEY); } catch(e) { return false; }
+}
+function tmrMarkSubscribed(){
+  try { localStorage.setItem(TMR_SUB_KEY, '1'); } catch(e) {}
+}
+// Hide any opt-in boxes already on the page (used right after a submit,
+// so the boxes vanish on the current visit too — not just future ones).
+// FUTURE: instead of hiding, this is where a "you're subscribed" banner
+// with a different CTA could be swapped in.
+function tmrHideOptInBoxes(){
+  document.querySelectorAll('.sb').forEach(function(box){
+    var item = box.closest('.col-item') || box;
+    item.style.display = 'none';
+  });
+  var ribbon = document.querySelector('.cp-ribbon');
+  if (ribbon) ribbon.style.display = 'none';
+}
+
 function openSubscribe(prefillEmail){
   // Reset to form view if returning after a previous submit
   var body = document.querySelector('#subOverlay .sub-modal-body');
@@ -1606,6 +1631,11 @@ function closeSubscribe(){
 })();
 
 function showSubThankYou(){
+  // Remember this visitor subscribed, and hide opt-in boxes right away
+  // so they vanish on this visit too — not only on future page loads.
+  tmrMarkSubscribed();
+  tmrHideOptInBoxes();
+
   var body = document.querySelector('#subOverlay .sub-modal-body');
   if (!body) return;
   var formParts = body.querySelectorAll('.sub-mast, .sub-tag, #tmrSubForm, .sub-trust');
@@ -1976,17 +2006,21 @@ function renderBlock(elId, articles, injects, ads) {
 
     h += '<div class="col-item">' + chunk + '</div>';
 
-    // Drop in any subscribe form whose `at` index matches this article
-    for (var j = 0; j < injects.length; j++) {
-      if (injects[j].at === i) {
-        var inj = injects[j];
-        h += '<div class="col-item">' +
-               '<div class="sb">' +
-                 '<div class="t">' + inj.title + '</div>' +
-                 '<div class="s">' + inj.sub + '</div>' +
-                 '<input type="email" class="sb-email" placeholder="Your email..."><button onclick="openSubscribe(this.previousElementSibling.value)">SUBSCRIBE</button>' +
-               '</div>' +
-             '</div>';
+    // Drop in any subscribe form whose `at` index matches this article.
+    // Skip entirely if the visitor has already subscribed (per-browser flag).
+    // FUTURE: instead of skipping, render a "subscribed" banner + new CTA here.
+    if (!tmrIsSubscribed()) {
+      for (var j = 0; j < injects.length; j++) {
+        if (injects[j].at === i) {
+          var inj = injects[j];
+          h += '<div class="col-item">' +
+                 '<div class="sb">' +
+                   '<div class="t">' + inj.title + '</div>' +
+                   '<div class="s">' + inj.sub + '</div>' +
+                   '<input type="email" class="sb-email" placeholder="Your email..."><button onclick="openSubscribe(this.previousElementSibling.value)">SUBSCRIBE</button>' +
+                 '</div>' +
+               '</div>';
+        }
       }
     }
 
@@ -2664,6 +2698,8 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         '</div>'+
       '</div>'+
     '</section>'+
+    // Front 9 opt-in ribbon — omitted entirely if visitor already subscribed.
+    (tmrIsSubscribed() ? '' :
     '<div class="cp-ribbon">'+
       '<div class="cp-ribbon-text">'+
         '<span class="cp-ribbon-title">Enjoying the Front 9?</span>'+
@@ -2673,7 +2709,7 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
         '<input class="cp-ribbon-input" type="email" placeholder="Your email..." required>'+
         '<button class="cp-ribbon-btn" type="submit">SUBSCRIBE</button>'+
       '</form>'+
-    '</div>';
+    '</div>');
   }
 
   function init(){
