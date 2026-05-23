@@ -1237,9 +1237,9 @@
     <span class="aside" id="sketchFeaturedCap"></span>
 
     <div style="display:flex;align-items:center;gap:4px;width:100%;margin:8px auto 2px;">
-      <button type="button" id="sketchPrev" onclick="scrollSketchStrip(-1)" aria-label="Previous cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">‹</button>
+      <button type="button" id="sketchPrev" onclick="scrollSketchStrip(-1)" onmouseenter="startArrowScroll(-1)" onmouseleave="stopArrowScroll()" aria-label="Previous cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">‹</button>
       <div id="sketchThumbs" style="flex:1 1 auto;display:flex;gap:5px;overflow-x:auto;scrollbar-width:none;"></div>
-      <button type="button" id="sketchNext" onclick="scrollSketchStrip(1)" aria-label="More cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">›</button>
+      <button type="button" id="sketchNext" onclick="scrollSketchStrip(1)" onmouseenter="startArrowScroll(1)" onmouseleave="stopArrowScroll()" aria-label="More cartoons" style="flex:0 0 auto;width:22px;height:50px;background:#1b4332;color:#faf6ef;border:none;cursor:pointer;font-size:15px;line-height:1;border-radius:2px;">›</button>
     </div>
 
     <a href="/rough-sketch-archive.html" style="display:block;width:100%;box-sizing:border-box;margin:9px auto 2px;padding:9px 8px;background:#1b4332;border:2px solid #b8860b;border-radius:2px;color:#d4a828;font-size:12px;font-weight:bold;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;text-align:center;">View Full Archive&nbsp;&rarr;</a>
@@ -1715,7 +1715,7 @@ function renderSketchWidget(){
   var html='';
   for(var i=1;i<sketches.length&&i<=12;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:220px;height:150px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
+          'style="flex:0 0 auto;width:190px;height:130px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
   }
   box.innerHTML=html;
   // auto-scroll while the mouse is over the strip
@@ -1732,7 +1732,16 @@ function renderSketchWidget(){
 }
 function scrollSketchStrip(dir){
   var box=document.getElementById('sketchThumbs');
-  if(box)box.scrollBy({left:dir*450,behavior:'smooth'});
+  if(box)box.scrollBy({left:dir*390,behavior:'smooth'});
+}
+var sketchArrowTimer=null;
+function startArrowScroll(dir){
+  var box=document.getElementById('sketchThumbs');
+  if(!box||sketchArrowTimer)return;
+  sketchArrowTimer=setInterval(function(){box.scrollLeft+=dir*4;},16);
+}
+function stopArrowScroll(){
+  clearInterval(sketchArrowTimer);sketchArrowTimer=null;
 }
 
 // ═══ SEARCH ═══
