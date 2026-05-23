@@ -1713,21 +1713,33 @@ function renderSketchWidget(){
   var box=document.getElementById('sketchThumbs');
   if(!box)return;
   var html='';
+  // Each thumbnail is sized so exactly 3 fill the visible strip.
+  // calc: (100% of strip width minus the two 5px gaps) / 3
   for(var i=1;i<sketches.length&&i<=12;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:190px;height:130px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
+          'style="flex:0 0 auto;width:calc((100% - 10px) / 3);height:130px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
   }
   box.innerHTML=html;
-  // auto-scroll while the mouse is over the strip
+  // ── Edge-based hands-free auto-scroll ──
+  // Hover the left third of the strip → scrolls left; right third → scrolls right.
+  // Closer to the edge = faster. Middle third stays still.
+  var sketchScrollDir=0;
+  box.onmousemove=function(e){
+    var rect=box.getBoundingClientRect();
+    var x=e.clientX-rect.left;          // cursor pos within the strip
+    var edge=rect.width*0.33;           // size of each active edge zone
+    if(x<edge){sketchScrollDir=-(1-x/edge);}              // left zone, -1..0
+    else if(x>rect.width-edge){sketchScrollDir=(x-(rect.width-edge))/edge;} // right zone, 0..1
+    else{sketchScrollDir=0;}            // dead middle
+  };
   box.onmouseenter=function(){
     if(sketchAutoTimer)return;
     sketchAutoTimer=setInterval(function(){
-      if(box.scrollLeft+box.clientWidth>=box.scrollWidth-1){box.scrollLeft=0;}
-      else{box.scrollLeft+=1;}
-    },20);
+      if(sketchScrollDir!==0){box.scrollLeft+=sketchScrollDir*8;}
+    },16);
   };
   box.onmouseleave=function(){
-    clearInterval(sketchAutoTimer);sketchAutoTimer=null;
+    clearInterval(sketchAutoTimer);sketchAutoTimer=null;sketchScrollDir=0;
   };
 }
 function scrollSketchStrip(dir){
