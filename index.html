@@ -1720,7 +1720,7 @@ function renderSketchWidget(){
     zoom.id='sketchZoom';
     zoom.style.cssText='position:fixed;z-index:9999;display:none;pointer-events:none;'+
       'background:#faf6ef;border:2px solid #1b4332;border-radius:3px;padding:5px;'+
-      'box-shadow:0 8px 28px rgba(0,0,0,0.45);width:420px;max-width:90vw;';
+      'box-shadow:0 8px 28px rgba(0,0,0,0.45);width:330px;max-width:90vw;';
     zoom.innerHTML='<img style="width:100%;display:block;border:1px solid #1b4332;'+
       'filter:contrast(1.12) saturate(1.05);">'+
       '<div style="font-family:Georgia,serif;font-style:italic;font-size:13px;'+
@@ -1764,25 +1764,10 @@ function renderSketchWidget(){
     })(i);
   }
 
-  // ── Edge-based hands-free auto-scroll ──
-  // Hover the left third of the strip → scrolls left; right third → scrolls right.
-  var sketchScrollDir=0;
-  box.onmousemove=function(e){
-    var rect=box.getBoundingClientRect();
-    var x=e.clientX-rect.left;
-    var edge=rect.width*0.33;
-    if(x<edge){sketchScrollDir=-(1-x/edge);}
-    else if(x>rect.width-edge){sketchScrollDir=(x-(rect.width-edge))/edge;}
-    else{sketchScrollDir=0;}
-  };
-  box.onmouseenter=function(){
-    if(sketchAutoTimer)return;
-    sketchAutoTimer=setInterval(function(){
-      if(sketchScrollDir!==0){box.scrollLeft+=sketchScrollDir*8;}
-    },16);
-  };
+  // ── Scrolling is handled ONLY by the ‹ › arrow buttons ──
+  // (the arrows use their own startArrowScroll/stopArrowScroll handlers)
+  // Hovering the strip itself no longer scrolls it.
   box.onmouseleave=function(){
-    clearInterval(sketchAutoTimer);sketchAutoTimer=null;sketchScrollDir=0;
     hideZoom();
   };
 }
