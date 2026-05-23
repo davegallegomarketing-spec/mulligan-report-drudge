@@ -1712,25 +1712,68 @@ function renderSketchWidget(){
   if(featCap){featCap.textContent='"'+sketches[0].cap+'"';}
   var box=document.getElementById('sketchThumbs');
   if(!box)return;
-  var html='';
-  // Each thumbnail is sized so exactly 3 fill the visible strip.
-  // calc: (100% of strip width minus the two 5px gaps) / 3
-  for(var i=1;i<sketches.length&&i<=12;i++){
-    html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:calc((100% - 10px) / 3);aspect-ratio:16/9;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
+
+  // ── Floating hover-zoom popup (one shared element, attached to <body>) ──
+  var zoom=document.getElementById('sketchZoom');
+  if(!zoom){
+    zoom=document.createElement('div');
+    zoom.id='sketchZoom';
+    zoom.style.cssText='position:fixed;z-index:9999;display:none;pointer-events:none;'+
+      'background:#faf6ef;border:2px solid #1b4332;border-radius:3px;padding:5px;'+
+      'box-shadow:0 8px 28px rgba(0,0,0,0.45);width:420px;max-width:90vw;';
+    zoom.innerHTML='<img style="width:100%;display:block;border:1px solid #1b4332;'+
+      'filter:contrast(1.12) saturate(1.05);">'+
+      '<div style="font-family:Georgia,serif;font-style:italic;font-size:13px;'+
+      'color:#1b4332;text-align:center;padding:6px 4px 2px;line-height:1.4;"></div>';
+    document.body.appendChild(zoom);
   }
-  box.innerHTML=html;
+  var zoomImg=zoom.querySelector('img');
+  var zoomCap=zoom.querySelector('div');
+
+  function showZoom(idx,thumbEl){
+    zoomImg.src=sketches[idx].src;
+    zoomCap.textContent='"'+sketches[idx].cap+'"';
+    zoom.style.display='block';
+    // position the popup centred above the hovered thumbnail
+    var r=thumbEl.getBoundingClientRect();
+    var zw=zoom.offsetWidth;
+    var left=r.left+r.width/2-zw/2;
+    left=Math.max(8,Math.min(left,window.innerWidth-zw-8)); // keep on-screen
+    var top=r.top-zoom.offsetHeight-10;
+    if(top<8){top=r.bottom+10;}  // not enough room above → drop below
+    zoom.style.left=left+'px';
+    zoom.style.top=top+'px';
+  }
+  function hideZoom(){zoom.style.display='none';}
+
+  // ── Build thumbnails (exactly 3 fill the strip) ──
+  box.innerHTML='';
+  for(var i=1;i<sketches.length&&i<=12;i++){
+    (function(idx){
+      var t=document.createElement('img');
+      t.src=sketches[idx].src;
+      t.alt='Rough sketch cartoon';
+      t.style.cssText='flex:0 0 auto;width:calc((100% - 10px) / 3);aspect-ratio:16/9;'+
+        'object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;'+
+        'image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);'+
+        'transition:border-color .15s;';
+      t.onclick=function(){openSketchViewer(idx);};
+      t.onmouseenter=function(){t.style.borderColor='#b8860b';showZoom(idx,t);};
+      t.onmouseleave=function(){t.style.borderColor='#1b4332';hideZoom();};
+      box.appendChild(t);
+    })(i);
+  }
+
   // ── Edge-based hands-free auto-scroll ──
   // Hover the left third of the strip → scrolls left; right third → scrolls right.
-  // Closer to the edge = faster. Middle third stays still.
   var sketchScrollDir=0;
   box.onmousemove=function(e){
     var rect=box.getBoundingClientRect();
-    var x=e.clientX-rect.left;          // cursor pos within the strip
-    var edge=rect.width*0.33;           // size of each active edge zone
-    if(x<edge){sketchScrollDir=-(1-x/edge);}              // left zone, -1..0
-    else if(x>rect.width-edge){sketchScrollDir=(x-(rect.width-edge))/edge;} // right zone, 0..1
-    else{sketchScrollDir=0;}            // dead middle
+    var x=e.clientX-rect.left;
+    var edge=rect.width*0.33;
+    if(x<edge){sketchScrollDir=-(1-x/edge);}
+    else if(x>rect.width-edge){sketchScrollDir=(x-(rect.width-edge))/edge;}
+    else{sketchScrollDir=0;}
   };
   box.onmouseenter=function(){
     if(sketchAutoTimer)return;
@@ -1740,6 +1783,7 @@ function renderSketchWidget(){
   };
   box.onmouseleave=function(){
     clearInterval(sketchAutoTimer);sketchAutoTimer=null;sketchScrollDir=0;
+    hideZoom();
   };
 }
 function scrollSketchStrip(dir){
