@@ -1717,7 +1717,7 @@ function renderSketchWidget(){
   // calc: (100% of strip width minus the two 5px gaps) / 3
   for(var i=1;i<sketches.length&&i<=12;i++){
     html+='<img src="'+sketches[i].src+'" onclick="openSketchViewer('+i+')" alt="Rough sketch cartoon" '+
-          'style="flex:0 0 auto;width:calc((100% - 10px) / 3);height:130px;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
+          'style="flex:0 0 auto;width:calc((100% - 10px) / 3);aspect-ratio:16/9;object-fit:cover;border:1.5px solid #1b4332;cursor:pointer;display:block;image-rendering:-webkit-optimize-contrast;filter:contrast(1.12) saturate(1.05);">';
   }
   box.innerHTML=html;
   // ── Edge-based hands-free auto-scroll ──
