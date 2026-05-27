@@ -424,40 +424,22 @@
 
 <script>
 /* ================================================================
-   FLYOVER LIST — the ONLY place videos are added.
-   To add a flyover: copy one { } block, paste a new one below.
-   To remove one: delete its { } block.
-   ONLY add genuine course flyover videos. Nothing else belongs here.
+   COURSE FLYOVER — videos come from a curated YouTube playlist.
 
-     id      -> YouTube video ID (the part after  watch?v=  )
-     course  -> course name (the title)
-     loc     -> location, shown as the gold channel line
-     note    -> one or two sentences of context
+   This page no longer holds a hardcoded list. It loads its videos
+   from  /api/flyovers , which reads the "TMR Course Flyovers"
+   YouTube playlist. To add a flyover: add the video to that
+   playlist on YouTube. To remove one: remove it from the playlist.
+   No code editing required.
+
+   Each flyover object the API returns has:
+     videoId   -> YouTube video ID
+     title     -> the YouTube video's title
+     thumbnail -> thumbnail URL
    ================================================================ */
-const FLYOVERS = [
-  {
-    id: "-0dWsWtJD5g",
-    course: "TPC Sawgrass — Stadium Course",
-    loc: "Ponte Vedra Beach, Florida",
-    note: "A hole-by-hole drone flyover of THE PLAYERS Stadium Course, home of the famous island-green 17th — one of the most recognizable holes in golf."
-  },
-  {
-    id: "nYm849ojyyk",
-    course: "TPC Scottsdale",
-    loc: "Scottsdale, Arizona",
-    note: "An aerial look at the punishing stretch — holes 7 through 12 — of the desert course that hosts the rowdiest week on Tour."
-  },
-  // ── Add more flyovers below. One { } block per video. ──
-  // {
-  //   id: "VIDEO_ID_HERE",
-  //   course: "Course Name",
-  //   loc: "City, State",
-  //   note: "A sentence or two about the course."
-  // },
-];
+let FLYOVERS = [];          // filled by loadFromAPI()
 
 var _shareTitle = '';
-const ytFrame      = document.getElementById('ytPlayer');
 const videoChannel = document.getElementById('videoChannel');
 const videoTitle   = document.getElementById('videoTitle');
 const videoNote    = document.getElementById('videoNote');
@@ -468,13 +450,17 @@ const fbTitle      = document.getElementById('fbTitle');
 const fbLink       = document.getElementById('fbLink');
 
 let ytAPIPlayer = null;     // the YT.Player instance, once the API is ready
-let pendingLoad = null;     // { index, autoplayOn } queued until API loads
+let apiReady    = false;    // has the YouTube IFrame API finished loading
+let pendingLoad = null;     // { index, autoplayOn } queued until API is ready
 let currentIndex = 0;
 
 /* Show the branded "watch on YouTube" panel for a video that won't embed */
 function showFallback(f){
   fbTitle.textContent = f.course;
   fbLink.href = 'https://www.youtube.com/watch?v=' + f.id;
+  fbLink.style.display = '';
+  embedFallback.querySelector('p').textContent =
+    "This drone tour can't be played in-page. Watch the full flyover on YouTube \u2014 it opens in a new tab.";
   embedFallback.classList.add('show');
 }
 function hideFallback(){ embedFallback.classList.remove('show'); }
@@ -482,12 +468,13 @@ function hideFallback(){ embedFallback.classList.remove('show'); }
 /* Update the meta block + active card for a flyover */
 function setMeta(index){
   const f = FLYOVERS[index];
-  videoChannel.textContent = f.loc;
+  if(!f) return;
+  videoChannel.textContent = f.loc || 'Aerial Tour';
   videoTitle.textContent   = f.course;
   videoNote.textContent    = f.note || '';
   youtubeLink.href = 'https://www.youtube.com/watch?v=' + f.id;
   _shareTitle = f.course + ' Flyover';
-  document.title = f.course + ' Flyover — The Mulligan Report';
+  document.title = f.course + ' \u2014 The Mulligan Report';
   document.querySelectorAll('.course-card').forEach((el,i) =>
     el.classList.toggle('is-current', i === index));
 }
@@ -500,7 +487,7 @@ function loadFlyover(index, autoplayOn){
   hideFallback();
   setMeta(index);
 
-  if(ytAPIPlayer){
+  if(ytAPIPlayer && apiReady){
     if(autoplayOn) ytAPIPlayer.loadVideoById(f.id);
     else           ytAPIPlayer.cueVideoById(f.id);
   } else {
@@ -516,6 +503,7 @@ function onYouTubeIframeAPIReady(){
     playerVars: { rel:0, modestbranding:1, playsinline:1, color:'white' },
     events: {
       onReady: function(){
+        apiReady = true;
         const start = pendingLoad || { index:0, autoplayOn:false };
         const f = FLYOVERS[start.index];
         if(f){
@@ -527,7 +515,7 @@ function onYouTubeIframeAPIReady(){
       /* Error codes 100/101/150/153 = video unavailable or embedding off */
       onError: function(e){
         if([100,101,150,153].indexOf(e.data) !== -1){
-          showFallback(FLYOVERS[currentIndex]);
+          if(FLYOVERS[currentIndex]) showFallback(FLYOVERS[currentIndex]);
         }
       }
     }
@@ -541,25 +529,69 @@ function onYouTubeIframeAPIReady(){
   document.head.appendChild(tag);
 })();
 
-/* Build the course picker grid */
-FLYOVERS.forEach((f,i) => {
-  const card = document.createElement('div');
-  card.className = 'course-card';
-  card.innerHTML =
-    '<div class="cc-thumb">' +
-      '<img src="https://i.ytimg.com/vi/' + f.id + '/hqdefault.jpg" alt="' + f.course + '" loading="lazy">' +
-      '<div class="cc-play"></div>' +
-    '</div>' +
-    '<div class="cc-info">' +
-      '<div class="cc-channel">' + f.loc + '</div>' +
-      '<div class="cc-title">' + f.course + '</div>' +
-    '</div>';
-  card.addEventListener('click', () => loadFlyover(i, true));
-  courseGrid.appendChild(card);
-});
+/* Build the course picker grid from FLYOVERS */
+function buildGrid(){
+  courseGrid.innerHTML = '';
+  FLYOVERS.forEach((f,i) => {
+    const card = document.createElement('div');
+    card.className = 'course-card';
+    card.innerHTML =
+      '<div class="cc-thumb">' +
+        '<img src="' + f.thumb + '" alt="' + f.course + '" loading="lazy">' +
+        '<div class="cc-play"></div>' +
+      '</div>' +
+      '<div class="cc-info">' +
+        '<div class="cc-channel">' + (f.loc || 'Aerial Tour') + '</div>' +
+        '<div class="cc-title">' + f.course + '</div>' +
+      '</div>';
+    card.addEventListener('click', () => loadFlyover(i, true));
+    courseGrid.appendChild(card);
+  });
+}
 
-/* First flyover loaded on open, no autoplay */
-if(FLYOVERS.length) loadFlyover(0, false);
+/* Show a message in the player area (loading / empty / error states) */
+function showPlayerMessage(heading, text){
+  fbTitle.textContent = heading;
+  embedFallback.querySelector('p').textContent = text;
+  fbLink.style.display = 'none';
+  embedFallback.classList.add('show');
+}
+
+/* ── Load the flyover list from the API ── */
+async function loadFromAPI(){
+  showPlayerMessage('Loading Flyovers\u2026', 'Pulling the latest course flyovers.');
+  try {
+    const res  = await fetch('/api/flyover-feed');
+    const data = await res.json();
+    const list = (data && data.flyovers) ? data.flyovers : [];
+
+    // Map the API shape into what the page uses
+    FLYOVERS = list.map(v => ({
+      id:     v.videoId,
+      course: v.title || 'Course Flyover',
+      loc:    '',                       // playlist videos carry no location
+      note:   '',
+      thumb:  v.thumbnail || ('https://i.ytimg.com/vi/' + v.videoId + '/hqdefault.jpg')
+    }));
+
+    if(FLYOVERS.length === 0){
+      showPlayerMessage('No Flyovers Yet',
+        'Add course flyover videos to the playlist and they will appear here.');
+      return;
+    }
+
+    hideFallback();
+    buildGrid();
+    loadFlyover(0, false);
+
+  } catch (err) {
+    showPlayerMessage('Couldn\u2019t Load Flyovers',
+      'There was a problem reaching the flyover feed. Please refresh in a moment.');
+  }
+}
+
+/* Kick everything off */
+loadFromAPI();
 
 /* ── Copy Link ── */
 function copyWatchLink(){
