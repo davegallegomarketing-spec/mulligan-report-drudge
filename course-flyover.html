@@ -446,9 +446,8 @@
 
   /* ══════════════════════════════════════════════════════════════
      RIBBON CTA — slides up after the user scrolls a bit.
-     Two buttons: WIN (giveaway form 279004960) and SUBSCRIBE
-     (newsletter form 976403394). Matches the AWeber forms in
-     index.html so subscribers land on the same lists.
+     Subscribe button opens an AWeber form (976403394) that matches
+     the one in index.html — same form, same list, same submit flow.
      ══════════════════════════════════════════════════════════════ */
   .tmr-ribbon {
     position:fixed; left:0; right:0; bottom:0;
@@ -832,13 +831,10 @@
   <div class="tmr-ribbon-inner">
     <div class="tmr-ribbon-msg">
       <div class="tmr-ribbon-title">Get inside the ropes — every morning before your <em>tee time</em>.</div>
-      <div class="tmr-ribbon-sub">12,847 golfers · Free daily briefing · Win 3 dozen Titleists this quarter.</div>
+      <div class="tmr-ribbon-sub">12,847 golfers · Free daily briefing · Unsubscribe anytime.</div>
     </div>
     <div class="tmr-ribbon-actions">
-      <button class="tmr-ribbon-btn primary" type="button" onclick="tmrOpenGiveaway()">
-        Win Golf Balls
-      </button>
-      <button class="tmr-ribbon-btn secondary" type="button" onclick="tmrOpenSubscribe()">
+      <button class="tmr-ribbon-btn primary" type="button" onclick="tmrOpenSubscribe()">
         Subscribe Free
       </button>
     </div>
@@ -876,38 +872,6 @@
     </div>
 
     <div class="tmr-modal-trust">12,847 golfers · Free · Unsubscribe anytime</div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════
-     GIVEAWAY MODAL — AWeber sweepstakes form 279004960
-     (same form as the homepage giveaway popup)
-     ══════════════════════════════════════════════════════════════ -->
-<div class="tmr-modal" id="tmrGiveModal" onclick="if(event.target===this)tmrCloseModals()">
-  <div class="tmr-modal-card">
-    <button class="tmr-modal-close" type="button" onclick="tmrCloseModals()">&times;</button>
-    <div class="tmr-modal-mast">Win 3 Dozen <em>Titleist Golf Balls</em></div>
-    <div class="tmr-modal-tag">4 winners · 4 quarters · Every reader wins the daily briefing</div>
-
-    <div class="tmr-modal-body">
-      We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model —
-      every quarter in 2026.
-    </div>
-
-    <!-- AWeber Sweepstakes form 279004960 -->
-    <div class="AW-Form-279004960" id="tmrFlyoverGiveContainer"></div>
-    <script type="text/javascript">(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//forms.aweber.com/form/60/279004960.js";
-        fjs.parentNode.insertBefore(js, fjs);
-        }(document, "script", "aweber-wjs-flyover"));
-    </script>
-
-    <div class="tmr-modal-trust">
-      No purchase necessary · 18+ U.S. residents · One entry per quarter
-    </div>
   </div>
 </div>
 
@@ -1200,12 +1164,9 @@ function tmrDismissRibbon(){
   try { sessionStorage.setItem(TMR_RIBBON_DISMISS_KEY, '1'); } catch(e){}
 }
 
-/* Show the ribbon after the visitor has scrolled ~400px,
-   OR after 25 seconds of viewing (whichever comes first). */
-window.addEventListener('scroll', function(){
-  if(window.scrollY > 400) tmrShowRibbon();
-}, { passive:true });
-setTimeout(tmrShowRibbon, 25000);
+/* Show the ribbon shortly after page load so it's pinned to the bottom
+   of the viewport and follows the user as they scroll the whole page. */
+setTimeout(tmrShowRibbon, 1200);
 
 /* ── Modal open/close ── */
 function tmrCloseModals(){
@@ -1219,57 +1180,57 @@ function tmrOpenSubscribe(){
     if(i) try { i.focus(); } catch(_){}
   }, 100);
 }
-function tmrOpenGiveaway(){
-  tmrCloseModals();
-  document.getElementById('tmrGiveModal').classList.add('show');
-}
 
-/* ── Subscribe form: submit silently to AWeber (same pattern as index.html) ── */
+/* ── Subscribe form: submit silently to AWeber (mirrors index.html exactly) ── */
 (function(){
   var form = document.getElementById('tmrFlyoverSubForm');
   if(!form) return;
   form.addEventListener('submit', function(e){
     e.preventDefault();
     var emailInput = document.getElementById('tmrFlyoverSubEmail');
-    var err = document.getElementById('tmrFlyoverSubError');
+    var errBox = document.getElementById('tmrFlyoverSubError');
     var btn = document.getElementById('tmrFlyoverSubBtn');
-    var success = document.getElementById('tmrFlyoverSubSuccess');
-    err.style.display = 'none';
     var email = (emailInput.value || '').trim();
-    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
-      err.style.display = 'block';
+
+    // Basic email validation before sending
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (errBox) errBox.style.display = 'block';
+      emailInput.focus();
       return;
     }
-    btn.disabled = true;
-    btn.textContent = 'Submitting...';
+    if (errBox) errBox.style.display = 'none';
+    if (btn) { btn.disabled = true; btn.textContent = 'Subscribing…'; }
 
-    // Build form data and POST to AWeber's addlead.pl.
-    // We use no-cors so the browser doesn't block the cross-origin response;
-    // AWeber processes the submission regardless.
-    var fd = new FormData(form);
-    var body = new URLSearchParams();
-    fd.forEach(function(v, k){ body.append(k, v); });
+    // AWeber's addlead.pl expects application/x-www-form-urlencoded.
+    var params = new URLSearchParams();
+    new FormData(form).forEach(function(value, key){ params.append(key, value); });
 
     fetch(form.action, {
-      method:'POST',
-      mode:'no-cors',
-      headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
-      body: body.toString()
-    }).then(function(){
-      form.classList.add('hidden');
-      success.classList.add('show');
-      tmrMarkSubscribed();
-      tmrHideRibbon();
-    }).catch(function(){
-      // Even on error, AWeber usually still got the submission with no-cors.
-      // Show success rather than scare the user.
-      form.classList.add('hidden');
-      success.classList.add('show');
-      tmrMarkSubscribed();
-      tmrHideRibbon();
-    });
+      method: 'POST',
+      body: params.toString(),
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      mode: 'no-cors'
+    })
+      .then(function(){ tmrShowSubThankYou(); })
+      .catch(function(){ tmrShowSubThankYou(); })
+      .finally(function(){
+        if (btn) { btn.disabled = false; btn.textContent = 'Subscribe Free'; }
+        form.reset();
+      });
   });
 })();
+
+function tmrShowSubThankYou(){
+  tmrMarkSubscribed();
+  var form    = document.getElementById('tmrFlyoverSubForm');
+  var success = document.getElementById('tmrFlyoverSubSuccess');
+  if(form)    form.classList.add('hidden');
+  if(success) success.classList.add('show');
+  // Hide the ribbon now that they're subscribed
+  tmrHideRibbon();
+  // Auto-close the modal after a moment so they keep watching flyovers
+  setTimeout(tmrCloseModals, 2200);
+}
 </script>
 
 </body>
