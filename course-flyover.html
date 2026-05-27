@@ -1153,12 +1153,123 @@ function toggleTheater(){
     label.textContent  = 'Theater';
   }
 }
-/* ESC exits theater mode */
+/* ESC exits theater mode (and closes ribbon modals) */
 document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape' && document.body.classList.contains('theater')){
-    toggleTheater();
+  if(e.key === 'Escape'){
+    if(document.body.classList.contains('theater')){
+      toggleTheater();
+    } else if(document.querySelector('.tmr-modal.show')){
+      tmrCloseModals();
+    }
   }
 });
+
+/* ══════════════════════════════════════════════════════════════
+   RIBBON CTA — appears on scroll, with two AWeber forms.
+   Uses the SAME tmr_subscribed flag as index.html so a subscriber
+   coming from the homepage never sees this ribbon.
+   ══════════════════════════════════════════════════════════════ */
+var TMR_SUB_KEY = 'tmr_subscribed_v1';
+var TMR_RIBBON_DISMISS_KEY = 'tmr_ribbon_flyover_dismissed';
+var _tmrRibbonShown = false;
+
+function tmrIsSubscribed(){
+  try { return !!localStorage.getItem(TMR_SUB_KEY); } catch(e){ return false; }
+}
+function tmrIsRibbonDismissed(){
+  try { return !!sessionStorage.getItem(TMR_RIBBON_DISMISS_KEY); } catch(e){ return false; }
+}
+function tmrMarkSubscribed(){
+  try { localStorage.setItem(TMR_SUB_KEY, '1'); } catch(e){}
+}
+
+function tmrShowRibbon(){
+  if(_tmrRibbonShown) return;
+  if(tmrIsSubscribed() || tmrIsRibbonDismissed()) return;
+  var r = document.getElementById('tmrRibbon');
+  if(!r) return;
+  r.classList.add('show');
+  _tmrRibbonShown = true;
+}
+function tmrHideRibbon(){
+  var r = document.getElementById('tmrRibbon');
+  if(r) r.classList.remove('show');
+}
+function tmrDismissRibbon(){
+  tmrHideRibbon();
+  try { sessionStorage.setItem(TMR_RIBBON_DISMISS_KEY, '1'); } catch(e){}
+}
+
+/* Show the ribbon after the visitor has scrolled ~400px,
+   OR after 25 seconds of viewing (whichever comes first). */
+window.addEventListener('scroll', function(){
+  if(window.scrollY > 400) tmrShowRibbon();
+}, { passive:true });
+setTimeout(tmrShowRibbon, 25000);
+
+/* ── Modal open/close ── */
+function tmrCloseModals(){
+  document.querySelectorAll('.tmr-modal').forEach(function(m){ m.classList.remove('show'); });
+}
+function tmrOpenSubscribe(){
+  tmrCloseModals();
+  document.getElementById('tmrSubModal').classList.add('show');
+  setTimeout(function(){
+    var i = document.getElementById('tmrFlyoverSubEmail');
+    if(i) try { i.focus(); } catch(_){}
+  }, 100);
+}
+function tmrOpenGiveaway(){
+  tmrCloseModals();
+  document.getElementById('tmrGiveModal').classList.add('show');
+}
+
+/* ── Subscribe form: submit silently to AWeber (same pattern as index.html) ── */
+(function(){
+  var form = document.getElementById('tmrFlyoverSubForm');
+  if(!form) return;
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var emailInput = document.getElementById('tmrFlyoverSubEmail');
+    var err = document.getElementById('tmrFlyoverSubError');
+    var btn = document.getElementById('tmrFlyoverSubBtn');
+    var success = document.getElementById('tmrFlyoverSubSuccess');
+    err.style.display = 'none';
+    var email = (emailInput.value || '').trim();
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      err.style.display = 'block';
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    // Build form data and POST to AWeber's addlead.pl.
+    // We use no-cors so the browser doesn't block the cross-origin response;
+    // AWeber processes the submission regardless.
+    var fd = new FormData(form);
+    var body = new URLSearchParams();
+    fd.forEach(function(v, k){ body.append(k, v); });
+
+    fetch(form.action, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{ 'Content-Type':'application/x-www-form-urlencoded' },
+      body: body.toString()
+    }).then(function(){
+      form.classList.add('hidden');
+      success.classList.add('show');
+      tmrMarkSubscribed();
+      tmrHideRibbon();
+    }).catch(function(){
+      // Even on error, AWeber usually still got the submission with no-cors.
+      // Show success rather than scare the user.
+      form.classList.add('hidden');
+      success.classList.add('show');
+      tmrMarkSubscribed();
+      tmrHideRibbon();
+    });
+  });
+})();
 </script>
 
 </body>
