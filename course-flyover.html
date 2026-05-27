@@ -163,27 +163,30 @@
     max-width:none; padding:0; margin:0;
     width:100vw; height:100vh;
     z-index:200;
-    display:flex; align-items:center; justify-content:center;
+    display:block;                /* not flex — use absolute centering instead */
     /* Deep near-black wash with a hint of TMR green */
     background:
       radial-gradient(ellipse at center, #050d08 0%, #02060400 60%, #000 100%),
       #000;
   }
   body.theater .video-frame {
-    flex:0 0 auto;
+    /* Absolute centering — the most reliable in CSS, no flex quirks */
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%, -50%);
     width:min(92vw, calc(88vh * 16 / 9));
     max-width:1600px;
     height:auto;
     padding-bottom:0;
     aspect-ratio:16/9;
-    margin:auto;                              /* belt-and-suspenders centering */
+    margin:0;
     border-radius:4px;
     border-color:rgba(184,134,11,0.4);
     box-shadow:
       0 0 80px rgba(184,134,11,0.1),
       0 30px 90px rgba(0,0,0,0.7);
   }
-  /* Make sure the iframe stays glued inside the frame in theater mode */
+  /* Iframe stays glued inside the frame */
   body.theater .video-frame iframe {
     position:absolute; top:0; left:0;
     width:100%; height:100%;
