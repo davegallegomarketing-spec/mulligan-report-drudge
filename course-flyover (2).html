@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Flyover — The Mulligan Report</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icons/icon-192.png">
+<meta name="theme-color" content="#0a1a0f">
+<meta property="og:site_name" content="The Mulligan Report">
+<meta property="og:type" content="video.other">
+<meta property="og:title" content="Course Flyover — The Mulligan Report">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:wght@400;600&family=DM+Sans:wght@400;500;600&display=swap');
+
+  :root {
+    --bg-deep:       #0a1a0f;
+    --bg-section:    #0f2218;
+    --bg-card:       #132b1b;
+    --gold:          #b8860b;
+    --gold-light:    #d4a828;
+    --gold-glow:     rgba(184,134,11,0.12);
+    --green-border:  #2d5a40;
+    --cream:         #f5f0e8;
+    --cream-dim:     #c8c0b0;
+    --text-body:     #d4cfc4;
+    --text-muted:    #8a8478;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background:#0f2218;
+    color:var(--cream);
+    font-family:'DM Sans', sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* ── TARTAN BACKGROUND ── */
+  .tartan-bg { position:fixed; inset:0; width:100%; height:100%;
+    opacity:0.2; pointer-events:none; z-index:0; }
+  body > *:not(.tartan-bg) { position:relative; z-index:1; }
+
+  /* ── HEADER ── */
+  .watch-header {
+    background:var(--bg-section);
+    border-bottom:1px solid var(--green-border);
+    padding:12px 24px;
+    display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:100;
+  }
+  .watch-header a { text-decoration:none; }
+  .header-brand {
+    font-family:'Playfair Display', serif;
+    font-weight:900; font-size:18px;
+    color:var(--cream); letter-spacing:1px;
+  }
+  .header-brand em { font-style:italic; color:var(--gold-light); }
+  .header-back {
+    font-size:13px; color:var(--gold-light);
+    text-decoration:none; font-weight:500;
+    transition:color 0.2s; display:flex; align-items:center; gap:6px;
+  }
+  .header-back:hover { color:var(--gold); }
+  .header-back svg { width:14px; height:14px; }
+
+  /* ── FLYOVER HERO STRIP — the special touch ── */
+  .flyover-hero {
+    max-width:900px; margin:0 auto;
+    padding:30px 20px 6px;
+    text-align:center;
+  }
+  .flyover-eyebrow {
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:12px; font-weight:600;
+    letter-spacing:2.5px; text-transform:uppercase;
+    color:var(--gold-light);
+  }
+  /* little drone / aerial glyph */
+  .flyover-eyebrow svg { width:18px; height:18px; stroke:var(--gold-light); }
+  .flyover-hero h1 {
+    font-family:'Playfair Display', serif;
+    font-weight:900;
+    font-size:clamp(34px,6vw,52px);
+    color:var(--cream);
+    letter-spacing:1px;
+    margin:8px 0 6px;
+    line-height:1.05;
+  }
+  .flyover-hero h1 em { font-style:italic; color:var(--gold-light); }
+  .flyover-hero p {
+    font-family:'Source Serif 4', serif;
+    color:var(--text-body); font-size:15px;
+    max-width:520px; margin:0 auto; line-height:1.6;
+  }
+  .hero-rule {
+    width:54px; height:2px; margin:16px auto 0;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  }
+
+  /* ── MAIN PLAYER ── */
+  .player-section { max-width:900px; margin:0 auto; padding:22px 20px 0; }
+  .video-frame {
+    position:relative; width:100%; padding-bottom:56.25%;
+    border-radius:8px; overflow:hidden;
+    border:2px solid var(--gold);
+    box-shadow:0 0 80px var(--gold-glow), 0 8px 32px rgba(0,0,0,0.5);
+    background:#000;
+  }
+  .video-frame iframe {
+    position:absolute; top:0; left:0;
+    width:100%; height:100%; border:0;
+  }
+
+  /* ── EMBED FALLBACK (shown when a video can't be embedded) ── */
+  .embed-fallback {
+    position:absolute; inset:0;
+    display:none;
+    flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center; padding:30px;
+    background:linear-gradient(160deg,#102619,#0a1a0f);
+  }
+  .embed-fallback.show { display:flex; }
+  .embed-fallback svg {
+    width:46px; height:46px; stroke:var(--gold-light);
+    margin-bottom:14px; opacity:0.9;
+  }
+  .embed-fallback h4 {
+    font-family:'Playfair Display', serif;
+    font-size:clamp(18px,2.6vw,24px); font-weight:700;
+    color:var(--cream); margin-bottom:8px;
+  }
+  .embed-fallback p {
+    font-family:'Source Serif 4', serif;
+    font-size:14px; color:var(--text-body);
+    max-width:380px; line-height:1.55; margin-bottom:18px;
+  }
+  .embed-fallback a {
+    display:inline-block;
+    padding:11px 26px; border-radius:6px;
+    background:var(--gold); color:#1a1a0f;
+    font-family:'DM Sans', sans-serif;
+    font-size:13.5px; font-weight:600;
+    text-decoration:none; transition:background 0.2s;
+  }
+  .embed-fallback a:hover { background:var(--gold-light); }
+
+  /* ── VIDEO META ── */
+  .video-meta { padding:20px 0 0; }
+  .video-channel {
+    font-size:12px; font-weight:600; text-transform:uppercase;
+    letter-spacing:1.5px; color:var(--gold-light);
+    margin-bottom:6px;
+    display:flex; align-items:center; gap:7px;
+  }
+  .video-channel::before {
+    content:""; display:inline-block;
+    width:6px; height:6px; transform:rotate(45deg);
+    background:var(--gold-light);
+  }
+  .video-title {
+    font-family:'Playfair Display', serif;
+    font-size:26px; font-weight:700;
+    color:var(--cream); line-height:1.3; margin-bottom:8px;
+  }
+  .video-note {
+    font-family:'Source Serif 4', serif;
+    font-size:14.5px; color:var(--text-body);
+    line-height:1.6; max-width:680px;
+  }
+
+  /* ── ACTION BUTTONS ── */
+  .video-actions {
+    display:flex; align-items:center; gap:10px;
+    margin-top:16px; flex-wrap:wrap;
+  }
+  .watch-youtube-link, .share-btn {
+    display:inline-flex; align-items:center; gap:6px;
+    padding:8px 18px; font-size:13px; font-weight:600;
+    color:var(--cream); background:rgba(255,255,255,0.06);
+    border:1px solid var(--green-border); border-radius:6px;
+    text-decoration:none; transition:all 0.2s; cursor:pointer;
+    font-family:'DM Sans', sans-serif;
+  }
+  .watch-youtube-link:hover, .share-btn:hover {
+    background:rgba(255,255,255,0.1); border-color:var(--gold);
+  }
+  .watch-youtube-link svg { width:16px; height:16px; fill:#ff0000; }
+  .share-btn svg { width:15px; height:15px; }
+  .share-btn.copied { border-color:var(--gold); color:var(--gold-light); }
+  .action-divider {
+    width:1px; height:20px; background:var(--green-border); margin:0 4px;
+  }
+
+  /* ── COURSE PICKER — "Pick Your Course" ── */
+  .picker-section { max-width:900px; margin:40px auto; padding:0 20px 60px; }
+  .picker-section h3 {
+    font-family:'Playfair Display', serif;
+    font-size:18px; font-weight:700; color:var(--cream);
+    margin-bottom:16px; padding-bottom:10px;
+    border-bottom:1px solid var(--green-border);
+    display:flex; align-items:center; gap:9px;
+  }
+  .picker-section h3 svg { width:17px; height:17px; stroke:var(--gold-light); }
+  .more-grid {
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+  }
+  .course-card {
+    text-align:left; cursor:pointer;
+    border:1px solid var(--green-border); border-radius:6px;
+    overflow:hidden; background:var(--bg-card);
+    transition:border-color 0.2s, transform 0.2s;
+    padding:0;
+  }
+  .course-card:hover { border-color:var(--gold); transform:translateY(-3px); }
+  .course-card.is-current { border-color:var(--gold); }
+  .course-card.is-current .cc-thumb::after { opacity:1; }
+  .cc-thumb { position:relative; }
+  .cc-thumb img {
+    width:100%; aspect-ratio:16/9; object-fit:cover; display:block;
+  }
+  /* "NOW PLAYING" ribbon on the active card */
+  .cc-thumb::after {
+    content:"NOW PLAYING";
+    position:absolute; top:8px; left:8px;
+    background:var(--gold); color:#1a1a0f;
+    font-size:8.5px; font-weight:700; letter-spacing:1px;
+    padding:3px 7px; border-radius:3px;
+    opacity:0; transition:opacity 0.2s;
+  }
+  .cc-play {
+    position:absolute; top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:44px; height:44px; border-radius:50%;
+    background:rgba(10,26,15,0.8);
+    border:1.5px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s, transform 0.2s;
+  }
+  .course-card:hover .cc-play {
+    background:var(--gold); transform:translate(-50%,-50%) scale(1.1);
+  }
+  .cc-play::before {
+    content:""; width:0; height:0; border-style:solid;
+    border-width:7px 0 7px 12px;
+    border-color:transparent transparent transparent var(--cream);
+    margin-left:3px; transition:border-color 0.2s;
+  }
+  .course-card:hover .cc-play::before {
+    border-left-color:var(--bg-deep);
+  }
+  .cc-info { padding:9px 11px 12px; }
+  .cc-channel {
+    font-size:10px; font-weight:600; text-transform:uppercase;
+    letter-spacing:1px; color:var(--gold-light); margin-bottom:3px;
+  }
+  .cc-title {
+    font-family:'Playfair Display', serif;
+    font-size:14px; font-weight:700;
+    color:var(--cream); line-height:1.25;
+  }
+
+  /* ── FOOTER ── */
+  .watch-footer {
+    max-width:900px; margin:0 auto;
+    padding:0 20px 44px; text-align:center;
+  }
+  .watch-footer a {
+    font-size:13px; color:var(--gold-light); text-decoration:none;
+    border:1px solid var(--green-border);
+    padding:10px 28px; border-radius:6px;
+    transition:all 0.2s; display:inline-block;
+  }
+  .watch-footer a:hover {
+    border-color:var(--gold); background:rgba(184,134,11,0.06);
+  }
+
+  @media (max-width:700px) {
+    .video-title { font-size:20px; }
+    .more-grid { grid-template-columns:repeat(2,1fr); }
+    .action-divider { display:none; }
+  }
+  @media (max-width:480px) {
+    .player-section { padding:16px 12px 0; }
+    .picker-section { padding:0 12px 40px; }
+    .flyover-hero { padding:24px 16px 4px; }
+    .video-actions { gap:8px; }
+    .share-btn, .watch-youtube-link { padding:8px 14px; font-size:12px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── TARTAN PATTERN BACKGROUND ── -->
+<svg class="tartan-bg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="tartan" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+      <rect width="80" height="80" fill="#1b3a2a"/>
+      <rect x="0" y="0" width="80" height="6" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="8" width="80" height="1.5" fill="#b8860b" opacity="0.45"/>
+      <rect x="0" y="18" width="80" height="3" fill="#1b4332" opacity="0.7"/>
+      <rect x="0" y="24" width="80" height="1" fill="#d4a828" opacity="0.25"/>
+      <rect x="0" y="36" width="80" height="10" fill="#2d6a4f" opacity="0.35"/>
+      <rect x="0" y="48" width="80" height="1" fill="#d4a828" opacity="0.25"/>
+      <rect x="0" y="56" width="80" height="3" fill="#1b4332" opacity="0.7"/>
+      <rect x="0" y="62" width="80" height="1.5" fill="#b8860b" opacity="0.45"/>
+      <rect x="0" y="72" width="80" height="6" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="0" width="6" height="80" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="8" y="0" width="1.5" height="80" fill="#b8860b" opacity="0.45"/>
+      <rect x="18" y="0" width="3" height="80" fill="#1b4332" opacity="0.7"/>
+      <rect x="24" y="0" width="1" height="80" fill="#d4a828" opacity="0.25"/>
+      <rect x="36" y="0" width="10" height="80" fill="#2d6a4f" opacity="0.35"/>
+      <rect x="48" y="0" width="1" height="80" fill="#d4a828" opacity="0.25"/>
+      <rect x="56" y="0" width="3" height="80" fill="#1b4332" opacity="0.7"/>
+      <rect x="62" y="0" width="1.5" height="80" fill="#b8860b" opacity="0.45"/>
+      <rect x="72" y="0" width="6" height="80" fill="#2d6a4f" opacity="0.6"/>
+      <rect x="0" y="0" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="36" y="0" width="10" height="6" fill="#8B4513" opacity="0.15"/>
+      <rect x="72" y="0" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="0" y="36" width="6" height="10" fill="#8B4513" opacity="0.15"/>
+      <rect x="36" y="36" width="10" height="10" fill="#8B4513" opacity="0.1"/>
+      <rect x="72" y="36" width="6" height="10" fill="#8B4513" opacity="0.15"/>
+      <rect x="0" y="72" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="36" y="72" width="10" height="6" fill="#8B4513" opacity="0.15"/>
+      <rect x="72" y="72" width="6" height="6" fill="#8B4513" opacity="0.25"/>
+      <rect x="8" y="8" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="62" y="8" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="8" y="62" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+      <rect x="62" y="62" width="1.5" height="1.5" fill="#d4a828" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#tartan)"/>
+</svg>
+
+<!-- ── HEADER ── -->
+<header class="watch-header">
+  <a href="/">
+    <div class="header-brand">THE MULLIGAN <em>REPORT</em></div>
+  </a>
+  <a href="/" class="header-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Back to Today's Round
+  </a>
+</header>
+
+<!-- ── FLYOVER HERO — the special touch ── -->
+<section class="flyover-hero">
+  <div class="flyover-eyebrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v4M2 12h4M18 12h4M12 18v4"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>
+    Aerial Tour
+  </div>
+  <h1>Course <em>Flyover</em></h1>
+  <p>Drone tours of the game's great courses — every hole, tee to green.
+     Pick a course below and take the round from above.</p>
+  <div class="hero-rule"></div>
+</section>
+
+<!-- ── MAIN PLAYER ── -->
+<section class="player-section">
+  <div class="video-frame">
+    <iframe id="ytPlayer"
+      src="https://www.youtube.com/embed/-0dWsWtJD5g?enablejsapi=1&rel=0&modestbranding=1&playsinline=1"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen></iframe>
+    <!-- Branded fallback shown if a video won't embed -->
+    <div class="embed-fallback" id="embedFallback">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2v4M2 12h4M18 12h4M12 18v4"/><circle cx="12" cy="12" r="3.5"/>
+      </svg>
+      <h4 id="fbTitle">This Flyover</h4>
+      <p>This drone tour can't be played in-page. Watch the full flyover on YouTube — it opens in a new tab.</p>
+      <a id="fbLink" href="#" target="_blank" rel="noopener">Watch the Flyover &rarr;</a>
+    </div>
+  </div>
+  <div class="video-meta">
+    <div class="video-channel" id="videoChannel"></div>
+    <h1 class="video-title" id="videoTitle"></h1>
+    <div class="video-note" id="videoNote"></div>
+
+    <div class="video-actions">
+      <a id="youtubeLink" class="watch-youtube-link" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.4 31.4 0 0 0 0 12a31.4 31.4 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31.4 31.4 0 0 0 24 12a31.4 31.4 0 0 0-.5-5.8zM9.6 15.6V8.4l6.3 3.6-6.3 3.6z"/></svg>
+        Watch on YouTube
+      </a>
+      <div class="action-divider"></div>
+      <button class="share-btn" id="copyLinkBtn" onclick="copyWatchLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+          <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+        </svg>
+        <span id="copyLinkLabel">Copy Link</span>
+      </button>
+      <button class="share-btn" id="shareXBtn" onclick="shareOnX()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        Share on X
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ── COURSE PICKER ── -->
+<section class="picker-section">
+  <h3>
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v8M12 10l4 2-4 2-4-2 4-2zM5 21V9M19 21V9"/>
+    </svg>
+    Pick Your Course
+  </h3>
+  <div class="more-grid" id="courseGrid"></div>
+</section>
+
+<!-- ── FOOTER ── -->
+<div class="watch-footer">
+  <a href="/">&larr; Back to Today's Round</a>
+</div>
+
+<script>
+/* ================================================================
+   FLYOVER LIST — the ONLY place videos are added.
+   To add a flyover: copy one { } block, paste a new one below.
+   To remove one: delete its { } block.
+   ONLY add genuine course flyover videos. Nothing else belongs here.
+
+     id      -> YouTube video ID (the part after  watch?v=  )
+     course  -> course name (the title)
+     loc     -> location, shown as the gold channel line
+     note    -> one or two sentences of context
+   ================================================================ */
+const FLYOVERS = [
+  {
+    id: "-0dWsWtJD5g",
+    course: "TPC Sawgrass — Stadium Course",
+    loc: "Ponte Vedra Beach, Florida",
+    note: "A hole-by-hole drone flyover of THE PLAYERS Stadium Course, home of the famous island-green 17th — one of the most recognizable holes in golf."
+  },
+  {
+    id: "nYm849ojyyk",
+    course: "TPC Scottsdale",
+    loc: "Scottsdale, Arizona",
+    note: "An aerial look at the punishing stretch — holes 7 through 12 — of the desert course that hosts the rowdiest week on Tour."
+  },
+  // ── Add more flyovers below. One { } block per video. ──
+  // {
+  //   id: "VIDEO_ID_HERE",
+  //   course: "Course Name",
+  //   loc: "City, State",
+  //   note: "A sentence or two about the course."
+  // },
+];
+
+var _shareTitle = '';
+const ytFrame      = document.getElementById('ytPlayer');
+const videoChannel = document.getElementById('videoChannel');
+const videoTitle   = document.getElementById('videoTitle');
+const videoNote    = document.getElementById('videoNote');
+const youtubeLink  = document.getElementById('youtubeLink');
+const courseGrid   = document.getElementById('courseGrid');
+const embedFallback= document.getElementById('embedFallback');
+const fbTitle      = document.getElementById('fbTitle');
+const fbLink       = document.getElementById('fbLink');
+
+let ytAPIPlayer = null;     // the YT.Player instance, once the API is ready
+let pendingLoad = null;     // { index, autoplayOn } queued until API loads
+let currentIndex = 0;
+
+/* Show the branded "watch on YouTube" panel for a video that won't embed */
+function showFallback(f){
+  fbTitle.textContent = f.course;
+  fbLink.href = 'https://www.youtube.com/watch?v=' + f.id;
+  embedFallback.classList.add('show');
+}
+function hideFallback(){ embedFallback.classList.remove('show'); }
+
+/* Update the meta block + active card for a flyover */
+function setMeta(index){
+  const f = FLYOVERS[index];
+  videoChannel.textContent = f.loc;
+  videoTitle.textContent   = f.course;
+  videoNote.textContent    = f.note || '';
+  youtubeLink.href = 'https://www.youtube.com/watch?v=' + f.id;
+  _shareTitle = f.course + ' Flyover';
+  document.title = f.course + ' Flyover — The Mulligan Report';
+  document.querySelectorAll('.course-card').forEach((el,i) =>
+    el.classList.toggle('is-current', i === index));
+}
+
+/* Load a flyover into the main player. autoplayOn=false on first paint. */
+function loadFlyover(index, autoplayOn){
+  const f = FLYOVERS[index];
+  if(!f) return;
+  currentIndex = index;
+  hideFallback();
+  setMeta(index);
+
+  if(ytAPIPlayer){
+    if(autoplayOn) ytAPIPlayer.loadVideoById(f.id);
+    else           ytAPIPlayer.cueVideoById(f.id);
+  } else {
+    // API not ready yet — remember what to load
+    pendingLoad = { index: index, autoplayOn: autoplayOn };
+  }
+  if(autoplayOn) window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+/* ── YouTube IFrame API: lets us detect a blocked video ── */
+function onYouTubeIframeAPIReady(){
+  ytAPIPlayer = new YT.Player('ytPlayer', {
+    playerVars: { rel:0, modestbranding:1, playsinline:1, color:'white' },
+    events: {
+      onReady: function(){
+        const start = pendingLoad || { index:0, autoplayOn:false };
+        const f = FLYOVERS[start.index];
+        if(f){
+          if(start.autoplayOn) ytAPIPlayer.loadVideoById(f.id);
+          else                 ytAPIPlayer.cueVideoById(f.id);
+        }
+        pendingLoad = null;
+      },
+      /* Error codes 100/101/150/153 = video unavailable or embedding off */
+      onError: function(e){
+        if([100,101,150,153].indexOf(e.data) !== -1){
+          showFallback(FLYOVERS[currentIndex]);
+        }
+      }
+    }
+  });
+}
+
+/* Inject the IFrame API script */
+(function(){
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+})();
+
+/* Build the course picker grid */
+FLYOVERS.forEach((f,i) => {
+  const card = document.createElement('div');
+  card.className = 'course-card';
+  card.innerHTML =
+    '<div class="cc-thumb">' +
+      '<img src="https://i.ytimg.com/vi/' + f.id + '/hqdefault.jpg" alt="' + f.course + '" loading="lazy">' +
+      '<div class="cc-play"></div>' +
+    '</div>' +
+    '<div class="cc-info">' +
+      '<div class="cc-channel">' + f.loc + '</div>' +
+      '<div class="cc-title">' + f.course + '</div>' +
+    '</div>';
+  card.addEventListener('click', () => loadFlyover(i, true));
+  courseGrid.appendChild(card);
+});
+
+/* First flyover loaded on open, no autoplay */
+if(FLYOVERS.length) loadFlyover(0, false);
+
+/* ── Copy Link ── */
+function copyWatchLink(){
+  var url = window.location.href;
+  var btn = document.getElementById('copyLinkBtn');
+  var label = document.getElementById('copyLinkLabel');
+  function showCopied(){
+    label.textContent = '\u2713 Copied!';
+    btn.classList.add('copied');
+    setTimeout(function(){
+      label.textContent = 'Copy Link';
+      btn.classList.remove('copied');
+    }, 2000);
+  }
+  function fallbackCopy(text){
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showCopied(); }
+    catch(e){ label.textContent = 'Failed'; }
+    document.body.removeChild(ta);
+  }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(showCopied).catch(function(){ fallbackCopy(url); });
+  } else { fallbackCopy(url); }
+}
+
+/* ── Share on X ── */
+function shareOnX(){
+  var url = window.location.href;
+  var text = _shareTitle + ' \u2014 via The Mulligan Report \u26f3';
+  var intentUrl = 'https://twitter.com/intent/tweet?text=' +
+    encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
+  window.open(intentUrl, '_blank', 'width=550,height=420,noopener');
+}
+</script>
+
+</body>
+</html>
