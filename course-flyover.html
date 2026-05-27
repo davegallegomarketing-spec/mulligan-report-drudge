@@ -171,22 +171,25 @@
     width:100vw; height:100vh;
     z-index:200;
     display:flex; align-items:center; justify-content:center;
-    /* Deep TMR green wash — keeps the brand feel in cinema mode */
+    /* Deep near-black wash with a hint of TMR green */
     background:
-      radial-gradient(ellipse at center, #0d2117 0%, #06120c 70%, #030806 100%);
+      radial-gradient(ellipse at center, #050d08 0%, #02060400 60%, #000 100%),
+      #000;
   }
   body.theater .video-frame {
-    /* Constrain size so it actually centers — fits within 92vw AND 88vh */
+    /* Constrain size & force a real width so flexbox can actually center it.
+       flex:none stops flexbox from trying to grow/shrink it. */
+    flex:none;
     width:min(92vw, calc(88vh * 16 / 9));
     max-width:1600px;
     height:auto;
     padding-bottom:0;
     aspect-ratio:16/9;
     border-radius:4px;
-    border-color:rgba(184,134,11,0.45);
+    border-color:rgba(184,134,11,0.4);
     box-shadow:
-      0 0 100px rgba(184,134,11,0.15),
-      0 30px 80px rgba(0,0,0,0.6);
+      0 0 80px rgba(184,134,11,0.1),
+      0 30px 90px rgba(0,0,0,0.7);
   }
   body.theater .theater-btn {
     opacity:1;
