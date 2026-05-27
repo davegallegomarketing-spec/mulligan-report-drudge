@@ -170,19 +170,23 @@
       #000;
   }
   body.theater .video-frame {
-    /* Constrain size & force a real width so flexbox can actually center it.
-       flex:none stops flexbox from trying to grow/shrink it. */
-    flex:none;
+    flex:0 0 auto;
     width:min(92vw, calc(88vh * 16 / 9));
     max-width:1600px;
     height:auto;
     padding-bottom:0;
     aspect-ratio:16/9;
+    margin:auto;                              /* belt-and-suspenders centering */
     border-radius:4px;
     border-color:rgba(184,134,11,0.4);
     box-shadow:
       0 0 80px rgba(184,134,11,0.1),
       0 30px 90px rgba(0,0,0,0.7);
+  }
+  /* Make sure the iframe stays glued inside the frame in theater mode */
+  body.theater .video-frame iframe {
+    position:absolute; top:0; left:0;
+    width:100%; height:100%;
   }
 
   /* hint that ESC exits — sits well above the video */
@@ -436,17 +440,75 @@
     border-color:var(--gold); background:rgba(184,134,11,0.06);
   }
 
-  @media (max-width:700px) {
-    .video-title { font-size:20px; }
-    .more-grid { grid-template-columns:repeat(2,1fr); }
+  /* ── RESPONSIVE — TABLET ── */
+  @media (max-width:780px) {
+    .video-title { font-size:18px; }
+    .more-grid { grid-template-columns:repeat(2,1fr); gap:12px; }
     .action-divider { display:none; }
+    .header-brand { font-size:15px; letter-spacing:0.8px; }
+    .header-back { font-size:12px; }
+    .flyover-hero { padding:24px 18px 6px; }
+    .flyover-hero p { font-size:14px; }
+    .player-section { padding:18px 16px 0; }
+    .picker-section { margin:30px auto; padding:0 16px 50px; }
+    .picker-section h3 { font-size:16px; }
+    /* Theater button on tablet: a touch smaller, still labeled */
+    .theater-btn { height:32px; padding:0 12px 0 9px; font-size:11px; }
+    .theater-btn svg { width:14px; height:14px; }
+    /* Begin overlay text sizes */
+    .begin-kicker { font-size:10px; letter-spacing:2.5px; margin-bottom:10px; }
+    .begin-course { font-size:clamp(18px, 4.5vw, 26px); margin-bottom:18px; }
+    .begin-btn { padding:11px 22px 11px 18px; font-size:12px; letter-spacing:1.2px; }
   }
+
+  /* ── RESPONSIVE — PHONE ── */
   @media (max-width:480px) {
-    .player-section { padding:16px 12px 0; }
-    .picker-section { padding:0 12px 40px; }
-    .flyover-hero { padding:24px 16px 4px; }
-    .video-actions { gap:8px; }
-    .share-btn, .watch-youtube-link { padding:8px 14px; font-size:12px; }
+    .watch-header { padding:10px 14px; }
+    .header-brand { font-size:13px; letter-spacing:0.5px; }
+    .header-back { font-size:11px; gap:4px; }
+    .header-back svg { width:12px; height:12px; }
+    .flyover-hero { padding:20px 14px 4px; }
+    .flyover-hero h1 { font-size:30px; letter-spacing:0.5px; }
+    .flyover-hero p { font-size:13px; max-width:none; padding:0 6px; }
+    .flyover-eyebrow { font-size:10px; letter-spacing:1.8px; }
+    .player-section { padding:14px 10px 0; }
+    .video-meta { padding:14px 4px 0; }
+    .video-title { font-size:16px; }
+    .video-note { font-size:13px; line-height:1.5; }
+    .video-actions { gap:6px; margin-top:12px; flex-wrap:wrap; }
+    .share-btn, .watch-youtube-link { padding:8px 12px; font-size:11px; }
+    /* Theater button — icon only on phones to save space */
+    .theater-btn { padding:0 8px; gap:0; height:30px; }
+    .theater-btn .btn-label { display:none; }
+    .theater-btn svg { width:14px; height:14px; }
+    /* Picker section */
+    .picker-section { padding:0 12px 36px; }
+    .picker-section h3 { font-size:14px; padding-bottom:8px; }
+    .more-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+    .cc-info { padding:8px 9px 10px; }
+    .cc-title { font-size:13px; }
+    .cc-channel { font-size:9px; letter-spacing:0.8px; }
+    /* Begin overlay — compact for phone */
+    .begin-kicker { font-size:9px; letter-spacing:2px; margin-bottom:8px; }
+    .begin-course { font-size:clamp(16px, 5.5vw, 20px); max-width:90%; margin-bottom:14px; }
+    .begin-btn { padding:10px 18px 10px 15px; font-size:11px; letter-spacing:1px; }
+    .begin-btn svg { width:12px; height:12px; }
+    /* Hide the decorative gold rules on phone — overlay is small enough already */
+    .begin-overlay::before, .begin-overlay::after { display:none; }
+    /* Theater mode on phone: tighter margins */
+    body.theater .video-frame { width:96vw; }
+    .theater-exit-hint { top:14px; font-size:10px; letter-spacing:1.5px; }
+    /* Footer */
+    .watch-footer { padding:0 14px 36px; }
+    .watch-footer a { font-size:12px; padding:9px 22px; }
+  }
+
+  /* ── RESPONSIVE — SMALL PHONE (e.g. iPhone SE) ── */
+  @media (max-width:360px) {
+    .more-grid { grid-template-columns:1fr; }
+    .header-back { font-size:10px; }
+    .flyover-hero h1 { font-size:24px; }
+    .header-brand em { display:inline; }
   }
 </style>
 </head>
