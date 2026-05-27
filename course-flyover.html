@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Course Flyover — The Mulligan Report</title>
-<link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#0a1a0f">
 <meta property="og:site_name" content="The Mulligan Report">
 <meta property="og:type" content="video.other">
@@ -118,39 +116,32 @@
     width:100%; height:100%; border:0;
   }
 
-  /* ── THEATER MODE TOGGLE (button sits inside the frame) ── */
+  /* ── THEATER MODE TOGGLE (always visible, top-right of frame) ── */
   .theater-btn {
-    position:absolute; top:14px; right:14px;
+    position:absolute; top:12px; right:12px;
     z-index:5;
-    width:38px; height:38px;
+    height:34px;
+    padding:0 14px 0 10px;
     border-radius:6px;
-    background:rgba(10,26,15,0.72);
-    border:1px solid rgba(184,134,11,0.55);
+    background:rgba(184,134,11,0.92);
+    border:1px solid var(--gold-light);
     cursor:pointer;
-    display:flex; align-items:center; justify-content:center;
-    transition:background 0.2s, border-color 0.2s, transform 0.2s, opacity 0.2s;
-    opacity:0;
+    display:flex; align-items:center; gap:7px;
+    transition:background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow:0 4px 14px rgba(0,0,0,0.35);
+    font-family:'DM Sans',sans-serif;
+    font-size:12px; font-weight:600;
+    color:var(--bg-deep);
+    letter-spacing:0.4px;
   }
-  .video-frame:hover .theater-btn { opacity:1; }
   .theater-btn:hover {
-    background:rgba(184,134,11,0.85);
-    border-color:var(--gold-light);
-    transform:scale(1.06);
+    background:var(--gold-light);
+    transform:translateY(-1px);
+    box-shadow:0 6px 18px rgba(0,0,0,0.45);
   }
-  .theater-btn svg { width:18px; height:18px; stroke:var(--cream); stroke-width:1.8; fill:none; }
-  .theater-btn:hover svg { stroke:var(--bg-deep); }
-  .theater-btn .tip {
-    position:absolute; top:46px; right:0;
-    background:rgba(10,26,15,0.95);
-    color:var(--cream);
-    font-size:11px; font-family:'DM Sans',sans-serif; font-weight:500;
-    padding:5px 9px; border-radius:4px;
-    white-space:nowrap;
-    opacity:0; pointer-events:none;
-    transition:opacity 0.2s;
-    border:1px solid rgba(184,134,11,0.3);
-  }
-  .theater-btn:hover .tip { opacity:1; }
+  .theater-btn svg { width:16px; height:16px; stroke:var(--bg-deep); stroke-width:2; fill:none; }
+  .theater-btn .btn-label { white-space:nowrap; }
+  .theater-btn .tip { display:none; }
 
   /* ── THEATER MODE: applied to <body> ── */
   body.theater {
@@ -191,12 +182,6 @@
       0 0 80px rgba(184,134,11,0.1),
       0 30px 90px rgba(0,0,0,0.7);
   }
-  body.theater .theater-btn {
-    opacity:1;
-    background:rgba(184,134,11,0.85);
-    border-color:var(--gold-light);
-  }
-  body.theater .theater-btn svg { stroke:var(--bg-deep); }
 
   /* hint that ESC exits — sits well above the video */
   .theater-exit-hint {
@@ -220,6 +205,83 @@
     background:linear-gradient(160deg,#102619,#0a1a0f);
   }
   .embed-fallback.show { display:flex; }
+
+  /* ── BEGIN FLYOVER OVERLAY (cinematic intro before YouTube plays) ── */
+  .begin-overlay {
+    position:absolute; inset:0;
+    z-index:4;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    background:
+      radial-gradient(ellipse at center, rgba(13,33,23,0.78) 0%, rgba(6,15,10,0.94) 80%),
+      var(--bg-deep);
+    cursor:pointer;
+    transition:opacity 0.5s ease;
+  }
+  .begin-overlay.hide {
+    opacity:0; pointer-events:none;
+  }
+  .begin-overlay::before,
+  .begin-overlay::after {
+    content:"";
+    position:absolute; left:50%;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform:translateX(-50%);
+    animation:rule-in 1.1s 0.15s ease-out both;
+  }
+  .begin-overlay::before { top:32%; width:0; animation-name:rule-grow; }
+  .begin-overlay::after  { bottom:32%; width:0; animation-name:rule-grow; }
+  @keyframes rule-grow {
+    0%   { width:0; opacity:0; }
+    100% { width:62%; opacity:1; }
+  }
+  .begin-kicker {
+    font-family:'DM Sans', sans-serif;
+    font-size:11px; font-weight:600;
+    color:var(--gold-light);
+    text-transform:uppercase; letter-spacing:3.5px;
+    margin-bottom:14px;
+    opacity:0;
+    animation:fade-up 0.7s 0.4s ease-out forwards;
+  }
+  .begin-course {
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:clamp(22px, 4vw, 34px);
+    color:var(--cream);
+    line-height:1.15;
+    max-width:80%;
+    margin-bottom:22px;
+    opacity:0;
+    animation:fade-up 0.8s 0.55s ease-out forwards;
+  }
+  .begin-btn {
+    display:inline-flex; align-items:center; gap:10px;
+    padding:13px 28px 13px 24px;
+    background:var(--gold);
+    color:var(--bg-deep);
+    border:none; border-radius:50px;
+    font-family:'DM Sans', sans-serif;
+    font-size:13.5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:1.6px;
+    cursor:pointer;
+    transition:background 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow:0 6px 22px rgba(0,0,0,0.45), 0 0 0 0 rgba(212,168,40,0.4);
+    opacity:0;
+    animation:fade-up 0.8s 0.85s ease-out forwards;
+  }
+  .begin-btn:hover {
+    background:var(--gold-light);
+    transform:translateY(-2px);
+    box-shadow:0 10px 28px rgba(0,0,0,0.55), 0 0 0 6px rgba(212,168,40,0.12);
+  }
+  .begin-btn svg { width:14px; height:14px; fill:var(--bg-deep); }
+  @keyframes fade-up {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
   .embed-fallback svg {
     width:46px; height:46px; stroke:var(--gold-light);
     margin-bottom:14px; opacity:0.9;
@@ -244,28 +306,24 @@
   }
   .embed-fallback a:hover { background:var(--gold-light); }
 
-  /* ── VIDEO META ── */
-  .video-meta { padding:20px 0 0; }
+  /* ── VIDEO META (tighter, no article-headline feel) ── */
+  .video-meta { padding:18px 2px 0; }
   .video-channel {
-    font-size:12px; font-weight:600; text-transform:uppercase;
-    letter-spacing:1.5px; color:var(--gold-light);
-    margin-bottom:6px;
-    display:flex; align-items:center; gap:7px;
-  }
-  .video-channel::before {
-    content:""; display:inline-block;
-    width:6px; height:6px; transform:rotate(45deg);
-    background:var(--gold-light);
+    font-size:11px; font-weight:500; text-transform:uppercase;
+    letter-spacing:1.8px; color:var(--gold-light);
+    margin-bottom:4px;
+    font-family:'DM Sans', sans-serif;
   }
   .video-title {
     font-family:'Playfair Display', serif;
-    font-size:26px; font-weight:700;
-    color:var(--cream); line-height:1.3; margin-bottom:8px;
+    font-size:21px; font-weight:600;
+    color:var(--cream); line-height:1.25; letter-spacing:0.2px;
+    margin-bottom:6px;
   }
   .video-note {
     font-family:'Source Serif 4', serif;
-    font-size:14.5px; color:var(--text-body);
-    line-height:1.6; max-width:680px;
+    font-size:13.5px; color:var(--text-muted);
+    line-height:1.55; max-width:620px;
   }
 
   /* ── ACTION BUTTONS ── */
@@ -475,6 +533,15 @@
       <p>This drone tour can't be played in-page. Watch the full flyover on YouTube — it opens in a new tab.</p>
       <a id="fbLink" href="#" target="_blank" rel="noopener">Watch the Flyover &rarr;</a>
     </div>
+    <!-- Cinematic "Begin Flyover" overlay (shows before the YT player) -->
+    <div class="begin-overlay" id="beginOverlay" onclick="beginFlyover()">
+      <div class="begin-kicker">Aerial Tour</div>
+      <div class="begin-course" id="beginCourse">Select a Course</div>
+      <button class="begin-btn" type="button" onclick="event.stopPropagation(); beginFlyover()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Begin Flyover
+      </button>
+    </div>
     <!-- Theater mode toggle (dims the page, expands the video) -->
     <button class="theater-btn" id="theaterBtn" type="button" aria-label="Theater mode"
             onclick="toggleTheater()">
@@ -484,7 +551,7 @@
         <!-- collapse icon (theater state) -->
         <path class="ico-collapse" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" style="display:none"/>
       </svg>
-      <span class="tip" id="theaterTip">Theater mode</span>
+      <span class="btn-label" id="theaterLabel">Theater</span>
     </button>
   </div>
   <!-- Hint shown while in theater mode -->
@@ -538,7 +605,7 @@
    COURSE FLYOVER — videos come from a curated YouTube playlist.
 
    This page no longer holds a hardcoded list. It loads its videos
-   from  /api/flyovers , which reads the "TMR Course Flyovers"
+   from  /api/flyover-feed , which reads the "TMR Course Flyovers"
    YouTube playlist. To add a flyover: add the video to that
    playlist on YouTube. To remove one: remove it from the playlist.
    No code editing required.
@@ -559,11 +626,32 @@ const courseGrid   = document.getElementById('courseGrid');
 const embedFallback= document.getElementById('embedFallback');
 const fbTitle      = document.getElementById('fbTitle');
 const fbLink       = document.getElementById('fbLink');
+const beginOverlay = document.getElementById('beginOverlay');
+const beginCourse  = document.getElementById('beginCourse');
 
 let ytAPIPlayer = null;     // the YT.Player instance, once the API is ready
 let apiReady    = false;    // has the YouTube IFrame API finished loading
-let pendingLoad = null;     // { index, autoplayOn } queued until API is ready
+let pendingLoad = null;     // { index, wantPlay } queued until API is ready
 let currentIndex = 0;
+
+/* Show the cinematic "Begin Flyover" overlay for the current course */
+function showBeginOverlay(courseName){
+  beginCourse.textContent = courseName || 'Course Flyover';
+  beginOverlay.classList.remove('hide');
+  // Reset animations so they re-run if reopened
+  beginOverlay.style.animation = 'none';
+  void beginOverlay.offsetWidth;
+  beginOverlay.style.animation = '';
+}
+
+/* Called when the user clicks the Begin Flyover button (or the overlay).
+   Hides the overlay and tells YouTube to actually start playing. */
+function beginFlyover(){
+  beginOverlay.classList.add('hide');
+  if(ytAPIPlayer && apiReady && typeof ytAPIPlayer.playVideo === 'function'){
+    try { ytAPIPlayer.playVideo(); } catch(_) {}
+  }
+}
 
 /* Show the branded "watch on YouTube" panel for a video that won't embed */
 function showFallback(f){
@@ -590,22 +678,23 @@ function setMeta(index){
     el.classList.toggle('is-current', i === index));
 }
 
-/* Load a flyover into the main player. autoplayOn=false on first paint. */
-function loadFlyover(index, autoplayOn){
+/* Load a flyover into the main player. The video is always CUED (not played);
+   the user kicks it off by clicking the Begin Flyover overlay. */
+function loadFlyover(index, wantPlay){
   const f = FLYOVERS[index];
   if(!f) return;
   currentIndex = index;
   hideFallback();
   setMeta(index);
+  showBeginOverlay(f.course);
 
   if(ytAPIPlayer && apiReady){
-    if(autoplayOn) ytAPIPlayer.loadVideoById(f.id);
-    else           ytAPIPlayer.cueVideoById(f.id);
+    ytAPIPlayer.cueVideoById(f.id);
   } else {
     // API not ready yet — remember what to load
-    pendingLoad = { index: index, autoplayOn: autoplayOn };
+    pendingLoad = { index: index, wantPlay: wantPlay };
   }
-  if(autoplayOn) window.scrollTo({ top:0, behavior:'smooth' });
+  if(wantPlay) window.scrollTo({ top:0, behavior:'smooth' });
 }
 
 /* ── YouTube IFrame API: lets us detect a blocked video ── */
@@ -615,12 +704,9 @@ function onYouTubeIframeAPIReady(){
     events: {
       onReady: function(){
         apiReady = true;
-        const start = pendingLoad || { index:0, autoplayOn:false };
+        const start = pendingLoad || { index:0 };
         const f = FLYOVERS[start.index];
-        if(f){
-          if(start.autoplayOn) ytAPIPlayer.loadVideoById(f.id);
-          else                 ytAPIPlayer.cueVideoById(f.id);
-        }
+        if(f) ytAPIPlayer.cueVideoById(f.id);
         pendingLoad = null;
       },
       /* Error codes 100/101/150/153 = video unavailable or embedding off */
@@ -743,17 +829,17 @@ function shareOnX(){
 function toggleTheater(){
   var on = document.body.classList.toggle('theater');
   var btn = document.getElementById('theaterBtn');
-  var tip = document.getElementById('theaterTip');
+  var label = document.getElementById('theaterLabel');
   var ico = btn.querySelector('.ico-expand');
   var icoX = btn.querySelector('.ico-collapse');
   if(on){
     ico.style.display  = 'none';
     icoX.style.display = '';
-    tip.textContent    = 'Exit theater';
+    label.textContent  = 'Exit';
   } else {
     ico.style.display  = '';
     icoX.style.display = 'none';
-    tip.textContent    = 'Theater mode';
+    label.textContent  = 'Theater';
   }
 }
 /* ESC exits theater mode */
