@@ -178,9 +178,52 @@ async function fetchPlaylist(playlistId, apiKey) {
     pages++;
   } while (pageToken && pages < MAX_PAGES);
 
+  // ──────────────────────────────────────────────────────────
+  // EMBEDDABILITY FILTER
+  // Some uploaders disable embedding on their videos. Those videos
+  // can't play on this page (YouTube blocks the embed). Strip them
+  // out here so the user only ever sees flyovers that will actually
+  // play — no fallback panel, no broken experience.
+  // ──────────────────────────────────────────────────────────
+  if (videos.length > 0) {
+    try {
+      const embeddable = await checkEmbeddable(videos.map(v => v.videoId), apiKey);
+      videos = videos.filter(v => embeddable[v.videoId] !== false);
+    } catch (err) {
+      console.error('[TMR Flyover] Embeddable check failed:', err.message);
+      // If the check fails, keep all videos rather than ship an empty page.
+    }
+  }
+
   // Playlist order (the order you arranged them in YouTube) is kept
   // by sorting on position. Lower position = higher on the page.
   videos.sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
 
   return videos;
+}
+
+// Calls videos.list with part=status on up to 50 IDs per request
+// and returns a map of { videoId: boolean }. true = embeddable.
+async function checkEmbeddable(videoIds, apiKey) {
+  const map = {};
+  for (let i = 0; i < videoIds.length; i += 50) {
+    const batch = videoIds.slice(i, i + 50);
+    const url = `https://www.googleapis.com/youtube/v3/videos` +
+      `?part=status&id=${batch.join(',')}&key=${apiKey}`;
+
+    const r = await fetch(url);
+    const data = await r.json();
+    if (data.error) {
+      console.error('[TMR Flyover] Embeddable API error:', data.error.message);
+      continue;
+    }
+    (data.items || []).forEach(item => {
+      // YouTube returns status.embeddable as true/false.
+      // Also drop videos that aren't publicly viewable.
+      const status = item.status || {};
+      const ok = status.embeddable === true && status.privacyStatus !== 'private';
+      map[item.id] = ok;
+    });
+  }
+  return map;
 }
