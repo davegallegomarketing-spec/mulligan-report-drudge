@@ -101,18 +101,103 @@
   }
 
   /* ── MAIN PLAYER ── */
-  .player-section { max-width:900px; margin:0 auto; padding:22px 20px 0; }
+  .player-section {
+    max-width:1360px; margin:0 auto; padding:22px 28px 0;
+    transition:max-width 0.4s ease, padding 0.4s ease;
+  }
   .video-frame {
     position:relative; width:100%; padding-bottom:56.25%;
     border-radius:8px; overflow:hidden;
     border:2px solid var(--gold);
     box-shadow:0 0 80px var(--gold-glow), 0 8px 32px rgba(0,0,0,0.5);
     background:#000;
+    transition:border-radius 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
   }
   .video-frame iframe {
     position:absolute; top:0; left:0;
     width:100%; height:100%; border:0;
   }
+
+  /* ── THEATER MODE TOGGLE (button sits inside the frame) ── */
+  .theater-btn {
+    position:absolute; bottom:14px; right:14px;
+    z-index:5;
+    width:38px; height:38px;
+    border-radius:6px;
+    background:rgba(10,26,15,0.72);
+    border:1px solid rgba(184,134,11,0.55);
+    cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s, border-color 0.2s, transform 0.2s;
+    opacity:0.55;
+  }
+  .video-frame:hover .theater-btn { opacity:1; }
+  .theater-btn:hover {
+    background:rgba(184,134,11,0.85);
+    border-color:var(--gold-light);
+    transform:scale(1.06);
+  }
+  .theater-btn svg { width:18px; height:18px; stroke:var(--cream); stroke-width:1.8; fill:none; }
+  .theater-btn:hover svg { stroke:var(--bg-deep); }
+  .theater-btn .tip {
+    position:absolute; bottom:46px; right:0;
+    background:rgba(10,26,15,0.95);
+    color:var(--cream);
+    font-size:11px; font-family:'DM Sans',sans-serif; font-weight:500;
+    padding:5px 9px; border-radius:4px;
+    white-space:nowrap;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.2s;
+    border:1px solid rgba(184,134,11,0.3);
+  }
+  .theater-btn:hover .tip { opacity:1; }
+
+  /* ── THEATER MODE: applied to <body> ── */
+  body.theater {
+    overflow:hidden;
+  }
+  body.theater .tartan-bg { opacity:0.04; }
+  body.theater .watch-header,
+  body.theater .flyover-hero,
+  body.theater .video-meta,
+  body.theater .picker-section,
+  body.theater .watch-footer {
+    opacity:0; pointer-events:none;
+    transition:opacity 0.35s ease;
+  }
+  body.theater .player-section {
+    position:fixed; inset:0;
+    max-width:none; padding:0; margin:0;
+    z-index:200;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(2,6,4,0.96);
+  }
+  body.theater .video-frame {
+    width:min(96vw, calc(96vh * 16/9));
+    padding-bottom:0;
+    aspect-ratio:16/9;
+    border-radius:4px;
+    border-color:rgba(184,134,11,0.35);
+    box-shadow:0 0 120px rgba(184,134,11,0.18), 0 0 0 100vmax rgba(2,6,4,0.96);
+  }
+  body.theater .theater-btn {
+    opacity:1;
+    background:rgba(184,134,11,0.85);
+    border-color:var(--gold-light);
+  }
+  body.theater .theater-btn svg { stroke:var(--bg-deep); }
+
+  /* hint that ESC exits */
+  .theater-exit-hint {
+    position:fixed; top:24px; left:50%; transform:translateX(-50%);
+    color:var(--gold-light);
+    font-family:'DM Sans',sans-serif;
+    font-size:12px; letter-spacing:1.5px; text-transform:uppercase;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.4s ease;
+    z-index:201;
+  }
+  body.theater .theater-exit-hint { opacity:0.6; }
 
   /* ── EMBED FALLBACK (shown when a video can't be embedded) ── */
   .embed-fallback {
@@ -196,7 +281,7 @@
   }
 
   /* ── COURSE PICKER — "Pick Your Course" ── */
-  .picker-section { max-width:900px; margin:40px auto; padding:0 20px 60px; }
+  .picker-section { max-width:1360px; margin:40px auto; padding:0 28px 60px; }
   .picker-section h3 {
     font-family:'Playfair Display', serif;
     font-size:18px; font-weight:700; color:var(--cream);
@@ -206,7 +291,9 @@
   }
   .picker-section h3 svg { width:17px; height:17px; stroke:var(--gold-light); }
   .more-grid {
-    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    gap:16px;
   }
   .course-card {
     text-align:left; cursor:pointer;
@@ -377,7 +464,20 @@
       <p>This drone tour can't be played in-page. Watch the full flyover on YouTube — it opens in a new tab.</p>
       <a id="fbLink" href="#" target="_blank" rel="noopener">Watch the Flyover &rarr;</a>
     </div>
+    <!-- Theater mode toggle (dims the page, expands the video) -->
+    <button class="theater-btn" id="theaterBtn" type="button" aria-label="Theater mode"
+            onclick="toggleTheater()">
+      <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <!-- expand icon (default state) -->
+        <path class="ico-expand" d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+        <!-- collapse icon (theater state) -->
+        <path class="ico-collapse" d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" style="display:none"/>
+      </svg>
+      <span class="tip" id="theaterTip">Theater mode</span>
+    </button>
   </div>
+  <!-- Hint shown while in theater mode -->
+  <div class="theater-exit-hint">Press ESC to exit theater mode</div>
   <div class="video-meta">
     <div class="video-channel" id="videoChannel"></div>
     <h1 class="video-title" id="videoTitle"></h1>
@@ -627,6 +727,30 @@ function shareOnX(){
     encodeURIComponent(text) + '&url=' + encodeURIComponent(url);
   window.open(intentUrl, '_blank', 'width=550,height=420,noopener');
 }
+
+/* ── Theater Mode: dim the page, expand the video ── */
+function toggleTheater(){
+  var on = document.body.classList.toggle('theater');
+  var btn = document.getElementById('theaterBtn');
+  var tip = document.getElementById('theaterTip');
+  var ico = btn.querySelector('.ico-expand');
+  var icoX = btn.querySelector('.ico-collapse');
+  if(on){
+    ico.style.display  = 'none';
+    icoX.style.display = '';
+    tip.textContent    = 'Exit theater';
+  } else {
+    ico.style.display  = '';
+    icoX.style.display = 'none';
+    tip.textContent    = 'Theater mode';
+  }
+}
+/* ESC exits theater mode */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && document.body.classList.contains('theater')){
+    toggleTheater();
+  }
+});
 </script>
 
 </body>
