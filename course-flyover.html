@@ -825,6 +825,92 @@
   <a href="/">&larr; Back to Today's Round</a>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════
+     RIBBON CTA — slides up after the user scrolls.
+     ══════════════════════════════════════════════════════════════ -->
+<div class="tmr-ribbon" id="tmrRibbon" role="region" aria-label="Subscribe to The Mulligan Report">
+  <div class="tmr-ribbon-inner">
+    <div class="tmr-ribbon-msg">
+      <div class="tmr-ribbon-title">Get inside the ropes — every morning before your <em>tee time</em>.</div>
+      <div class="tmr-ribbon-sub">12,847 golfers · Free daily briefing · Win 3 dozen Titleists this quarter.</div>
+    </div>
+    <div class="tmr-ribbon-actions">
+      <button class="tmr-ribbon-btn primary" type="button" onclick="tmrOpenGiveaway()">
+        Win Golf Balls
+      </button>
+      <button class="tmr-ribbon-btn secondary" type="button" onclick="tmrOpenSubscribe()">
+        Subscribe Free
+      </button>
+    </div>
+    <button class="tmr-ribbon-close" type="button" aria-label="Dismiss" onclick="tmrDismissRibbon()">&times;</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     SUBSCRIBE MODAL — AWeber newsletter form 976403394
+     (same form/list as index.html)
+     ══════════════════════════════════════════════════════════════ -->
+<div class="tmr-modal" id="tmrSubModal" onclick="if(event.target===this)tmrCloseModals()">
+  <div class="tmr-modal-card">
+    <button class="tmr-modal-close" type="button" onclick="tmrCloseModals()">&times;</button>
+    <div class="tmr-modal-mast">THE MULLIGAN REPORT</div>
+    <div class="tmr-modal-tag">Get inside the ropes. Every morning before your tee time.</div>
+
+    <form class="tmr-modal-form" id="tmrFlyoverSubForm"
+          method="post" accept-charset="UTF-8" action="https://www.aweber.com/scripts/addlead.pl">
+      <input type="hidden" name="meta_web_form_id" value="976403394" />
+      <input type="hidden" name="meta_split_id" value="" />
+      <input type="hidden" name="listname" value="awlist6957005" />
+      <input type="hidden" name="meta_adtracking" value="CourseFlyoverPage" />
+      <input type="hidden" name="meta_message" value="1" />
+      <input type="hidden" name="meta_required" value="email" />
+      <input type="hidden" name="meta_tooltip" value="" />
+      <input id="tmrFlyoverSubEmail" type="email" name="email" required placeholder="Your email address" />
+      <button id="tmrFlyoverSubBtn" type="submit">Subscribe Free</button>
+      <div id="tmrFlyoverSubError" class="tmr-modal-error">Please enter a valid email address.</div>
+    </form>
+
+    <div id="tmrFlyoverSubSuccess" class="tmr-modal-success">
+      <strong>You're in.</strong><br>
+      Check your inbox to confirm — first briefing arrives tomorrow morning.
+    </div>
+
+    <div class="tmr-modal-trust">12,847 golfers · Free · Unsubscribe anytime</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     GIVEAWAY MODAL — AWeber sweepstakes form 279004960
+     (same form as the homepage giveaway popup)
+     ══════════════════════════════════════════════════════════════ -->
+<div class="tmr-modal" id="tmrGiveModal" onclick="if(event.target===this)tmrCloseModals()">
+  <div class="tmr-modal-card">
+    <button class="tmr-modal-close" type="button" onclick="tmrCloseModals()">&times;</button>
+    <div class="tmr-modal-mast">Win 3 Dozen <em>Titleist Golf Balls</em></div>
+    <div class="tmr-modal-tag">4 winners · 4 quarters · Every reader wins the daily briefing</div>
+
+    <div class="tmr-modal-body">
+      We're giving away <strong>3 dozen Titleist golf balls</strong> — your choice of model —
+      every quarter in 2026.
+    </div>
+
+    <!-- AWeber Sweepstakes form 279004960 -->
+    <div class="AW-Form-279004960" id="tmrFlyoverGiveContainer"></div>
+    <script type="text/javascript">(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//forms.aweber.com/form/60/279004960.js";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, "script", "aweber-wjs-flyover"));
+    </script>
+
+    <div class="tmr-modal-trust">
+      No purchase necessary · 18+ U.S. residents · One entry per quarter
+    </div>
+  </div>
+</div>
+
 <script>
 /* ================================================================
    COURSE FLYOVER — videos come from a curated YouTube playlist.
