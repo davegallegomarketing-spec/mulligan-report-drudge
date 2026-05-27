@@ -4,8 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Course Flyover — The Mulligan Report</title>
-<link rel="icon" href="/favicon.ico">
-<link rel="icon" type="image/png" href="/favicon.png">
+<!-- Favicon: same Cloudinary asset as index.html so the tab icon matches across TMR -->
+<link rel="apple-touch-icon" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
 <meta name="theme-color" content="#0a1a0f">
 <meta property="og:site_name" content="The Mulligan Report">
 <meta property="og:type" content="video.other">
@@ -442,6 +443,163 @@
   .watch-footer a:hover {
     border-color:var(--gold); background:rgba(184,134,11,0.06);
   }
+
+  /* ══════════════════════════════════════════════════════════════
+     RIBBON CTA — slides up after the user scrolls a bit.
+     Two buttons: WIN (giveaway form 279004960) and SUBSCRIBE
+     (newsletter form 976403394). Matches the AWeber forms in
+     index.html so subscribers land on the same lists.
+     ══════════════════════════════════════════════════════════════ */
+  .tmr-ribbon {
+    position:fixed; left:0; right:0; bottom:0;
+    z-index:150;
+    background:linear-gradient(180deg, rgba(15,34,24,0.97) 0%, rgba(10,26,15,0.98) 100%);
+    border-top:2px solid var(--gold);
+    box-shadow:0 -10px 40px rgba(0,0,0,0.55);
+    padding:14px 22px;
+    transform:translateY(110%);
+    transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter:blur(8px);
+  }
+  .tmr-ribbon.show { transform:translateY(0); }
+  .tmr-ribbon-inner {
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; gap:22px;
+    flex-wrap:wrap;
+  }
+  .tmr-ribbon-msg { flex:1 1 280px; min-width:0; }
+  .tmr-ribbon-title {
+    font-family:'Playfair Display', serif;
+    font-size:17px; font-weight:700;
+    color:var(--cream); line-height:1.25;
+  }
+  .tmr-ribbon-title em { color:var(--gold-light); font-style:italic; }
+  .tmr-ribbon-sub {
+    font-family:'DM Sans', sans-serif;
+    font-size:12px; color:var(--text-muted);
+    margin-top:3px; letter-spacing:0.2px;
+  }
+  .tmr-ribbon-actions {
+    display:flex; gap:10px; align-items:center; flex-shrink:0;
+  }
+  .tmr-ribbon-btn {
+    display:inline-flex; align-items:center; gap:7px;
+    padding:10px 18px; border-radius:6px;
+    font-family:'DM Sans', sans-serif;
+    font-size:12.5px; font-weight:600;
+    text-transform:uppercase; letter-spacing:1px;
+    cursor:pointer; border:none;
+    text-decoration:none; white-space:nowrap;
+    transition:transform 0.15s, background 0.2s, box-shadow 0.2s;
+  }
+  .tmr-ribbon-btn.primary {
+    background:var(--gold); color:var(--bg-deep);
+    box-shadow:0 4px 14px rgba(184,134,11,0.35);
+  }
+  .tmr-ribbon-btn.primary:hover {
+    background:var(--gold-light);
+    transform:translateY(-2px);
+    box-shadow:0 6px 18px rgba(184,134,11,0.5);
+  }
+  .tmr-ribbon-btn.secondary {
+    background:transparent; color:var(--cream);
+    border:1px solid rgba(245,240,232,0.25);
+  }
+  .tmr-ribbon-btn.secondary:hover {
+    border-color:var(--gold); color:var(--gold-light);
+  }
+  .tmr-ribbon-close {
+    background:none; border:none;
+    color:var(--text-muted);
+    width:28px; height:28px;
+    cursor:pointer; font-size:18px; line-height:1;
+    border-radius:50%;
+    transition:background 0.15s, color 0.15s;
+    flex-shrink:0;
+  }
+  .tmr-ribbon-close:hover { background:rgba(245,240,232,0.08); color:var(--cream); }
+  /* In theater mode, hide the ribbon */
+  body.theater .tmr-ribbon { transform:translateY(110%); }
+
+  /* Ribbon — phone layout: title full-width, actions on second row */
+  @media (max-width:640px) {
+    .tmr-ribbon { padding:11px 14px 12px; }
+    .tmr-ribbon-inner { gap:10px; }
+    .tmr-ribbon-msg { flex:1 1 100%; padding-right:30px; }
+    .tmr-ribbon-title { font-size:14.5px; }
+    .tmr-ribbon-sub { font-size:11px; }
+    .tmr-ribbon-actions { width:100%; gap:8px; }
+    .tmr-ribbon-btn { flex:1 1 auto; justify-content:center; padding:9px 12px; font-size:11.5px; letter-spacing:0.6px; }
+    .tmr-ribbon-close { position:absolute; top:8px; right:10px; }
+  }
+
+  /* ── Subscribe / Giveaway modal ── */
+  .tmr-modal {
+    position:fixed; inset:0; z-index:300;
+    background:rgba(2,6,4,0.85);
+    display:none; align-items:center; justify-content:center;
+    padding:24px;
+  }
+  .tmr-modal.show { display:flex; }
+  .tmr-modal-card {
+    background:#faf6ef; color:#1a1a1a;
+    max-width:420px; width:100%;
+    padding:30px 28px 22px;
+    border-radius:6px;
+    border-top:4px solid var(--gold);
+    position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,0.55);
+    font-family:Georgia, serif;
+    text-align:center;
+  }
+  .tmr-modal-close {
+    position:absolute; top:8px; right:12px;
+    background:none; border:none; cursor:pointer;
+    font-size:20px; color:#999; line-height:1;
+  }
+  .tmr-modal-mast {
+    font-family:'Times New Roman', serif;
+    font-size:24px; font-weight:bold; color:#1b4332;
+  }
+  .tmr-modal-mast em { color:#b8860b; font-style:italic; }
+  .tmr-modal-tag {
+    font-style:italic; color:#666; font-size:13px;
+    margin:4px 0 16px;
+  }
+  .tmr-modal-body {
+    color:#333; font-size:14.5px; line-height:1.55;
+    margin-bottom:14px;
+  }
+  .tmr-modal-form input[type="email"] {
+    width:100%; padding:11px 12px;
+    font-size:15px; font-family:Georgia, serif;
+    border:1px solid #1b4332; border-radius:3px;
+    box-sizing:border-box; margin:0 0 8px;
+  }
+  .tmr-modal-form button {
+    width:100%; padding:12px 14px;
+    font-size:13px; font-weight:bold;
+    letter-spacing:0.1em; text-transform:uppercase;
+    font-family:Arial, sans-serif;
+    color:#faf6ef; background:#1b4332;
+    border:none; border-radius:3px;
+    cursor:pointer;
+  }
+  .tmr-modal-form button:hover { background:#0f2b1f; }
+  .tmr-modal-trust {
+    font-size:12px; color:#888; margin-top:10px;
+  }
+  .tmr-modal-error {
+    display:none; font-size:12px; color:#a04040; margin-top:6px;
+  }
+  .tmr-modal-success {
+    display:none;
+    background:#1b4332; color:#faf6ef;
+    padding:16px; border-radius:3px;
+    margin-top:6px; font-family:Georgia,serif;
+  }
+  .tmr-modal-success.show { display:block; }
+  .tmr-modal-form.hidden { display:none; }
 
   /* ── RESPONSIVE — TABLET ── */
   @media (max-width:780px) {
