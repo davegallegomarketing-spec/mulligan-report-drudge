@@ -2065,9 +2065,6 @@ function renderFeatured(el, article) {
   }
   h += '<a class="hero-hl" href="' + article.link + '" target="_blank" rel="noopener">' + article.title.toUpperCase() + '</a>';
   h += '<div class="hero-cluster">';
-  if (article.description) {
-    h += '<em>*' + truncDesc(article.description, 140) + '*</em><br>';
-  }
   h += '<em>' + article.source + ' · ' + timeAgo(article.pubDate) + '</em>';
   h += '</div>';
   el.innerHTML = h;
