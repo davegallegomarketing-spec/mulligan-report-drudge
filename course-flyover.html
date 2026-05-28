@@ -449,7 +449,7 @@
      Subscribe button opens an AWeber form (976403394) that matches
      the one in index.html — same form, same list, same submit flow.
      ══════════════════════════════════════════════════════════════ */
-  .tmr-ribbon {
+  body > .tmr-ribbon {
     position:fixed; left:16px; right:16px; bottom:20px;
     z-index:150;
     background:linear-gradient(180deg, rgba(15,34,24,0.97) 0%, rgba(10,26,15,0.98) 100%);
@@ -461,15 +461,15 @@
     transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     backdrop-filter:blur(8px);
   }
-  .tmr-ribbon.show { transform:translateY(0); }
+  body > .tmr-ribbon.show { transform:translateY(0); }
   /* Desktop: center it and cap the width — a true floating card */
   @media (min-width:720px) {
-    .tmr-ribbon {
+    body > .tmr-ribbon {
       left:50%; right:auto;
       width:calc(100% - 48px); max-width:920px;
       transform:translate(-50%, calc(100% + 32px));
     }
-    .tmr-ribbon.show { transform:translate(-50%, 0); }
+    body > .tmr-ribbon.show { transform:translate(-50%, 0); }
   }
   .tmr-ribbon-inner {
     max-width:1200px; margin:0 auto;
@@ -1183,6 +1183,7 @@ function tmrDismissRibbon(){
    following the user all the way down — regardless of how many videos
    are in the playlist. */
 (function(){
+  try { console.log('%c[TMR] course-flyover ribbon build: scroll-300 / pinned-floating', 'color:#d4a828'); } catch(e){}
   var onScroll = function(){
     if(_tmrRibbonShown) return;
     if(tmrIsSubscribed() || tmrIsRibbonDismissed()) return;
