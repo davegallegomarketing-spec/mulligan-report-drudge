@@ -450,17 +450,27 @@
      the one in index.html — same form, same list, same submit flow.
      ══════════════════════════════════════════════════════════════ */
   .tmr-ribbon {
-    position:fixed; left:0; right:0; bottom:0;
+    position:fixed; left:16px; right:16px; bottom:20px;
     z-index:150;
     background:linear-gradient(180deg, rgba(15,34,24,0.97) 0%, rgba(10,26,15,0.98) 100%);
-    border-top:2px solid var(--gold);
-    box-shadow:0 -10px 40px rgba(0,0,0,0.55);
+    border:1px solid var(--gold);
+    border-radius:10px;
+    box-shadow:0 12px 36px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.35);
     padding:14px 22px;
-    transform:translateY(110%);
+    transform:translateY(calc(100% + 32px));
     transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
     backdrop-filter:blur(8px);
   }
   .tmr-ribbon.show { transform:translateY(0); }
+  /* Desktop: center it and cap the width — a true floating card */
+  @media (min-width:720px) {
+    .tmr-ribbon {
+      left:50%; right:auto;
+      width:calc(100% - 48px); max-width:920px;
+      transform:translate(-50%, calc(100% + 32px));
+    }
+    .tmr-ribbon.show { transform:translate(-50%, 0); }
+  }
   .tmr-ribbon-inner {
     max-width:1200px; margin:0 auto;
     display:flex; align-items:center; gap:22px;
@@ -518,7 +528,10 @@
   }
   .tmr-ribbon-close:hover { background:rgba(245,240,232,0.08); color:var(--cream); }
   /* In theater mode, hide the ribbon */
-  body.theater .tmr-ribbon { transform:translateY(110%); }
+  body.theater .tmr-ribbon { transform:translateY(calc(100% + 32px)); }
+  @media (min-width:720px) {
+    body.theater .tmr-ribbon { transform:translate(-50%, calc(100% + 32px)); }
+  }
 
   /* Ribbon — phone layout: title full-width, actions on second row */
   @media (max-width:640px) {
@@ -1164,36 +1177,36 @@ function tmrDismissRibbon(){
   try { sessionStorage.setItem(TMR_RIBBON_DISMISS_KEY, '1'); } catch(e){}
 }
 
-/* Show the ribbon when the "Pick Your Course" section (the other course
-   videos) scrolls into view. Once shown, the ribbon floats at the bottom
-   and stays there. */
+/* Show the ribbon once the user has scrolled past the main video player.
+   Tied to .player-section so the trigger stays consistent no matter how
+   many videos are in the playlist below. Once shown, the floating card
+   stays pinned to the bottom of the viewport and follows the user as
+   they scroll the rest of the page. */
 (function(){
-  var picker = document.querySelector('.picker-section');
-  if(!picker){ setTimeout(tmrShowRibbon, 1500); return; }
+  var player = document.querySelector('.player-section');
 
-  if('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      for(var i=0; i<entries.length; i++){
-        if(entries[i].isIntersecting){
-          tmrShowRibbon();
-          io.disconnect();
-          break;
-        }
-      }
-    }, { rootMargin:'0px 0px -10% 0px', threshold:0.01 });
-    io.observe(picker);
-  } else {
-    var onScroll = function(){
-      if(_tmrRibbonShown) return;
-      var rect = picker.getBoundingClientRect();
-      if(rect.top < (window.innerHeight || document.documentElement.clientHeight)){
-        tmrShowRibbon();
-        window.removeEventListener('scroll', onScroll);
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive:true });
-    onScroll();
-  }
+  var onScroll = function(){
+    if(_tmrRibbonShown) return;
+    if(tmrIsSubscribed() || tmrIsRibbonDismissed()) return;
+
+    // Trigger when the bottom of the video player has scrolled out the
+    // top of the viewport — i.e. the user has finished looking at it
+    // and started reading on. Falls back to a 700px scroll threshold
+    // if the player element isn't found.
+    var shouldShow = false;
+    if(player){
+      var rect = player.getBoundingClientRect();
+      if(rect.bottom < 0) shouldShow = true;
+    } else {
+      if(window.scrollY > 700) shouldShow = true;
+    }
+
+    if(shouldShow){
+      tmrShowRibbon();
+      window.removeEventListener('scroll', onScroll);
+    }
+  };
+  window.addEventListener('scroll', onScroll, { passive:true });
 })();
 
 /* ── Modal open/close ── */
