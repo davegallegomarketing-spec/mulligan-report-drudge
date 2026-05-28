@@ -450,27 +450,17 @@
      the one in index.html — same form, same list, same submit flow.
      ══════════════════════════════════════════════════════════════ */
   body > .tmr-ribbon {
-    position:fixed; left:16px; right:16px; bottom:20px;
-    z-index:150;
+    position:fixed; left:0; right:0; bottom:0;
+    z-index:900;
     background:linear-gradient(180deg, rgba(15,34,24,0.97) 0%, rgba(10,26,15,0.98) 100%);
-    border:1px solid var(--gold);
-    border-radius:10px;
-    box-shadow:0 12px 36px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.35);
+    border-top:2px solid var(--gold);
+    box-shadow:0 -4px 20px rgba(0,0,0,0.3);
     padding:14px 22px;
-    transform:translateY(calc(100% + 32px));
-    transition:transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    transform:translateY(100%);
+    transition:transform 0.4s ease;
     backdrop-filter:blur(8px);
   }
   body > .tmr-ribbon.show { transform:translateY(0); }
-  /* Desktop: center it and cap the width — a true floating card */
-  @media (min-width:720px) {
-    body > .tmr-ribbon {
-      left:50%; right:auto;
-      width:calc(100% - 48px); max-width:920px;
-      transform:translate(-50%, calc(100% + 32px));
-    }
-    body > .tmr-ribbon.show { transform:translate(-50%, 0); }
-  }
   .tmr-ribbon-inner {
     max-width:1200px; margin:0 auto;
     display:flex; align-items:center; gap:22px;
@@ -528,10 +518,8 @@
   }
   .tmr-ribbon-close:hover { background:rgba(245,240,232,0.08); color:var(--cream); }
   /* In theater mode, hide the ribbon */
-  body.theater .tmr-ribbon { transform:translateY(calc(100% + 32px)); }
-  @media (min-width:720px) {
-    body.theater .tmr-ribbon { transform:translate(-50%, calc(100% + 32px)); }
-  }
+  body.theater > .tmr-ribbon,
+  body.theater > .tmr-ribbon.show { transform:translateY(100%); }
 
   /* Ribbon — phone layout: title full-width, actions on second row */
   @media (max-width:640px) {
@@ -1183,18 +1171,19 @@ function tmrDismissRibbon(){
    following the user all the way down — regardless of how many videos
    are in the playlist. */
 (function(){
-  try { console.log('%c[TMR] course-flyover ribbon build: scroll-300 / pinned-floating', 'color:#d4a828'); } catch(e){}
-  var onScroll = function(){
-    if(_tmrRibbonShown) return;
-    if(tmrIsSubscribed() || tmrIsRibbonDismissed()) return;
-
-    if(window.scrollY > 300){
-      tmrShowRibbon();
-      window.removeEventListener('scroll', onScroll);
+  if (tmrIsRibbonDismissed()) return;
+  var bar = document.getElementById('tmrRibbon');
+  if(!bar) return;
+  var shown = false;
+  window.addEventListener('scroll', function(){
+    if (shown && bar.classList.contains('show')) return;
+    if (tmrIsRibbonDismissed()) return;
+    if (window.scrollY > 600) {
+      bar.classList.add('show');
+      shown = true;
+      _tmrRibbonShown = true;
     }
-  };
-  window.addEventListener('scroll', onScroll, { passive:true });
-  onScroll(); // in case the page loads already scrolled
+  }, { passive: true });
 })();
 
 /* ── Modal open/close ── */
