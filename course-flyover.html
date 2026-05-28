@@ -1177,36 +1177,23 @@ function tmrDismissRibbon(){
   try { sessionStorage.setItem(TMR_RIBBON_DISMISS_KEY, '1'); } catch(e){}
 }
 
-/* Show the ribbon once the user has scrolled past the main video player.
-   Tied to .player-section so the trigger stays consistent no matter how
-   many videos are in the playlist below. Once shown, the floating card
-   stays pinned to the bottom of the viewport and follows the user as
-   they scroll the rest of the page. */
+/* Show the ribbon once the user starts scrolling down the page. Fires
+   early (after a small scroll) so the floating card appears near the top
+   of the journey and then stays pinned to the bottom of the viewport,
+   following the user all the way down — regardless of how many videos
+   are in the playlist. */
 (function(){
-  var player = document.querySelector('.player-section');
-
   var onScroll = function(){
     if(_tmrRibbonShown) return;
     if(tmrIsSubscribed() || tmrIsRibbonDismissed()) return;
 
-    // Trigger when the bottom of the video player has scrolled out the
-    // top of the viewport — i.e. the user has finished looking at it
-    // and started reading on. Falls back to a 700px scroll threshold
-    // if the player element isn't found.
-    var shouldShow = false;
-    if(player){
-      var rect = player.getBoundingClientRect();
-      if(rect.bottom < 0) shouldShow = true;
-    } else {
-      if(window.scrollY > 700) shouldShow = true;
-    }
-
-    if(shouldShow){
+    if(window.scrollY > 300){
       tmrShowRibbon();
       window.removeEventListener('scroll', onScroll);
     }
   };
   window.addEventListener('scroll', onScroll, { passive:true });
+  onScroll(); // in case the page loads already scrolled
 })();
 
 /* ── Modal open/close ── */
