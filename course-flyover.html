@@ -1134,14 +1134,14 @@ document.addEventListener('keydown', function(e){
    coming from the homepage never sees this ribbon.
    ══════════════════════════════════════════════════════════════ */
 var TMR_SUB_KEY = 'tmr_subscribed_v1';
+var TMR_RIBBON_DISMISS_KEY = 'tmr_ribbon_flyover_dismissed';
 var _tmrRibbonShown = false;
-var _tmrRibbonDismissed = false; /* in-memory only — resets on reload */
 
 function tmrIsSubscribed(){
   try { return !!localStorage.getItem(TMR_SUB_KEY); } catch(e){ return false; }
 }
 function tmrIsRibbonDismissed(){
-  return _tmrRibbonDismissed;
+  try { return !!sessionStorage.getItem(TMR_RIBBON_DISMISS_KEY); } catch(e){ return false; }
 }
 function tmrMarkSubscribed(){
   try { localStorage.setItem(TMR_SUB_KEY, '1'); } catch(e){}
@@ -1161,39 +1161,20 @@ function tmrHideRibbon(){
 }
 function tmrDismissRibbon(){
   tmrHideRibbon();
-  _tmrRibbonDismissed = true;
+  try { sessionStorage.setItem(TMR_RIBBON_DISMISS_KEY, '1'); } catch(e){}
 }
 
-/* Show the ribbon when the user scrolls down to the "Pick Your Course"
-   section. Uses IntersectionObserver so it fires as soon as any part of
-   the picker enters the viewport. Falls back to a scroll listener for
-   older browsers. Once shown, the ribbon stays pinned to the bottom. */
+/* Show the ribbon after the user has scrolled past the hero (matches
+   the index.html floating subscribe bar behavior). Once shown, the
+   ribbon stays pinned to the bottom of the viewport. */
 (function(){
-  var picker = document.querySelector('.picker-section');
-  if(!picker) { setTimeout(tmrShowRibbon, 1200); return; }
-
-  if('IntersectionObserver' in window){
-    var io = new IntersectionObserver(function(entries){
-      for(var i=0; i<entries.length; i++){
-        if(entries[i].isIntersecting){
-          tmrShowRibbon();
-          io.disconnect();
-          break;
-        }
-      }
-    }, { rootMargin: '0px 0px -10% 0px', threshold: 0.01 });
-    io.observe(picker);
-  } else {
-    var onScroll = function(){
-      var rect = picker.getBoundingClientRect();
-      if(rect.top < (window.innerHeight || document.documentElement.clientHeight)){
-        tmrShowRibbon();
-        window.removeEventListener('scroll', onScroll);
-      }
-    };
-    window.addEventListener('scroll', onScroll, { passive:true });
-    onScroll();
-  }
+  window.addEventListener('scroll', function(){
+    if(_tmrRibbonShown) return;
+    if(tmrIsSubscribed() || tmrIsRibbonDismissed()) return;
+    if(window.scrollY > 600){
+      tmrShowRibbon();
+    }
+  }, { passive: true });
 })();
 
 /* ── Modal open/close ── */
