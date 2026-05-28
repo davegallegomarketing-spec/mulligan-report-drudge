@@ -150,24 +150,24 @@
     overflow-wrap:break-word;
   }
   .col-item a.L,.col-item a.H,.col-item a.B{display:block;text-decoration:underline;overflow-wrap:break-word;}
-  .col-item a.L{padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;line-height:1.4;}
+  .col-item a.L{padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;text-transform:uppercase;line-height:1.4;}
   .col-item a.L:hover{color:#b8860b;}
   .col-item a.H{padding:6px 0;font-size:17px;font-weight:bold;color:#c0392b;text-transform:uppercase;line-height:1.18;}
   .col-item a.H:hover{color:#b8860b;}
   .col-item a.B{padding:5px 0;font-size:15px;font-weight:bold;color:#1b4332;text-transform:uppercase;line-height:1.22;}
   .col-item a.B:hover{color:#b8860b;}
-  .col-item .src{font-size:12px;color:#999;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
+  .col-item .src{font-size:12px;color:#555;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
   .col-item .aside{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#666;font-weight:normal;display:block;}
 
   /* Column content classes */
   .d{display:block;border:none;border-top:1px solid #c9bfa8;margin:8px 0;height:0;font-size:0;line-height:0;}
   .sl{font-family:Arial,sans-serif;font-size:12px;font-weight:bold;color:#b8860b;text-transform:uppercase;letter-spacing:.15em;display:block;margin:6px 0 3px;}
-  .col a.L{display:block;padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;text-decoration:underline;line-height:1.4;overflow-wrap:break-word;}
+  .col a.L{display:block;padding:4px 0;font-size:14px;font-weight:bold;color:#1b4332;text-transform:uppercase;text-decoration:underline;line-height:1.4;overflow-wrap:break-word;}
   .col a.L:hover{color:#b8860b;}
   .col a.H{display:block;padding:6px 0;font-size:17px;font-weight:bold;color:#c0392b;text-transform:uppercase;text-decoration:underline;line-height:1.18;overflow-wrap:break-word;}
   .col a.H:hover{color:#b8860b;}
   .col a.B{display:block;padding:5px 0;font-size:15px;font-weight:bold;color:#1b4332;text-transform:uppercase;text-decoration:underline;line-height:1.22;overflow-wrap:break-word;}
-  .col .src{font-size:12px;color:#999;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
+  .col .src{font-size:12px;color:#555;font-style:italic;display:block;margin-top:-1px;margin-bottom:1px;}
   .col .aside{font-family:Georgia,serif;font-style:italic;font-size:12px;color:#666;font-weight:normal;display:block;}
   .col .sm{font-size:13px;}
   .col .sm a{font-size:13px;color:#1b4332;text-decoration:underline;}
@@ -2116,18 +2116,15 @@ function renderBlock(elId, articles, injects, ads) {
     // caps) every 3rd, red-L every 4th+2, plain L otherwise.
     if (i === 0 || i % 7 === 0) {
       chunk += '<a class="H" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
-      if (desc) chunk += '<span class="aside">*' + desc + '*</span>';
       chunk += srcLine;
     } else if (i % 3 === 1) {
-      chunk += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-      if (desc) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += '<a class="B" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
       chunk += srcLine;
     } else if (i % 4 === 2) {
       chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener" style="color:#c0392b;">' + titleUp + '</a>';
       chunk += srcLine;
     } else {
-      chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a>';
-      if (desc && i % 2 === 0) chunk += '<span class="aside">*' + desc + '*</span>';
+      chunk += '<a class="L" href="' + a.link + '" target="_blank" rel="noopener">' + titleUp + '</a>';
       chunk += srcLine;
     }
 
