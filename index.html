@@ -1993,9 +1993,19 @@ const LINKPULSE_API = 'https://linkpulse-tmr.vercel.app/api/published';
 // All ad slots on the page (Block 1 dynamic ads, Block 3 static ads,
 // Caddie's Pick side ad) pull a random image from this pool. Exposed
 // on window so the Caddie's Pick IIFE (separate script tag) can use it.
+// Each ad creative now carries its OWN destination link, so the right
+// banner always points to the right advertiser no matter which slot it
+// lands in. (Previously every slot shared one link, which made it
+// impossible to route blue->PING and red->Zening separately.)
+//   image : the banner artwork
+//   link  : where a click on that banner should go
 window.MR_AD_IMAGES = [
-  'https://i.imgur.com/ylOBg1t.png',
-  'https://res.cloudinary.com/df8ibmjdu/image/upload/v1779285095/grok-image-68ad1e12-c532-4bc8-95ef-da2bb6064455_qbfnsu.jpg'
+  // BLUE — PING G440 banner  →  PING drivers page
+  { image: 'https://i.imgur.com/ylOBg1t.png',
+    link:  'https://ping.com/en-us/golf-clubs/drivers' },
+  // RED — Zenith putter banner  →  Odyssey putters page
+  { image: 'https://res.cloudinary.com/df8ibmjdu/image/upload/v1780440145/grok-image-4b05580d-7421-4c85-ba58-853241f5ed22_fgf5hs.jpg',
+    link:  'https://odyssey.callawaygolf.com/putters' }
 ];
 window.MR_pickAd = function() {
   return window.MR_AD_IMAGES[Math.floor(Math.random() * window.MR_AD_IMAGES.length)];
@@ -2031,7 +2041,11 @@ window.MR_pickAds = function(n) {
       var emptyImgs = c.querySelectorAll('.col-ad img:not([src]), .cp-side-ad img:not([src])');
       if (emptyImgs.length === 0) return;
       var picks = window.MR_pickAds(emptyImgs.length);
-      emptyImgs.forEach(function(img, i){ img.src = picks[i]; });
+      emptyImgs.forEach(function(img, i){
+        img.src = picks[i].image;
+        var a = img.closest('a');           // route the banner to its own advertiser
+        if (a) a.setAttribute('href', picks[i].link || '#');
+      });
     });
   }
   if (document.readyState === 'loading') {
@@ -2199,7 +2213,8 @@ async function loadLinkPulseEdition() {
     var BLOCK1_SIZE = 30;
     var BLOCK2_SIZE = 90;
 
-    var AD_LINK = '#';
+    // Each ad's link now comes from its own creative (see MR_AD_IMAGES),
+    // so blue->PING and red->Zening stay correctly paired.
     // Block 1 (30 items): col-1 ~7-10, col-3 ~19-22.
     var b1Ad1At = 7  + Math.floor(Math.random() * 4);  // 7..10
     var b1Ad2At = 19 + Math.floor(Math.random() * 4);  // 19..22
@@ -2213,16 +2228,16 @@ async function loadLinkPulseEdition() {
       { at: 4,  title: "The First Tee",   sub: "Morning briefing — every weekday before you tee off." },
       { at: 25, title: "Read The Greens", sub: "Curated golf intel before your first putt." }
     ], [
-      { at: b1Ad1At, image: block1AdImages[0], link: AD_LINK },
-      { at: b1Ad2At, image: block1AdImages[1], link: AD_LINK }
+      { at: b1Ad1At, image: block1AdImages[0].image, link: block1AdImages[0].link },
+      { at: b1Ad2At, image: block1AdImages[1].image, link: block1AdImages[1].link }
     ]);
     renderBlock('sec-block-2', remaining.slice(BLOCK1_SIZE, BLOCK1_SIZE + BLOCK2_SIZE), [
       { at: 8,  title: "Pro Shop Drops",            sub: "Equipment deals & gear reviews — daily." },
       { at: 45, title: "The Back 9",                sub: "Gear drops, deal alerts, reviews — free daily." },
       { at: 82, title: "Don't miss tomorrow's round", sub: "Free. Every morning. Unsubscribe anytime." }
     ], [
-      { at: b2Ad1At, image: block2AdImages[0], link: AD_LINK },
-      { at: b2Ad2At, image: block2AdImages[1], link: AD_LINK }
+      { at: b2Ad1At, image: block2AdImages[0].image, link: block2AdImages[0].link },
+      { at: b2Ad2At, image: block2AdImages[1].image, link: block2AdImages[1].link }
     ]);
 
     // After articles render, fix link behavior for mobile (back button works)
@@ -2808,11 +2823,15 @@ setInterval(loadLinkPulseEdition, 5 * 60 * 1000);
             renderHeroCard(hero)+
             renderHeroMeta(hero)+
           '</div>'+
-          (moreBlock ? '<aside class="cp-tv-side">'+moreBlock+
-            '<a class="cp-side-ad" href="#" target="_blank" rel="noopener sponsored">'+
-              '<img src="'+ (window.MR_pickAd ? window.MR_pickAd() : 'https://res.cloudinary.com/df8ibmjdu/image/upload/v1779285095/grok-image-68ad1e12-c532-4bc8-95ef-da2bb6064455_qbfnsu.jpg') +'" alt="Sponsored" loading="lazy">'+
-            '</a>'+
-          '</aside>' : '')+
+          (moreBlock ? (function(){
+            var cpAd = window.MR_pickAd ? window.MR_pickAd()
+              : { image:'https://res.cloudinary.com/df8ibmjdu/image/upload/v1780440145/grok-image-4b05580d-7421-4c85-ba58-853241f5ed22_fgf5hs.jpg', link:'https://odyssey.callawaygolf.com/putters' };
+            return '<aside class="cp-tv-side">'+moreBlock+
+              '<a class="cp-side-ad" href="'+ (cpAd.link || '#') +'" target="_blank" rel="noopener sponsored">'+
+                '<img src="'+ cpAd.image +'" alt="Sponsored" loading="lazy">'+
+              '</a>'+
+            '</aside>';
+          })() : '')+
         '</div>'+
         '<div class="cp-cta">'+
           '<a href="'+ARCHIVE_URL+'" rel="noopener">Browse the Archives \u2192</a>'+
