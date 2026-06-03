@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The Archives — The Mulligan Report</title>
-<link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/icons/icon-192.png">
 <meta name="theme-color" content="#0a1a0f">
 <meta property="og:title" content="Clubhouse TV Archives — The Mulligan Report">
@@ -567,7 +566,10 @@
 <!-- ── TOP OPT-IN BAR ── -->
 <div class="arc-optin-bar" id="topOptinBar">
   <div class="arc-optin-bar-text"><strong>Never miss a pick.</strong> Get the Caddie's best, every morning.</div>
-  <div onclick="openSubscribe()" style="background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:9px 24px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;white-space:nowrap;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe</div>
+  <form class="arc-optin-form" onsubmit="event.preventDefault();openSubscribe(this.querySelector('input[type=email]').value);" style="display:flex;gap:8px;align-items:center;">
+    <input type="email" required placeholder="Your email..." style="padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;border:1px solid rgba(255,255,255,0.2);border-radius:3px;background:rgba(255,255,255,0.07);color:#fff;min-width:170px;box-sizing:border-box;">
+    <button type="submit" style="background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;padding:9px 24px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:3px;white-space:nowrap;border:none;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe</button>
+  </form>
 </div>
 
 <!-- ── HERO ── -->
@@ -604,7 +606,10 @@
   <div class="arc-sub-card">
     <h3>Get the Caddie's Picks Daily</h3>
     <p>The best golf videos and stories, delivered every morning before your tee time.</p>
-    <div onclick="openSubscribe()" style="display:inline-block;background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:12px 36px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;margin-top:12px;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe Free</div>
+    <form class="arc-optin-form" onsubmit="event.preventDefault();openSubscribe(this.querySelector('input[type=email]').value);" style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px;">
+      <input type="email" required placeholder="Your email..." style="padding:12px 16px;font-size:15px;font-family:'DM Sans',sans-serif;border:1px solid rgba(255,255,255,0.2);border-radius:4px;background:rgba(255,255,255,0.07);color:#fff;min-width:220px;box-sizing:border-box;">
+      <button type="submit" style="background:var(--gold);color:var(--bg-deep);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;padding:12px 36px;letter-spacing:0.06em;text-transform:uppercase;cursor:pointer;border-radius:4px;border:none;transition:all 0.2s" onmouseenter="this.style.background='var(--gold-light)'" onmouseleave="this.style.background='var(--gold)'">Subscribe Free</button>
+    </form>
   </div>
 </section>
 
