@@ -6,7 +6,1108 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Sweepstakes Desk — The Mulligan Report</title>
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
+<style>
+  :root {
+    --ink:        #1b4332;
+    --paper:      #f4ecd8;
+    --paper-dim:  #ebe2c8;
+    --rule:       #c9bfa8;
+    --gold:       #b8860b;
+    --red:        #c0392b;
+    --muted:      #5a5043;
+    --shadow:     0 0 0 1px var(--gold), 8px 8px 0 rgba(0,0,0,0.25);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--ink);
+    color:var(--ink);
+    font-family:Georgia,'Times New Roman',serif;
+    min-height:100vh;
+    padding:24px 16px 60px;
+  }
+
+  /* ─── Masthead ─────────────────────────────────────────────────── */
+  .mast{
+    max-width:1200px;
+    margin:0 auto 18px;
+    text-align:center;
+    color:var(--paper);
+  }
+  .mast-title{
+    font-family:'Times New Roman',serif;
+    font-size:30px;
+    font-weight:bold;
+    letter-spacing:.01em;
+  }
+  .mast-edition{
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.28em;
+    color:var(--gold);
+    margin-top:4px;
+  }
+  .mast-edition span{color:var(--paper); margin:0 8px;}
+
+  /* ─── Card frame ───────────────────────────────────────────────── */
+  .card{
+    background:var(--paper);
+    border:3px solid var(--paper);
+    box-shadow:var(--shadow);
+    max-width:1200px;
+    margin:0 auto 18px;
+    padding:0;
+    position:relative;
+  }
+  .card-head{
+    border-bottom:2px solid var(--ink);
+    padding:18px 28px 14px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .card-head h2{
+    font-family:Courier,'Courier New',monospace;
+    font-size:22px;
+    color:var(--red);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin:0;
+    font-weight:bold;
+  }
+  .card-head .meta{
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    color:var(--muted);
+  }
+  .card-body{
+    padding:22px 28px 26px;
+  }
+
+  /* ─── Auth gate ────────────────────────────────────────────────── */
+  .gate{
+    max-width:520px;
+    margin:60px auto 0;
+  }
+  .gate p{
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:var(--muted);
+    text-align:center;
+    margin:14px 0 18px;
+    font-style:italic;
+  }
+  .gate input{
+    width:100%;
+    padding:12px 14px;
+    border:2px solid var(--ink);
+    background:#fff;
+    font-family:Courier,'Courier New',monospace;
+    font-size:14px;
+    color:var(--ink);
+    border-radius:0;
+    text-align:center;
+    letter-spacing:.05em;
+  }
+  .gate input:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 2px rgba(184,134,11,0.2);
+  }
+  .gate button{
+    margin-top:12px;
+    width:100%;
+    padding:13px;
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    font-family:Arial,sans-serif;
+    font-size:12px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.18em;
+    cursor:pointer;
+    border-radius:0;
+  }
+  .gate button:hover{background:#0f2b1f;}
+  .gate-error{
+    margin-top:10px;
+    text-align:center;
+    color:var(--red);
+    font-family:Georgia,serif;
+    font-size:13px;
+    font-style:italic;
+    display:none;
+  }
+  .gate-error.show{display:block;}
+
+  /* ─── Stats strip ──────────────────────────────────────────────── */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:0;
+    border:2px solid var(--ink);
+  }
+  .stat{
+    padding:14px 18px;
+    border-right:1px solid var(--rule);
+    background:var(--paper-dim);
+  }
+  .stat:last-child{border-right:none;}
+  .stat-label{
+    font-family:Arial,sans-serif;
+    font-size:9px;
+    text-transform:uppercase;
+    letter-spacing:.2em;
+    color:var(--muted);
+    font-weight:bold;
+    margin-bottom:4px;
+  }
+  .stat-value{
+    font-family:Courier,'Courier New',monospace;
+    font-size:28px;
+    color:var(--ink);
+    font-weight:bold;
+    line-height:1;
+  }
+  .stat-sub{
+    font-family:Georgia,serif;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:4px;
+    font-style:italic;
+  }
+
+  /* ─── Toolbar ──────────────────────────────────────────────────── */
+  .toolbar{
+    margin-top:22px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .toolbar .search{
+    flex:1;
+    min-width:200px;
+    position:relative;
+  }
+  .toolbar .search input{
+    width:100%;
+    padding:9px 12px 9px 32px;
+    border:2px solid var(--ink);
+    background:#fff;
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:var(--ink);
+    border-radius:0;
+  }
+  .toolbar .search::before{
+    content:'⌕';
+    position:absolute;
+    left:9px;
+    top:50%;
+    transform:translateY(-50%);
+    color:var(--ink);
+    font-size:16px;
+    font-weight:bold;
+  }
+  .toolbar select{
+    padding:9px 12px;
+    border:2px solid var(--ink);
+    background:#fff;
+    font-family:Georgia,serif;
+    font-size:14px;
+    color:var(--ink);
+    border-radius:0;
+    cursor:pointer;
+  }
+  .btn{
+    padding:9px 14px;
+    background:var(--ink);
+    color:var(--paper);
+    border:2px solid var(--ink);
+    font-family:Arial,sans-serif;
+    font-size:11px;
+    font-weight:bold;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    cursor:pointer;
+    border-radius:0;
+    text-decoration:none;
+    display:inline-block;
+  }
+  .btn:hover{background:#0f2b1f;}
+  .btn-secondary{
+    background:var(--paper);
+    color:var(--ink);
+  }
+  .btn-secondary:hover{
+    background:var(--paper-dim);
+  }
+  .btn-danger{
+    background:var(--red);
+    border-color:var(--red);
+  }
+  .btn-danger:hover{
+    background:#9a2e22;
+  }
+  .btn-gold{
+    background:var(--gold);
+    border-color:var(--gold);
+    color:#1a1106;
+  }
+  .btn-gold:hover{
+    background:#a07408;
+  }
+
+  /* ─── Table ────────────────────────────────────────────────────── */
+  .table-wrap{
+    margin-top:20px;
+    border:2px solid var(--ink);
+    overflow-x:auto;
+    background:#fff;
+  }
+  table.entries{
+    width:100%;
+    border-collapse:collapse;
+    font-family:Georgia,serif;
+    font-size:13px;
+  }
+  table.entries thead th{
+    background:var(--ink);
+    color:var(--paper);
+    text-align:left;
+    padding:10px 12px;
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    font-weight:bold;
+    white-space:nowrap;
+    cursor:pointer;
+    user-select:none;
+    border-right:1px solid rgba(244,236,216,0.15);
+  }
+  table.entries thead th:last-child{border-right:none;}
+  table.entries thead th:hover{background:#0f2b1f;}
+  table.entries thead th .sort-arrow{
+    display:inline-block;
+    margin-left:4px;
+    opacity:0.4;
+    font-size:9px;
+  }
+  table.entries thead th.sorted .sort-arrow{opacity:1;}
+  table.entries tbody tr{
+    border-bottom:1px solid var(--rule);
+    transition:background .1s;
+  }
+  table.entries tbody tr:hover{background:#fdf9f0;}
+  table.entries tbody tr.winner{
+    background:#fff4d6;
+    box-shadow:inset 4px 0 0 var(--gold);
+  }
+  table.entries tbody tr.winner:hover{background:#fdecbf;}
+  table.entries td{
+    padding:10px 12px;
+    border-right:1px solid var(--paper-dim);
+    vertical-align:top;
+  }
+  table.entries td:last-child{border-right:none;}
+  table.entries .col-email{color:var(--muted); font-family:Courier,'Courier New',monospace; font-size:12px;}
+  table.entries .col-name{font-weight:bold; color:var(--ink);}
+  table.entries .col-ball{
+    font-family:Courier,'Courier New',monospace;
+    font-weight:bold;
+    color:var(--red);
+    white-space:nowrap;
+  }
+  table.entries .col-date{
+    font-family:Courier,'Courier New',monospace;
+    color:var(--muted);
+    font-size:11px;
+    white-space:nowrap;
+  }
+  table.entries .actions{
+    text-align:right;
+    white-space:nowrap;
+  }
+  table.entries .actions button{
+    padding:5px 9px;
+    background:transparent;
+    color:var(--red);
+    border:1px solid var(--red);
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    cursor:pointer;
+    border-radius:0;
+  }
+  table.entries .actions button:hover{
+    background:var(--red);
+    color:var(--paper);
+  }
+
+  .empty{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--muted);
+    font-family:Georgia,serif;
+    font-style:italic;
+    font-size:15px;
+  }
+  .empty .check{
+    font-size:36px;
+    color:var(--gold);
+    margin-bottom:8px;
+  }
+
+  /* ─── Loading state ────────────────────────────────────────────── */
+  .loading{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--muted);
+    font-family:Courier,'Courier New',monospace;
+    font-size:13px;
+  }
+  .loading::after{
+    content:'';
+    animation:dots 1.5s steps(4,end) infinite;
+  }
+  @keyframes dots {
+    0%, 20% { content:''; }
+    40%     { content:'.'; }
+    60%     { content:'..'; }
+    80%, 100% { content:'...'; }
+  }
+
+  /* ─── Winner spotlight modal ───────────────────────────────────── */
+  .spotlight-back{
+    position:fixed;
+    inset:0;
+    background:rgba(15,30,21,0.85);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:100;
+    padding:20px;
+  }
+  .spotlight-back.show{display:flex;}
+  .spotlight{
+    background:var(--paper);
+    border:3px solid var(--paper);
+    box-shadow:var(--shadow);
+    max-width:560px;
+    width:100%;
+    padding:30px 36px 28px;
+    text-align:center;
+    position:relative;
+  }
+  .spotlight .stars{
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.28em;
+    color:var(--gold);
+    padding:6px 0;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    margin-bottom:18px;
+    font-weight:bold;
+  }
+  .spotlight h1{
+    font-family:Courier,'Courier New',monospace;
+    font-size:32px;
+    color:var(--red);
+    margin:0 0 4px;
+    text-transform:uppercase;
+    line-height:1.05;
+  }
+  .spotlight .quarter-label{
+    font-family:Georgia,serif;
+    font-style:italic;
+    color:var(--muted);
+    font-size:14px;
+    margin-bottom:18px;
+  }
+  .spotlight .winner-card{
+    background:#fff;
+    border:2px solid var(--ink);
+    padding:18px 20px;
+    margin:18px 0;
+    text-align:left;
+    font-family:Georgia,serif;
+  }
+  .spotlight .winner-card .name{
+    font-size:22px;
+    font-weight:bold;
+    color:var(--ink);
+    margin-bottom:4px;
+  }
+  .spotlight .winner-card .email{
+    font-family:Courier,'Courier New',monospace;
+    color:var(--muted);
+    font-size:13px;
+    margin-bottom:14px;
+  }
+  .spotlight .winner-card dl{
+    margin:0;
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:6px 14px;
+    font-size:13px;
+  }
+  .spotlight .winner-card dt{
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    color:var(--muted);
+    font-weight:bold;
+    align-self:center;
+  }
+  .spotlight .winner-card dd{
+    margin:0;
+    color:var(--ink);
+  }
+  .spotlight .winner-card .ball{
+    font-family:Courier,'Courier New',monospace;
+    font-weight:bold;
+    color:var(--red);
+  }
+  .spotlight .actions{
+    margin-top:18px;
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  /* ─── Toast notifications ──────────────────────────────────────── */
+  .toast{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    background:var(--ink);
+    color:var(--paper);
+    padding:12px 18px;
+    font-family:Georgia,serif;
+    font-size:14px;
+    border:1px solid var(--gold);
+    box-shadow:4px 4px 0 rgba(0,0,0,0.3);
+    z-index:200;
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .2s, transform .2s;
+    pointer-events:none;
+    max-width:360px;
+  }
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast.error{background:var(--red);border-color:#7a2018;}
+
+  /* ─── Footer ───────────────────────────────────────────────────── */
+  .footnote{
+    max-width:1200px;
+    margin:20px auto 0;
+    text-align:center;
+    font-family:Arial,sans-serif;
+    font-size:10px;
+    color:var(--gold);
+    letter-spacing:.18em;
+    text-transform:uppercase;
+  }
+
+  /* ─── Responsive ───────────────────────────────────────────────── */
+  @media (max-width:760px){
+    .card-body{padding:18px;}
+    .card-head{padding:14px 18px 12px;}
+    .stat-value{font-size:22px;}
+    .toolbar{flex-direction:column; align-items:stretch;}
+    .toolbar .search{min-width:0;}
+    /* Hide non-essential columns on narrow screens */
+    table.entries th.opt, table.entries td.opt{display:none;}
+  }
+
+  .hidden{display:none !important;}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     AUTH GATE — shown first; the rest of the page stays hidden until
+     a valid SWEEPS_ADMIN_KEY is verified via a test API call.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div id="gate" class="card gate">
+  <div class="card-head" style="border-bottom:1px solid var(--rule);">
+    <h2>★ SWEEPSTAKES DESK ★</h2>
+    <div class="meta">Restricted Access</div>
+  </div>
+  <div class="card-body">
+    <p>Enter the admin key to access entry data, draw winners, and manage the sweepstakes desk.</p>
+    <input type="password" id="gateKey" placeholder="Admin key" autocomplete="off" autofocus>
+    <button id="gateBtn" type="button">UNLOCK</button>
+    <div id="gateError" class="gate-error"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     MAIN DASHBOARD — hidden until auth succeeds.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<div id="dashboard" class="hidden">
+
+  <div class="mast">
+    <div class="mast-title">THE MULLIGAN REPORT</div>
+    <div class="mast-edition">
+      SWEEPSTAKES DESK <span>·</span> EDITORS ONLY <span>·</span> <span id="todayLabel"></span>
+    </div>
+  </div>
+
+  <!-- Stats overview -->
+  <div class="card">
+    <div class="card-head">
+      <h2>The Tally</h2>
+      <div class="meta">Quarter: <span id="quarterLabel"></span></div>
+    </div>
+    <div class="card-body">
+      <div class="stats" id="statsGrid">
+        <!-- populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Entries table -->
+  <div class="card">
+    <div class="card-head">
+      <h2>Entries Ledger</h2>
+      <div class="meta"><span id="ledgerCount">0</span> entries</div>
+    </div>
+    <div class="card-body">
+      <div class="toolbar">
+        <div class="search">
+          <input type="text" id="searchBox" placeholder="Search name, email, city, state...">
+        </div>
+        <select id="ballFilter">
+          <option value="">All balls</option>
+          <option value="Pro V1">Pro V1</option>
+          <option value="Pro V1x">Pro V1x</option>
+          <option value="AVX">AVX</option>
+        </select>
+        <select id="quarterFilter">
+          <option value="Q1-2026">Q1 2026</option>
+          <option value="Q2-2026">Q2 2026</option>
+          <option value="Q3-2026">Q3 2026</option>
+          <option value="Q4-2026">Q4 2026</option>
+        </select>
+        <button class="btn btn-gold" id="drawBtn" type="button">🎲 Draw Winner</button>
+        <button class="btn btn-secondary" id="csvBtn" type="button">📥 Download CSV</button>
+        <button class="btn btn-secondary" id="refreshBtn" type="button">↻ Refresh</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="entries" id="entriesTable">
+          <thead>
+            <tr>
+              <th data-sort="submittedAt" class="sorted">Submitted <span class="sort-arrow">▼</span></th>
+              <th data-sort="name">Name <span class="sort-arrow">▾</span></th>
+              <th data-sort="email">Email <span class="sort-arrow">▾</span></th>
+              <th data-sort="ballChoice">Ball <span class="sort-arrow">▾</span></th>
+              <th data-sort="state" class="opt">State <span class="sort-arrow">▾</span></th>
+              <th data-sort="city" class="opt">City <span class="sort-arrow">▾</span></th>
+              <th class="opt">Handicap</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="entriesBody">
+            <tr><td colspan="8" class="loading">Loading entries</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="footnote">
+    © 2026 The Mulligan Report · Sweepstakes Desk · Editor build
+  </div>
+</div>
+
+<!-- Winner spotlight modal -->
+<div id="spotlightBack" class="spotlight-back" role="dialog" aria-modal="true">
+  <div class="spotlight">
+    <div class="stars">★ WINNER SELECTED ★</div>
+    <h1>The Mulligan Report</h1>
+    <div class="quarter-label">Quarterly Drawing · <span id="spotlightQuarter"></span></div>
+
+    <div class="winner-card">
+      <div class="name" id="winnerName"></div>
+      <div class="email" id="winnerEmail"></div>
+      <dl>
+        <dt>Ship to</dt><dd id="winnerAddress"></dd>
+        <dt>Ball pick</dt><dd class="ball" id="winnerBall"></dd>
+        <dt>Phone</dt><dd id="winnerPhone"></dd>
+        <dt>Handicap</dt><dd id="winnerHandicap"></dd>
+        <dt>Entered</dt><dd id="winnerDate"></dd>
+      </dl>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="spotlightCopy" type="button">📋 Copy details</button>
+      <button class="btn btn-gold" id="spotlightDrawAgain" type="button">🎲 Draw again</button>
+      <button class="btn btn-secondary" id="spotlightClose" type="button">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notification -->
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
 <script>
-  window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+(function(){
+  'use strict';
+
+  // ─── State ──────────────────────────────────────────────────────────
+  var STATE = {
+    key: '',
+    quarter: 'Q1-2026',
+    entries: [],
+    filtered: [],
+    sortField: 'submittedAt',
+    sortDir: 'desc',
+  };
+
+  // The localStorage key for the admin token. Stored locally so users
+  // don't have to re-enter it every visit, but never sent over the wire
+  // except in API calls to our own domain.
+  var KEY_STORAGE = 'tmr_admin_key';
+
+  // ─── Element refs ───────────────────────────────────────────────────
+  var $ = function(id){ return document.getElementById(id); };
+
+  // ─── Init ───────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', function(){
+    setTodayLabel();
+    var saved = '';
+    try { saved = localStorage.getItem(KEY_STORAGE) || ''; } catch(_) {}
+    if (saved) {
+      $('gateKey').value = saved;
+      tryUnlock(saved, true);
+    }
+    $('gateBtn').addEventListener('click', function(){ tryUnlock($('gateKey').value, false); });
+    $('gateKey').addEventListener('keydown', function(e){
+      if (e.key === 'Enter') tryUnlock($('gateKey').value, false);
+    });
+  });
+
+  function setTodayLabel(){
+    var d = new Date();
+    var months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    $('todayLabel').textContent =
+      months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  }
+
+  // ─── Auth ───────────────────────────────────────────────────────────
+  function tryUnlock(key, isAutoAttempt){
+    key = (key || '').trim();
+    if (!key) {
+      showGateError('Enter an admin key to continue.');
+      return;
+    }
+    var btn = $('gateBtn');
+    btn.disabled = true;
+    btn.textContent = 'CHECKING…';
+
+    fetch('/api/sweepstakes-entries?key=' + encodeURIComponent(key) + '&quarter=' + encodeURIComponent(STATE.quarter))
+      .then(function(r){ return r.json().then(function(b){ return { status:r.status, body:b }; }); })
+      .then(function(res){
+        btn.disabled = false;
+        btn.textContent = 'UNLOCK';
+        if (res.status === 200 && res.body && res.body.ok) {
+          STATE.key = key;
+          try { localStorage.setItem(KEY_STORAGE, key); } catch(_) {}
+          enterDashboard(res.body);
+        } else {
+          // Wipe the stored key on a real auth failure (not on transient errors)
+          if (res.status === 401) {
+            try { localStorage.removeItem(KEY_STORAGE); } catch(_) {}
+          }
+          if (!isAutoAttempt) {
+            showGateError(res.status === 401 ? 'Invalid key.' : 'Could not reach the server.');
+          }
+        }
+      })
+      .catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'UNLOCK';
+        if (!isAutoAttempt) showGateError('Network error. Try again.');
+      });
+  }
+  function showGateError(msg){
+    var el = $('gateError');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  // ─── Dashboard ──────────────────────────────────────────────────────
+  function enterDashboard(initialPayload){
+    $('gate').classList.add('hidden');
+    $('dashboard').classList.remove('hidden');
+    $('quarterLabel').textContent = formatQuarter(STATE.quarter);
+
+    // Wire up controls
+    $('searchBox').addEventListener('input', renderTable);
+    $('ballFilter').addEventListener('change', renderTable);
+    $('quarterFilter').addEventListener('change', function(){
+      STATE.quarter = $('quarterFilter').value;
+      $('quarterLabel').textContent = formatQuarter(STATE.quarter);
+      loadEntries();
+    });
+    $('refreshBtn').addEventListener('click', loadEntries);
+    $('drawBtn').addEventListener('click', drawWinner);
+    $('csvBtn').addEventListener('click', downloadCsv);
+
+    document.querySelectorAll('#entriesTable thead th[data-sort]').forEach(function(th){
+      th.addEventListener('click', function(){
+        var f = th.getAttribute('data-sort');
+        if (STATE.sortField === f) {
+          STATE.sortDir = STATE.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          STATE.sortField = f;
+          STATE.sortDir = 'desc';
+        }
+        updateSortHeaders();
+        renderTable();
+      });
+    });
+
+    // Spotlight modal handlers
+    $('spotlightClose').addEventListener('click', closeSpotlight);
+    $('spotlightDrawAgain').addEventListener('click', drawWinner);
+    $('spotlightCopy').addEventListener('click', copyWinnerDetails);
+
+    // Default quarter selector to current
+    $('quarterFilter').value = STATE.quarter;
+
+    // Use the data from the auth probe to render immediately (skip second fetch)
+    consumeEntries(initialPayload);
+  }
+
+  // ─── Load entries ───────────────────────────────────────────────────
+  function loadEntries(){
+    $('entriesBody').innerHTML =
+      '<tr><td colspan="8" class="loading">Loading entries</td></tr>';
+    fetch('/api/sweepstakes-entries?key=' + encodeURIComponent(STATE.key) +
+          '&quarter=' + encodeURIComponent(STATE.quarter))
+      .then(function(r){ return r.json(); })
+      .then(function(body){
+        if (body && body.ok) {
+          consumeEntries(body);
+        } else {
+          toast('Failed to load entries', true);
+        }
+      })
+      .catch(function(){ toast('Network error loading entries', true); });
+  }
+
+  function consumeEntries(payload){
+    // Entries from the API may be JSON strings (legacy double-encoded) or
+    // proper objects, depending on which version of sweepstakes-entries.js
+    // is deployed. Normalize either way.
+    var raw = (payload && payload.entries) || [];
+    var entries = raw.map(function(e){
+      if (typeof e === 'string') {
+        try { return JSON.parse(e); } catch(_) { return null; }
+      }
+      return e;
+    }).filter(Boolean);
+
+    STATE.entries = entries;
+    renderStats();
+    updateSortHeaders();
+    renderTable();
+  }
+
+  // ─── Stats ──────────────────────────────────────────────────────────
+  function renderStats(){
+    var entries = STATE.entries;
+    var total = entries.length;
+
+    // Ball breakdown
+    var balls = { 'Pro V1':0, 'Pro V1x':0, 'AVX':0 };
+    entries.forEach(function(e){
+      if (balls.hasOwnProperty(e.ballChoice)) balls[e.ballChoice]++;
+    });
+
+    // States covered
+    var statesSet = {};
+    entries.forEach(function(e){ if (e.state) statesSet[e.state] = true; });
+    var statesCovered = Object.keys(statesSet).length;
+
+    // Last entry timestamp
+    var lastTs = null;
+    entries.forEach(function(e){
+      if (e.submittedAt && (!lastTs || e.submittedAt > lastTs)) lastTs = e.submittedAt;
+    });
+    var lastLabel = lastTs ? relativeTime(lastTs) : '—';
+
+    var grid = $('statsGrid');
+    grid.innerHTML =
+      stat('Total entries', total, total === 1 ? 'entry' : 'entries') +
+      stat('Pro V1', balls['Pro V1'], pct(balls['Pro V1'], total) + ' of pool') +
+      stat('Pro V1x', balls['Pro V1x'], pct(balls['Pro V1x'], total) + ' of pool') +
+      stat('AVX', balls['AVX'], pct(balls['AVX'], total) + ' of pool') +
+      stat('States covered', statesCovered, statesCovered === 1 ? 'state' : 'states') +
+      stat('Last entry', lastLabel, '');
+
+    $('ledgerCount').textContent = total;
+  }
+  function stat(label, value, sub){
+    return '<div class="stat">' +
+             '<div class="stat-label">' + escapeHtml(label) + '</div>' +
+             '<div class="stat-value">' + escapeHtml(String(value)) + '</div>' +
+             (sub ? '<div class="stat-sub">' + escapeHtml(sub) + '</div>' : '') +
+           '</div>';
+  }
+  function pct(part, total){
+    if (!total) return '0%';
+    return Math.round((part/total)*100) + '%';
+  }
+
+  // ─── Table render ───────────────────────────────────────────────────
+  function renderTable(){
+    var q = ($('searchBox').value || '').toLowerCase().trim();
+    var ball = $('ballFilter').value;
+
+    var filtered = STATE.entries.filter(function(e){
+      if (ball && e.ballChoice !== ball) return false;
+      if (!q) return true;
+      var hay = [e.name, e.email, e.city, e.state, e.zip, e.ballChoice, e.street]
+                  .map(function(v){ return (v||'').toString().toLowerCase(); })
+                  .join(' ');
+      return hay.indexOf(q) > -1;
+    });
+
+    filtered.sort(function(a, b){
+      var av = a[STATE.sortField] || '';
+      var bv = b[STATE.sortField] || '';
+      if (av < bv) return STATE.sortDir === 'asc' ? -1 : 1;
+      if (av > bv) return STATE.sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    STATE.filtered = filtered;
+
+    var body = $('entriesBody');
+    if (filtered.length === 0) {
+      body.innerHTML =
+        '<tr><td colspan="8" class="empty">' +
+          '<div class="check">∅</div>' +
+          (STATE.entries.length === 0
+            ? 'No entries yet for this quarter. When real submissions roll in, they\'ll appear here.'
+            : 'No entries match those filters.') +
+        '</td></tr>';
+      return;
+    }
+
+    var rows = filtered.map(function(e){
+      return '<tr data-email="' + escapeAttr(e.email || '') + '">' +
+        '<td class="col-date">' + escapeHtml(formatDate(e.submittedAt)) + '</td>' +
+        '<td class="col-name">' + escapeHtml(e.name || '—') + '</td>' +
+        '<td class="col-email">' + escapeHtml(e.email || '—') + '</td>' +
+        '<td class="col-ball">' + escapeHtml(e.ballChoice || '—') + '</td>' +
+        '<td class="opt">' + escapeHtml(e.state || '—') + '</td>' +
+        '<td class="opt">' + escapeHtml(e.city || '—') + '</td>' +
+        '<td class="opt">' + escapeHtml(e.handicap || '—') + '</td>' +
+        '<td class="actions">' +
+          '<button type="button" data-action="delete" data-email="' + escapeAttr(e.email || '') + '">Delete</button>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+    body.innerHTML = rows;
+
+    // Wire up delete buttons
+    body.querySelectorAll('button[data-action="delete"]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var email = btn.getAttribute('data-email');
+        confirmDelete(email);
+      });
+    });
+  }
+
+  function updateSortHeaders(){
+    document.querySelectorAll('#entriesTable thead th[data-sort]').forEach(function(th){
+      var arrow = th.querySelector('.sort-arrow');
+      if (th.getAttribute('data-sort') === STATE.sortField) {
+        th.classList.add('sorted');
+        if (arrow) arrow.textContent = STATE.sortDir === 'asc' ? '▲' : '▼';
+      } else {
+        th.classList.remove('sorted');
+        if (arrow) arrow.textContent = '▾';
+      }
+    });
+  }
+
+  // ─── Delete ─────────────────────────────────────────────────────────
+  function confirmDelete(email){
+    if (!email) return;
+    var ok = window.confirm('Delete entry for ' + email + '?\n\nThis cannot be undone.');
+    if (!ok) return;
+    fetch('/api/sweepstakes-delete?key=' + encodeURIComponent(STATE.key) +
+          '&email=' + encodeURIComponent(email) +
+          '&quarter=' + encodeURIComponent(STATE.quarter))
+      .then(function(r){ return r.json(); })
+      .then(function(body){
+        if (body && body.ok && body.deleted) {
+          toast('Deleted ' + email);
+          // Drop from local state without a full refetch
+          STATE.entries = STATE.entries.filter(function(e){ return e.email !== email; });
+          renderStats();
+          renderTable();
+        } else if (body && body.ok && !body.deleted) {
+          toast('Entry not found (already gone?)', true);
+        } else {
+          toast('Delete failed', true);
+        }
+      })
+      .catch(function(){ toast('Network error during delete', true); });
+  }
+
+  // ─── Draw winner ────────────────────────────────────────────────────
+  function drawWinner(){
+    // Use the API's draw mode for a fair, server-side random pick
+    if (STATE.entries.length === 0) {
+      toast('No entries to draw from', true);
+      return;
+    }
+    fetch('/api/sweepstakes-entries?key=' + encodeURIComponent(STATE.key) +
+          '&quarter=' + encodeURIComponent(STATE.quarter) + '&draw=1')
+      .then(function(r){ return r.json(); })
+      .then(function(body){
+        if (body && body.ok && body.winner) {
+          showSpotlight(body.winner);
+        } else {
+          toast('Could not draw a winner', true);
+        }
+      })
+      .catch(function(){ toast('Network error drawing winner', true); });
+  }
+
+  var currentWinner = null;
+  function showSpotlight(w){
+    currentWinner = w;
+    $('spotlightQuarter').textContent = formatQuarter(STATE.quarter);
+    $('winnerName').textContent = w.name || '—';
+    $('winnerEmail').textContent = w.email || '—';
+    $('winnerAddress').textContent = [w.street, w.city, w.state, w.zip].filter(Boolean).join(', ') || '—';
+    $('winnerBall').textContent = w.ballChoice || '—';
+    $('winnerPhone').textContent = w.phone || '—';
+    $('winnerHandicap').textContent = w.handicap || '—';
+    $('winnerDate').textContent = formatDate(w.submittedAt);
+    $('spotlightBack').classList.add('show');
+
+    // Highlight the winner in the table
+    document.querySelectorAll('#entriesBody tr').forEach(function(tr){
+      tr.classList.toggle('winner', tr.getAttribute('data-email') === w.email);
+    });
+  }
+  function closeSpotlight(){
+    $('spotlightBack').classList.remove('show');
+  }
+  function copyWinnerDetails(){
+    if (!currentWinner) return;
+    var w = currentWinner;
+    var text =
+      'WINNER — ' + formatQuarter(STATE.quarter) + '\n' +
+      'Name:     ' + (w.name || '') + '\n' +
+      'Email:    ' + (w.email || '') + '\n' +
+      'Phone:    ' + (w.phone || '') + '\n' +
+      'Address:  ' + [w.street, w.city, w.state, w.zip].filter(Boolean).join(', ') + '\n' +
+      'Ball:     ' + (w.ballChoice || '') + '\n' +
+      'Handicap: ' + (w.handicap || '') + '\n' +
+      'Entered:  ' + formatDate(w.submittedAt);
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function(){ toast('Winner details copied'); });
+    } else {
+      // Fallback
+      var ta = document.createElement('textarea');
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); toast('Winner details copied'); } catch(_) { toast('Copy failed', true); }
+      document.body.removeChild(ta);
+    }
+  }
+
+  // ─── CSV ────────────────────────────────────────────────────────────
+  function downloadCsv(){
+    // The API can serve CSV directly with format=csv. We trigger a download.
+    var url = '/api/sweepstakes-entries?key=' + encodeURIComponent(STATE.key) +
+              '&quarter=' + encodeURIComponent(STATE.quarter) + '&format=csv';
+    // Use a temporary anchor click — browsers will download with the
+    // server-provided Content-Disposition filename.
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'sweepstakes-' + STATE.quarter + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  // ─── Toast ──────────────────────────────────────────────────────────
+  var toastTimer = null;
+  function toast(msg, isError){
+    var t = $('toast');
+    t.textContent = msg;
+    t.classList.toggle('error', !!isError);
+    t.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  }
+
+  // ─── Formatting helpers ─────────────────────────────────────────────
+  function formatDate(iso){
+    if (!iso) return '—';
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var hh = d.getHours();
+    var mm = d.getMinutes();
+    var ampm = hh >= 12 ? 'PM' : 'AM';
+    hh = hh % 12 || 12;
+    return months[d.getMonth()] + ' ' + d.getDate() + ', ' +
+           hh + ':' + (mm < 10 ? '0' : '') + mm + ' ' + ampm;
+  }
+  function relativeTime(iso){
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return '—';
+    var diff = Date.now() - d.getTime();
+    var sec = Math.floor(diff/1000);
+    if (sec < 60)        return sec + 's ago';
+    var min = Math.floor(sec/60);
+    if (min < 60)        return min + 'm ago';
+    var hr = Math.floor(min/60);
+    if (hr < 24)         return hr + 'h ago';
+    var day = Math.floor(hr/24);
+    if (day < 30)        return day + 'd ago';
+    return formatDate(iso);
+  }
+  function formatQuarter(q){
+    if (!q) return '';
+    // "Q1-2026" → "Q1 2026"
+    return q.replace('-', ' ');
+  }
+  function escapeHtml(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function escapeAttr(s){
+    return escapeHtml(s);
+  }
+})();
 </script>
-<script defer src="/_vercel/speed-insights/script.js"></script>
+
+</body>
+</html>
