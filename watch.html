@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Now Playing — The Mulligan Report</title>
-<link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
 <link rel="icon" type="image/png" href="https://res.cloudinary.com/df8ibmjdu/image/upload/v1778653950/icon-512_2_i1nyd9.png">
 <meta name="theme-color" content="#0a1a0f">
@@ -736,22 +735,46 @@ function shareOnX() {
 }
 
 // ── Subscribe handler ──
+// Posts to AWeber form 976403394 / list awlist6957005 — the SAME list used by
+// the homepage and the archives page — tagged as coming from a Watch page.
+// Submitted in the background so the reader stays on the video.
 function handleSubscribe() {
-  const email = document.getElementById('subEmail').value.trim();
-  if (!email || !email.includes('@')) {
-    document.getElementById('subEmail').style.borderColor = '#c0392b';
+  var input = document.getElementById('subEmail');
+  var email = (input.value || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    input.style.borderColor = '#c0392b';
+    input.focus();
     return;
   }
+  input.style.borderColor = '';
 
-  // For now: visual success + log
-  // TODO: Wire to Beehiiv API or form endpoint
-  console.log('TMR Subscribe:', email);
+  var btn = document.querySelector('#subscribeFormWrap .subscribe-form button');
+  if (btn) { btn.disabled = true; btn.textContent = 'Subscribing…'; }
 
+  var params = new URLSearchParams();
+  params.append('meta_web_form_id', '976403394');
+  params.append('meta_split_id', '');
+  params.append('listname', 'awlist6957005');
+  params.append('meta_adtracking', 'Watch');
+  params.append('meta_message', '1');
+  params.append('meta_required', 'email');
+  params.append('meta_tooltip', '');
+  params.append('email', email);
+
+  fetch('https://www.aweber.com/scripts/addlead.pl', {
+    method: 'POST',
+    body: params.toString(),
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    mode: 'no-cors'
+  })
+    .then(subscribeDone)
+    .catch(subscribeDone);
+}
+
+function subscribeDone() {
+  try { localStorage.setItem('tmr_subscribed_v1', '1'); } catch(e) {}
   document.getElementById('subscribeFormWrap').style.display = 'none';
   document.getElementById('subscribeSuccess').style.display = 'block';
-
-  // Optional: send to Beehiiv when ready
-  // fetch('https://api.beehiiv.com/...', { method:'POST', body: JSON.stringify({email}) });
 }
 </script>
 
