@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Mulligan Report — Growth Gameplan</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --turf:#1f3d2b; --turf2:#16301f; --cream:#f4f1e8; --ink:#1a1d1a;
+    --ink2:#52584f; --pencil:#6b6256; --flag:#c0392b; --gold:#c89b3c;
+    --line:#d8d0bd; --chalk:#fbfaf5; --organic:#1f3d2b; --paid:#c89b3c;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--ink);font-family:'Spectral',Georgia,serif;line-height:1.6}
+  .ticker{background:var(--turf2);color:var(--cream);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;padding:8px 0;overflow:hidden;white-space:nowrap;border-bottom:2px solid var(--gold)}
+  .ticker span{padding:0 22px;opacity:.85}.ticker b{color:var(--gold)}
+  .wrap{max-width:900px;margin:0 auto;padding:0 22px}
+  header.hero{background:var(--turf);color:var(--cream);padding:54px 0 46px;border-bottom:4px solid var(--gold)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin-bottom:18px}
+  h1.masthead{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(34px,6vw,58px);line-height:.98;letter-spacing:-.01em;text-transform:uppercase}
+  h1.masthead em{font-style:normal;color:var(--gold)}
+  .deck{font-size:clamp(16px,2.2vw,20px);max-width:660px;margin-top:18px;color:rgba(244,241,232,.82);font-weight:400}
+  .deck b{color:var(--cream);font-weight:600}
+  .hero-meta{margin-top:26px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:rgba(244,241,232,.55);display:flex;gap:18px;flex-wrap:wrap}
+  .situation{background:var(--turf2);color:var(--cream);padding:24px 0}
+  .situation .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .sit-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(200,155,60,.4);padding:5px 10px;border-radius:2px;white-space:nowrap}
+  .situation p{font-size:15px;color:rgba(244,241,232,.85);flex:1;min-width:260px}
+  section{padding:50px 0}
+  section:nth-of-type(even){background:var(--chalk)}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--flag);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+  .kicker::before{content:"";width:26px;height:2px;background:var(--flag)}
+  h2{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(24px,3.8vw,34px);text-transform:uppercase;letter-spacing:-.01em;line-height:1.05;margin-bottom:8px}
+  .section-intro{font-size:16px;color:var(--ink2);max-width:680px;margin-bottom:30px}
+  .engine{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:8px}
+  .estep{background:var(--cream);padding:18px 16px}
+  section:nth-of-type(even) .estep{background:var(--chalk)}
+  .estep .en{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--gold);margin-bottom:6px}
+  .estep h4{font-family:'Oswald',sans-serif;font-weight:600;font-size:15px;text-transform:uppercase;margin-bottom:4px}
+  .estep p{font-size:13px;color:var(--ink2);line-height:1.45}
+  .phase{border:1px solid var(--line);margin-bottom:20px;background:var(--cream)}
+  section:nth-of-type(even) .phase{background:var(--chalk)}
+  .phase-head{display:flex;align-items:center;gap:16px;padding:18px 22px;background:var(--turf);color:var(--cream);flex-wrap:wrap}
+  .phase-when{font-family:'Oswald',sans-serif;font-weight:700;font-size:30px;color:var(--gold);line-height:1;white-space:nowrap}
+  .phase-when small{display:block;font-size:11px;color:rgba(244,241,232,.6);letter-spacing:.12em;font-weight:500;margin-top:3px}
+  .phase-goal{flex:1;min-width:200px}
+  .phase-goal .pg-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+  .phase-goal h3{font-family:'Oswald',sans-serif;font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.01em}
+  .phase-target{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cream);background:rgba(200,155,60,.2);border:1px solid rgba(200,155,60,.4);padding:7px 12px;border-radius:2px;white-space:nowrap}
+  .tracks{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line)}
+  .track{background:var(--cream);padding:18px 20px}
+  section:nth-of-type(even) .track{background:var(--chalk)}
+  .track-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 9px;border-radius:2px;display:inline-block;margin-bottom:12px}
+  .t-organic{background:rgba(31,61,43,.12);color:var(--organic)}
+  .t-paid{background:rgba(200,155,60,.18);color:#8a6a1e}
+  .track ul{list-style:none}
+  .track li{font-size:14px;color:var(--ink2);padding-left:20px;position:relative;margin-bottom:9px;line-height:1.45}
+  .track li::before{content:"\203A";position:absolute;left:2px;font-weight:700}
+  .track.organic li::before{color:var(--organic)}
+  .track.paid li::before{color:var(--paid)}
+  .track li b{color:var(--ink)}
+  .alloc{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:14px}
+  .alloc-card{border:1px solid var(--line);padding:18px;background:var(--cream)}
+  section:nth-of-type(even) .alloc-card{background:var(--chalk)}
+  .alloc-card .ac-amt{font-family:'Oswald',sans-serif;font-weight:700;font-size:24px;color:var(--turf)}
+  .alloc-card h4{font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;text-transform:uppercase;margin:6px 0 4px}
+  .alloc-card p{font-size:13px;color:var(--ink2)}
+  .budget-note{font-size:13px;color:var(--pencil);font-style:italic;margin-top:6px}
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .metric{border:1px solid var(--line);padding:18px;background:var(--cream)}
+  section:nth-of-type(even) .metric{background:var(--chalk)}
+  .metric .m-ico{font-size:18px;margin-bottom:8px}
+  .metric h4{font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;text-transform:uppercase;margin-bottom:4px}
+  .metric p{font-size:13px;color:var(--ink2)}
+  .start{background:var(--flag);color:var(--cream);padding:34px 30px;margin-bottom:8px}
+  .start .kicker{color:#fff}.start .kicker::before{background:#fff}
+  .start h3{font-family:'Oswald',sans-serif;font-weight:700;font-size:22px;text-transform:uppercase;margin-bottom:14px}
+  .start ol{margin-left:20px}
+  .start li{font-size:15px;margin-bottom:9px;color:rgba(255,255,255,.92)}
+  .start li b{color:#fff}
+  .reco{background:var(--turf);color:var(--cream);padding:34px 30px;border-left:5px solid var(--gold)}
+  .reco .kicker{color:var(--gold)}.reco .kicker::before{background:var(--gold)}
+  .reco h3{font-family:'Oswald',sans-serif;font-weight:700;font-size:22px;text-transform:uppercase;margin-bottom:12px}
+  .reco p{font-size:15px;color:rgba(244,241,232,.85);margin-bottom:10px}.reco b{color:var(--cream)}
+  .disclaimer{font-size:12.5px;color:var(--pencil);font-style:italic;border-top:1px solid var(--line);padding-top:16px;margin-top:8px;max-width:720px}
+  footer{background:var(--turf2);color:rgba(244,241,232,.5);text-align:center;padding:30px 22px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em}
+  footer b{color:var(--gold)}
+  @media(max-width:640px){.tracks{grid-template-columns:1fr}}
+
+  /* ad mockup */
+  .ad-frame{max-width:420px;margin:0 auto 18px;background:#e9ebee;padding:18px;border-radius:6px}
+  .ad-card{background:#fff;border-radius:8px;overflow:hidden;border:1px solid #dadde1;font-family:-apple-system,'Segoe UI',Helvetica,Arial,sans-serif}
+  .ad-top{display:flex;align-items:center;gap:9px;padding:12px 12px 8px}
+  .ad-avatar{width:40px;height:40px;border-radius:50%;background:var(--turf);color:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;font-family:'Oswald',sans-serif}
+  .ad-id{display:flex;flex-direction:column;line-height:1.3}
+  .ad-name{font-weight:600;font-size:14px;color:#050505}
+  .ad-spon{font-size:12px;color:#65676b}
+  .ad-spon .dot{display:inline-block;width:3px;height:3px;border-radius:50%;background:#65676b;vertical-align:middle;margin:0 2px}
+  .ad-primary{padding:4px 12px 12px;font-size:14px;color:#050505;line-height:1.4}
+  .ad-primary b{font-weight:600}
+  .ad-fine{font-size:12px;color:#65676b}
+  .ad-image{background:var(--turf);aspect-ratio:1.91/1;display:flex;align-items:center;justify-content:center;text-align:center}
+  .ad-image-inner{display:flex;flex-direction:column;gap:8px;padding:20px}
+  .ad-img-label{font-family:'Oswald',sans-serif;font-weight:700;font-size:clamp(16px,4vw,22px);color:var(--gold);letter-spacing:.02em;text-transform:uppercase;line-height:1.15}
+  .ad-img-sub{font-family:'Spectral',serif;font-size:14px;color:rgba(244,241,232,.8);font-style:italic}
+  .ad-meta{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#f0f2f5;padding:11px 12px}
+  .ad-meta-l{display:flex;flex-direction:column;line-height:1.3;min-width:0}
+  .ad-url{font-size:11px;color:#65676b;text-transform:uppercase;letter-spacing:.02em}
+  .ad-headline{font-weight:600;font-size:15px;color:#050505;font-family:-apple-system,'Segoe UI',sans-serif}
+  .ad-desc{font-size:13px;color:#65676b}
+  .ad-cta{background:#e4e6eb;border:none;border-radius:6px;padding:9px 15px;font-weight:600;font-size:14px;color:#050505;white-space:nowrap;cursor:default;font-family:-apple-system,'Segoe UI',sans-serif}
+  .ad-rules{max-width:560px;margin:0 auto;border:1px dashed var(--line);background:var(--cream);padding:16px 18px;border-radius:4px}
+  section:nth-of-type(even) .ad-rules{background:var(--chalk)}
+  .ad-rules .ar-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--flag);display:block;margin-bottom:6px}
+  .ad-rules p{font-size:13px;color:var(--ink2);line-height:1.5;font-style:italic}
+
+  /* channels */
+  .channels{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:14px}
+  .chan{border:1px solid var(--line);padding:18px 20px;background:var(--cream);border-top:3px solid var(--line)}
+  section:nth-of-type(even) .chan{background:var(--chalk)}
+  .chan-paid{border-top-color:var(--gold)}
+  .chan-org{border-top-color:var(--turf)}
+  .chan-skip{border-top-color:var(--pencil);opacity:.8}
+  .chan-role{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--pencil);margin-bottom:8px}
+  .chan-name{font-family:'Oswald',sans-serif;font-weight:600;font-size:17px;text-transform:uppercase;letter-spacing:.01em;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .chan-name i{width:9px;height:9px;border-radius:50%;display:inline-block}
+  .dot-p{background:var(--gold)}.dot-o{background:var(--turf)}.dot-s{background:var(--pencil)}
+  .chan p{font-size:13.5px;color:var(--ink2);line-height:1.5}
+
+  /* cashflow */
+  .cashflow{margin-bottom:18px}
+  .cf-row{display:grid;grid-template-columns:120px 1fr;border:1px solid var(--line);border-left:4px solid var(--line);margin-bottom:0;border-bottom:none}
+  .cf-row:last-child{border-bottom:1px solid var(--line)}
+  .cf-out{border-left-color:var(--flag)}
+  .cf-mid{border-left-color:var(--gold)}
+  .cf-in{border-left-color:var(--turf)}
+  .cf-when{background:var(--turf);color:var(--gold);font-family:'Oswald',sans-serif;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.03em;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px 10px}
+  .cf-body{background:var(--cream);padding:16px 20px}
+  section:nth-of-type(even) .cf-body{background:var(--chalk)}
+  .cf-body h4{font-family:'Oswald',sans-serif;font-weight:600;font-size:16px;text-transform:uppercase;margin-bottom:5px}
+  .cf-body p{font-size:14px;color:var(--ink2);line-height:1.5}
+  .cf-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:16px}
+  .cf-stat{background:var(--turf);color:var(--cream);padding:18px 20px;border-top:3px solid var(--gold)}
+  .cf-num{font-family:'Oswald',sans-serif;font-weight:700;font-size:26px;color:var(--gold);display:block;line-height:1}
+  .cf-lbl{font-size:13px;color:rgba(244,241,232,.78);display:block;margin-top:7px;line-height:1.4}
+  .cf-guard{border:1px dashed var(--line);background:var(--cream);padding:16px 18px;border-radius:4px}
+  section:nth-of-type(even) .cf-guard{background:var(--chalk)}
+  .cf-guard .ar-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--flag);display:block;margin-bottom:6px}
+  .cf-guard p{font-size:13.5px;color:var(--ink2);line-height:1.55}
+  @media(max-width:560px){.cf-row{grid-template-columns:90px 1fr}}
+</style>
+</head>
+<body>
+<div class="ticker">
+  <span><b>SITE:</b> THEMULLIGANREPORT.COM &mdash; LIVE</span>
+  <span><b>EMAIL:</b> AWEBER &middot; 2 LISTS</span>
+  <span><b>SUBSCRIBERS:</b> BUILDING FROM ZERO</span>
+  <span><b>BUDGET:</b> $2&ndash;3K / MONTH</span>
+  <span><b>HOOK:</b> 3 DOZEN TITLEIST GIVEAWAY</span>
+</div>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Growth Gameplan &middot; 12-Month Arc</div>
+    <h1 class="masthead">The Plan To Grow<br><em>The Mulligan Report</em></h1>
+    <p class="deck">A real, phased gameplan for getting eyes on TMR &mdash; built on the content and sweepstakes that already exist, funded by a <b>$2&ndash;3K/month organic + paid budget</b>. The goal shifts as we grow: <b>build the audience first, then monetize it.</b></p>
+    <div class="hero-meta"><span>FOR JEFF &amp; AARON</span><span>&middot;</span><span>FROM DAVE</span><span>&middot;</span><span>START: WEDNESDAY</span></div>
+  </div>
+</header>
+<div class="situation">
+  <div class="wrap">
+    <span class="sit-tag">The setup</span>
+    <p>Cold email is retired &mdash; the channel hit an infrastructure wall, not a content one. We pivot the budget to where TMR's real edge compounds: <b>curated golf coverage with a voice, plus a strong giveaway hook</b>. We start at zero subscribers &mdash; which means every dollar and every post is building an owned audience from day one, the right way.</p>
+  </div>
+</div>
+<section>
+  <div class="wrap">
+    <div class="kicker">How growth actually works here</div>
+    <h2>The subscriber engine</h2>
+    <p class="section-intro">For a site starting at zero, everything funnels to one thing: <b>subscribers</b> &mdash; the owned audience no algorithm or deliverability lottery can take away. Here's the loop every play feeds.</p>
+    <div class="engine">
+      <div class="estep"><div class="en">01 &middot; ATTRACT</div><h4>Content &amp; Ads</h4><p>Daily cartoon + Hot Takes (organic) and paid social reach golfers.</p></div>
+      <div class="estep"><div class="en">02 &middot; HOOK</div><h4>The Sweepstakes</h4><p>"Win 3 dozen Titleist balls" &mdash; a real reason to hand over an email.</p></div>
+      <div class="estep"><div class="en">03 &middot; CAPTURE</div><h4>AWeber Signup</h4><p>Entry form &rarr; subscriber on the list. The owned asset grows.</p></div>
+      <div class="estep"><div class="en">04 &middot; KEEP</div><h4>Daily Briefing</h4><p>The curated email turns a one-time entrant into a daily habit.</p></div>
+      <div class="estep"><div class="en">05 &middot; COMPOUND</div><h4>Referral Loop</h4><p>Bonus entries for referrals &mdash; each subscriber brings the next.</p></div>
+    </div>
+    <p class="budget-note">The sweepstakes is the centerpiece: a 3-dozen-Titleist giveaway is a genuinely strong golf lead magnet, and the form already exists in AWeber.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <div class="kicker">What the ad actually looks like</div>
+    <h2>The sweepstakes ad</h2>
+    <p class="section-intro">Here's a sample of the paid social ad &mdash; written to be Facebook/Meta compliant (clear "chance to win", rules referenced, no hype, no implied Meta endorsement) so the account stays in good standing.</p>
+    <div class="ad-frame">
+      <div class="ad-card">
+        <div class="ad-top">
+          <div class="ad-avatar">MR</div>
+          <div class="ad-id">
+            <span class="ad-name">The Mulligan Report</span>
+            <span class="ad-spon">Sponsored &middot; <i class="dot"></i> Paid partnership</span>
+          </div>
+        </div>
+        <p class="ad-primary">We're giving away <b>3 dozen Titleist golf balls</b> &mdash; your choice of model &mdash; to one lucky golfer this quarter. Enter for a chance to win, and get The Mulligan Report's free daily golf briefing while you're at it.<br><br><span class="ad-fine">No purchase necessary. 18+, US residents. See official rules.</span></p>
+        <div class="ad-image">
+          <div class="ad-image-inner">
+            <span class="ad-img-label">★ 3 DOZEN TITLEIST GOLF BALLS ★</span>
+            <span class="ad-img-sub">Your choice of model</span>
+          </div>
+        </div>
+        <div class="ad-meta">
+          <div class="ad-meta-l">
+            <span class="ad-url">THEMULLIGANREPORT.COM</span>
+            <span class="ad-headline">Win 3 Dozen Titleist Golf Balls</span>
+            <span class="ad-desc">Free daily golf briefing included. Enter in seconds.</span>
+          </div>
+          <button class="ad-cta">Sign Up</button>
+        </div>
+      </div>
+    </div>
+    <div class="ad-rules">
+      <span class="ar-label">Required on the rules page</span>
+      <p>This promotion is in no way sponsored, endorsed, administered by, or associated with Facebook, Instagram, or Meta. Entrants release Meta from any liability. (This line keeps the ad account compliant &mdash; add it to the Official Rules page.)</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">Where the effort goes</div>
+    <h2>The channels &mdash; focused, not scattered</h2>
+    <p class="section-intro">For a site starting at zero with lean resources, focus beats spreading thin. We run a tight set of channels that fit TMR's content (a daily cartoon + sharp Hot Takes), then expand only what's proven to work.</p>
+    <div class="channels">
+      <div class="chan chan-paid">
+        <div class="chan-role">Paid &mdash; the acquisition engine</div>
+        <div class="chan-name"><i class="dot-p"></i> Meta (Facebook + Instagram)</div>
+        <p>One paid platform to start. Meta's ad system targets golf interest cheaply and runs across Facebook + Instagram from a single campaign. The sweepstakes ads live here.</p>
+      </div>
+      <div class="chan chan-org">
+        <div class="chan-role">Organic &mdash; primary</div>
+        <div class="chan-name"><i class="dot-o"></i> Instagram + Facebook</div>
+        <p>Daily cartoon + Hot Takes. Same ecosystem as the paid ads, so the brand stays consistent. The cartoon is built for Instagram; both pull on Facebook's golf demographic.</p>
+      </div>
+      <div class="chan chan-org">
+        <div class="chan-role">Organic &mdash; secondary</div>
+        <div class="chan-name"><i class="dot-o"></i> X &middot; Threads</div>
+        <p>The Hot Takes are tailor-made for X (golf-Twitter is active, especially during tournaments). Threads is a free cross-post from Instagram &mdash; near-zero extra effort.</p>
+      </div>
+      <div class="chan chan-skip">
+        <div class="chan-role">Not yet</div>
+        <div class="chan-name"><i class="dot-s"></i> TikTok &middot; YouTube</div>
+        <p>These need video, which TMR doesn't currently produce. Skip for now &mdash; revisit only if we add video to the content mix.</p>
+      </div>
+    </div>
+    <p class="budget-note">Everything centers on the Meta ecosystem (paid + organic), with X as the one outside addition for the text-native takes. Nail these, read the data, then expand.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">The 12-month arc &middot; goal shifts by phase</div>
+    <h2>Where we focus, and when</h2>
+    <p class="section-intro">At zero subscribers you can't monetize before you have an audience. So the goal evolves: prove acquisition &rarr; scale &amp; retain &rarr; compound &amp; monetize &rarr; self-sustain.</p>
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-when">M1<small>WEEKS 1&ndash;4</small></div>
+        <div class="phase-goal"><div class="pg-label">Goal</div><h3>Prove the acquisition engine</h3></div>
+        <div class="phase-target">Target: find cost-per-subscriber</div>
+      </div>
+      <div class="tracks">
+        <div class="track organic"><span class="track-tag t-organic">Organic</span><ul>
+          <li>Launch <b>daily posting on Instagram + Facebook</b> &mdash; the cartoon + one Hot Take, every morning, linking to TMR</li>
+          <li>Post the <b>Hot Takes to X</b> too (text-native, golf-Twitter is active) + free cross-post to Threads</li>
+          <li>Add a <b>referral line</b> to the sweepstakes ("refer a golfer, bonus entry") and "forward to a golf buddy" to the daily AWeber briefing</li>
+        </ul></div>
+        <div class="track paid"><span class="track-tag t-paid">Paid</span><ul>
+          <li>Run <b>Meta ads (Facebook + Instagram) to the sweepstakes</b> &mdash; golf-interest targeting, the Titleist hook</li>
+          <li>Test 3&ndash;4 creatives; <b>measure cost per subscriber</b> ruthlessly</li>
+          <li>Keep spend modest while learning what converts &mdash; this month is for data, not scale</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-when">M3<small>MONTHS 2&ndash;3</small></div>
+        <div class="phase-goal"><div class="pg-label">Goal</div><h3>Scale winners + prove retention</h3></div>
+        <div class="phase-target">Target: few thousand engaged</div>
+      </div>
+      <div class="tracks">
+        <div class="track organic"><span class="track-tag t-organic">Organic</span><ul>
+          <li>Build the <b>directories into indexed SEO pages</b> ("best golf podcasts 2026", etc.) &mdash; compounding traffic</li>
+          <li>Point a few <b>owned domains</b> at TMR for backlinks/traffic</li>
+          <li>Double down on the social content that's pulling</li>
+        </ul></div>
+        <div class="track paid"><span class="track-tag t-paid">Paid</span><ul>
+          <li><b>Scale the winning ads</b> from M1 now that cost-per-sub is known</li>
+          <li>Retarget site visitors who didn't subscribe</li>
+          <li>Watch <b>open rates</b> &mdash; a list that doesn't open is worthless; retention is the real test</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-when">M6<small>MONTHS 4&ndash;6</small></div>
+        <div class="phase-goal"><div class="pg-label">Goal</div><h3>Compound + early monetization</h3></div>
+        <div class="phase-target">Target: organic carries growth</div>
+      </div>
+      <div class="tracks">
+        <div class="track organic"><span class="track-tag t-organic">Organic</span><ul>
+          <li>SEO pages maturing &rarr; <b>steady free traffic</b>; social following established</li>
+          <li>Referral loop compounding &mdash; a real share of growth now comes free</li>
+          <li>Pursue the <b>"Advertise" inquiries</b> the site already invites</li>
+        </ul></div>
+        <div class="track paid"><span class="track-tag t-paid">Paid</span><ul>
+          <li>Test <b>gear-term search ads &rarr; Pro Picks pages</b> (affiliate income may offset cost)</li>
+          <li>Sustain sweepstakes acquisition at the proven cost-per-sub</li>
+          <li>First <b>affiliate / ad revenue</b> starts offsetting spend</li>
+        </ul></div>
+      </div>
+    </div>
+    <div class="phase">
+      <div class="phase-head">
+        <div class="phase-when">M12<small>MONTHS 7&ndash;12</small></div>
+        <div class="phase-goal"><div class="pg-label">Goal</div><h3>Self-sustaining audience + revenue</h3></div>
+        <div class="phase-target">Target: flywheel + revenue offsets spend</div>
+      </div>
+      <div class="tracks">
+        <div class="track organic"><span class="track-tag t-organic">Organic</span><ul>
+          <li><b>Organic + referral drive most new growth</b> &mdash; paid becomes amplification, not the engine</li>
+          <li>TMR is a recognized golf-media destination with a daily-habit audience</li>
+          <li>Direct advertising / sponsorship becomes a real revenue line</li>
+        </ul></div>
+        <div class="track paid"><span class="track-tag t-paid">Paid</span><ul>
+          <li>Paid spend is <b>optional fuel</b> on proven channels, not survival</li>
+          <li><b>Affiliate + ad revenue meaningfully offsets &mdash; or exceeds &mdash; the monthly spend</b></li>
+          <li>Reinvest profit into scaling what works</li>
+        </ul></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <div class="kicker">Putting the $2&ndash;3K to work</div>
+    <h2>How the monthly budget splits</h2>
+    <p class="section-intro">Illustrative month-1 allocation. The mix shifts toward organic/affiliate over time as those channels mature and paid becomes amplification rather than the engine.</p>
+    <div class="alloc">
+      <div class="alloc-card"><div class="ac-amt">$1,500&ndash;2,000</div><h4>Sweepstakes ads</h4><p>Meta ads (FB + IG) to the Titleist hook &rarr; subscribers. The core acquisition engine.</p></div>
+      <div class="alloc-card"><div class="ac-amt">$300&ndash;500</div><h4>Social boost</h4><p>Amplify the top-performing organic cartoons &amp; Hot Takes.</p></div>
+      <div class="alloc-card"><div class="ac-amt">$200&ndash;300</div><h4>Search test</h4><p>Gear terms &rarr; Pro Picks pages. May self-fund via affiliate.</p></div>
+      <div class="alloc-card"><div class="ac-amt">$0&ndash;100</div><h4>Tools</h4><p>Scheduling, analytics, ad management basics.</p></div>
+    </div>
+    <p class="budget-note">Organic plays run on time, not budget. Paid weights heaviest in early months (building the list), then tapers as organic + referral compound.</p>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <div class="kicker">The honest money picture</div>
+    <h2>Cashflow over 12 months</h2>
+    <p class="section-intro">Straight talk, because it matters: this is an <b>audience-building investment</b>, not a near-term profit play. The spend goes out first; revenue catches up in the back half. Here's the real shape.</p>
+    <div class="cashflow">
+      <div class="cf-row cf-out">
+        <div class="cf-when">Months 1&ndash;3</div>
+        <div class="cf-body"><h4>Investment phase &mdash; net negative</h4><p>Spending to build the audience from zero. Almost no revenue yet (affiliate needs traffic; ads need an audience). Expect roughly <b>&minus;$2&ndash;3K/month</b>.</p></div>
+      </div>
+      <div class="cf-row cf-mid">
+        <div class="cf-when">Months 4&ndash;6</div>
+        <div class="cf-body"><h4>The bleeding slows</h4><p>Audience growing &mdash; first affiliate commissions (gear clicks) and possibly a first small sponsor start offsetting a portion of the spend. Still net-negative, just less.</p></div>
+      </div>
+      <div class="cf-row cf-in">
+        <div class="cf-when">Months 7&ndash;12</div>
+        <div class="cf-body"><h4>Revenue catches up &mdash; target: break-even</h4><p>If the audience has grown enough, affiliate + advertising revenue meaningfully offsets the spend, approaching break-even. This is the <b>target, not a guarantee</b> &mdash; it depends on how big and engaged the list gets.</p></div>
+      </div>
+    </div>
+    <div class="cf-summary">
+      <div class="cf-stat"><span class="cf-num">$24&ndash;36K</span><span class="cf-lbl">Total invested over 12 months</span></div>
+      <div class="cf-stat"><span class="cf-num">6&ndash;9 mo</span><span class="cf-lbl">Before revenue meaningfully offsets</span></div>
+      <div class="cf-stat"><span class="cf-num">The asset</span><span class="cf-lbl">Year-one return = an owned audience that earns beyond month 12</span></div>
+    </div>
+    <div class="cf-guard">
+      <span class="ar-label">How we protect the spend</span>
+      <p>We don't commit the full budget blind. Month 1 proves the <b>cost per subscriber</b> on real data &mdash; if it's cheap, the math works and we scale; if it's expensive, we rethink before spending more. Spend is tied to milestones, not a blind 12-month commitment, so the risk stays capped and every dollar is accountable.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="kicker">The scorecard</div>
+    <h2>How we measure it</h2>
+    <p class="section-intro">Clear, honest numbers &mdash; reported regularly so you always know what the spend is buying.</p>
+    <div class="metrics">
+      <div class="metric"><div class="m-ico">&#128231;</div><h4>Net new subscribers</h4><p>The #1 number in the early phases.</p></div>
+      <div class="metric"><div class="m-ico">&#128184;</div><h4>Cost per subscriber</h4><p>What each paid dollar buys &mdash; kept under a ceiling.</p></div>
+      <div class="metric"><div class="m-ico">&#128236;</div><h4>Email open rate</h4><p>Proof the list is engaged, not just big.</p></div>
+      <div class="metric"><div class="m-ico">&#128200;</div><h4>TMR traffic</h4><p>Daily + returning visitors &mdash; the habit forming.</p></div>
+      <div class="metric"><div class="m-ico">&#128257;</div><h4>Referrals &amp; shares</h4><p>Free growth from the loop &amp; social.</p></div>
+      <div class="metric"><div class="m-ico">&#127991;</div><h4>Affiliate / ad revenue</h4><p>Offsetting spend from M6 onward.</p></div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="wrap">
+    <div class="start">
+      <div class="kicker">What we start Wednesday</div>
+      <h3>Day one &mdash; no waiting</h3>
+      <ol>
+        <li><b>Daily social posts begin</b> on Instagram + Facebook (and Hot Takes to X) &mdash; cartoon + a take, linking to TMR</li>
+        <li><b>Referral mechanic added</b> to the sweepstakes signup</li>
+        <li><b>"Forward to a golf buddy"</b> line added to the daily AWeber briefing</li>
+        <li><b>Meta ad account + first sweepstakes campaign</b> set up to begin testing cost-per-subscriber</li>
+      </ol>
+    </div>
+    <div class="reco">
+      <div class="kicker">The recommendation</div>
+      <h3>Build the audience first, monetize second</h3>
+      <p>Start the <b>free organic plays Wednesday</b> &mdash; they cost time, not money, and play to TMR's real strength. Run <b>paid acquisition through the sweepstakes</b> from day one to build the subscriber base fast, measuring cost-per-subscriber so every dollar is accountable.</p>
+      <p>As the list grows and organic compounds, <b>shift the weight from paid to organic and start monetizing</b> &mdash; affiliate and advertising revenue offsetting the spend by month six and beyond.</p>
+      <p>Be clear-eyed on the money: <b>year one is an investment in an owned audience</b>, net-negative early, with revenue catching up in the back half. We tie spend to real cost-per-subscriber data from month one, so it's never a blind bet. The site is built, the giveaway hook is strong, and the budget is real &mdash; <b>this is the gameplan to turn a zero-subscriber site into a self-sustaining golf-media audience.</b></p>
+    </div>
+    <p class="disclaimer">Subscriber and cost figures referenced in this plan are directional targets, not guarantees &mdash; actual results depend on ad creative, targeting, and the sweepstakes' performance, which we'll know once live data comes in. The plan's structure (acquire &rarr; retain &rarr; compound &rarr; monetize) holds regardless; the specific numbers get sharpened by real results in the first weeks.</p>
+  </div>
+</section>
+<footer>
+  THE MULLIGAN REPORT &middot; GROWTH GAMEPLAN &middot; 2026<br>
+  PREPARED BY <b>DAVE</b> &middot; CURATED, NEVER AUTOMATED
+</footer>
+</body>
+</html>
