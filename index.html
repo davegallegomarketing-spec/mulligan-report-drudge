@@ -1219,22 +1219,152 @@
 
     <span class="sl">🔥 19TH HOLE — HOT TAKES</span>
 
-    <div class="ht">
-      <span class="tag">ON SCHEFFLER:</span>
-      Best ball-striker alive and can't make a 5-footer under pressure. That's not a slump — that's a design flaw.
-    </div>
-    <div class="ht">
-      <span class="tag">ON THE LIV MERGER:</span>
-      PGA Tour and LIV are like two divorced parents fighting over custody at a Chili's. Everybody's uncomfortable and the kids just want to play golf.
-    </div>
-    <div class="ht">
-      <span class="tag">ON THE KIRKLAND BALL:</span>
-      If $28 performs within 3% of $52, then the Pro V1 isn't a golf ball — it's a status symbol.
-    </div>
-    <div class="ht">
-      <span class="tag">ON TIGER:</span>
-      He is 50 years old with a rebuilt leg and everyone still stops what they are doing when he posts on Instagram. Nobody else in sports has that power.
-    </div>
+    <style>
+    #mr-ht19{font-family:Georgia,'Times New Roman',serif;color:#2b2620;margin:2px 0 4px;}
+    #mr-ht19 .mrht-mono{font-family:'Courier New',Courier,monospace;}
+    #mr-ht19 .mrht-card{background:#fbf6e8;border:1px solid #e3d8ba;border-top:3px solid #e3801c;border-radius:8px;padding:13px 15px 15px;margin-top:10px;}
+    #mr-ht19 .mrht-btn{flex:1;cursor:pointer;border:1.5px solid #d6c79f;background:#f1e8d2;border-radius:7px;padding:9px 6px;text-align:center;transition:transform .08s,background .15s,border-color .15s;}
+    #mr-ht19 .mrht-btn:hover{background:#ece0c4;border-color:#c4a64e;}
+    #mr-ht19 .mrht-btn:active{transform:scale(.97);}
+    #mr-ht19 .mrht-dot{width:9px;height:9px;border-radius:50%;background:#ddd0ad;cursor:pointer;border:none;padding:0;}
+    #mr-ht19 .mrht-dot.on,#mr-ht19 .mrht-dot.done{background:#1e6b4f;}
+    #mr-ht19 .mrht-nav{cursor:pointer;background:none;border:none;color:#b08a2e;font-size:18px;font-family:Georgia,serif;padding:0 5px;line-height:1;}
+    #mr-ht19 .mrht-nav:hover{color:#8a6a1e;}
+    #mr-ht19 .mrht-bar{height:18px;border-radius:5px;overflow:hidden;background:#ece2c8;}
+    #mr-ht19 .mrht-cta{display:inline-block;cursor:pointer;background:#c79a16;color:#fff;font-weight:bold;border:none;border-radius:7px;padding:9px 20px;font-family:Georgia,serif;font-size:14px;}
+    #mr-ht19 .mrht-cta:hover{background:#b08912;}
+    </style>
+    <div id="mr-ht19"><div class="mrht-mono" style="font-size:11px;color:#9b8c6a;padding:6px 0;">Loading the bar&#8230;</div></div>
+    <script>
+    (function(){
+      var API='/api/hot-takes';
+      var LS='mr_ht_votes_v1';
+      var root=document.getElementById('mr-ht19');
+      var takes=[
+        {tag:'\uD83C\uDFAF ON TOUR PUTTING',spicy:true,text:'Tour pros miss 40% of 8-footers. You\u2019re not bad \u2014 you\u2019re statistically normal.'},
+        {tag:'\uD83C\uDFCC ON SCHEFFLER',spicy:true,text:'Best ball-striker alive and can\u2019t make a 5-footer under pressure. That\u2019s not a slump \u2014 that\u2019s a design flaw.'},
+        {tag:'\uD83E\uDD1D ON THE LIV MERGER',spicy:false,text:'PGA Tour and LIV are like two divorced parents fighting over custody at a Chili\u2019s. Everybody\u2019s uncomfortable and the kids just want to play golf.'},
+        {tag:'\uD83C\uDFF7 ON THE KIRKLAND BALL',spicy:true,text:'If $28 performs within 3% of $52, then the Pro V1 isn\u2019t a golf ball \u2014 it\u2019s a status symbol.'},
+        {tag:'\uD83D\uDC05 ON TIGER',spicy:false,text:'He\u2019s 50 with a rebuilt leg and everyone still stops what they\u2019re doing when he posts on Instagram. Nobody else in sports has that power.'}
+      ];
+      var personas=[
+        {n:'The Full Sandbagger',d:'Bogey on everything. You think the whole bar\u2019s wrong \u2014 and you\u2019ll say so.'},
+        {n:'Range Rebel',d:'You came to disagree. Most takes don\u2019t survive your table.'},
+        {n:'Back-Nine Contrarian',d:'You don\u2019t buy the easy take. The bar argues with you, and you like it.'},
+        {n:'Fairway Moderate',d:'You call it down the middle \u2014 agree when it\u2019s right, push back when it\u2019s not.'},
+        {n:'Clubhouse Regular',d:'You see golf the way most people do. Comfortable seat, cold beer, solid takes.'},
+        {n:'House Favorite',d:'You\u2019re with the bar on every take. Easy company, cold beer, zero arguments.'}
+      ];
+      var counts=null, idx=0, showResult=false, busy=false;
+      var store=load();
+      function load(){ try{return JSON.parse(localStorage.getItem(LS))||{votes:{},done:false};}catch(e){return {votes:{},done:false};} }
+      function save(){ try{localStorage.setItem(LS,JSON.stringify(store));}catch(e){} }
+      function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+      function fmt(n){return (n||0).toLocaleString();}
+      function zero(){ var t=[];for(var i=0;i<takes.length;i++)t.push({b:0,g:0});return {takes:t,playedToday:0}; }
+      function done(){ return Object.keys(store.votes).length>=takes.length; }
+
+      function get(){
+        fetch(API).then(function(r){return r.json();}).then(function(d){
+          counts=(d&&d.takes)?d:zero(); render();
+        }).catch(function(){ counts=zero(); render(); });
+      }
+      function vote(c){
+        if(busy||store.votes[idx]!=null) return;
+        busy=true; store.votes[idx]=c; save();
+        if(counts&&counts.takes[idx]) counts.takes[idx][c]++;
+        render();
+        fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:idx,choice:c})})
+          .then(function(r){return r.json();}).then(function(d){ if(d&&d.takes)counts=d; busy=false; render(); })
+          .catch(function(){ busy=false; });
+      }
+      function complete(){
+        if(store.done||!done()) return; store.done=true; save();
+        fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({complete:true})})
+          .then(function(r){return r.json();}).then(function(d){ if(d&&d.takes){counts=d; render();} }).catch(function(){});
+      }
+
+      function render(){
+        if(!counts) return;
+        var dots='';
+        for(var i=0;i<takes.length;i++){
+          dots+='<button class="mrht-dot'+((i===idx&&!showResult)?' on':'')+(store.votes[i]!=null?' done':'')+'" data-i="'+i+'"></button>';
+        }
+        root.innerHTML=
+          '<div class="mrht-mono" style="font-size:10px;color:#9b8c6a;letter-spacing:.5px;margin-top:2px;">Vote \u00b7 Birdie = agree \u00b7 Bogey = disagree</div>'+
+          '<div style="display:flex;gap:7px;margin-top:9px;">'+dots+'</div>'+
+          '<div class="mrht-card">'+(showResult?resultHTML():cardHTML())+'</div>';
+        wire();
+      }
+      function bar(label,pct,color){
+        return '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">'+
+          '<span style="font-size:13px;width:18px;">'+label+'</span>'+
+          '<div class="mrht-bar" style="flex:1;"><div style="height:100%;width:'+pct+'%;background:'+color+';transition:width .5s ease;"></div></div>'+
+          '<span class="mrht-mono" style="font-weight:bold;color:'+color+';font-size:12px;width:34px;text-align:right;">'+pct+'%</span></div>';
+      }
+      function cardHTML(){
+        var t=takes[idx], c=counts.takes[idx], mine=store.votes[idx];
+        var spicy=t.spicy?'<span class="mrht-mono" style="background:#f7e1cf;color:#c0531f;font-weight:bold;font-size:9px;padding:2px 6px;border-radius:20px;">\uD83C\uDF36 SPICY</span>':'';
+        var head='<div style="display:flex;align-items:center;justify-content:space-between;">'+
+            '<span class="mrht-mono" style="color:#b08a2e;font-size:11px;letter-spacing:1.5px;">TAKE '+(idx+1)+' OF '+takes.length+'</span>'+
+            '<div><button class="mrht-nav" data-nav="-1">\u2039</button><button class="mrht-nav" data-nav="1">\u203a</button></div></div>'+
+          '<div style="display:flex;align-items:center;gap:7px;margin-top:6px;flex-wrap:wrap;">'+
+            '<span class="mrht-mono" style="color:#2f7d5b;font-weight:bold;font-size:11px;letter-spacing:1px;">'+t.tag+'</span>'+spicy+'</div>'+
+          '<div style="font-size:16px;line-height:1.42;font-weight:bold;margin:11px 0 8px;">\u201C'+esc(t.text)+'\u201D</div>'+
+          '<div class="mrht-mono" style="color:#9b8c6a;font-size:10px;">\u2014 The Mulligan Report</div>';
+        if(mine==null){
+          return head+'<div style="display:flex;gap:8px;margin-top:13px;">'+
+            '<div class="mrht-btn" data-vote="b"><span style="font-size:15px;font-weight:bold;">\uD83D\uDC26 Birdie</span><div class="mrht-mono" style="font-size:9px;letter-spacing:1.5px;color:#8a7f63;margin-top:1px;">AGREE</div></div>'+
+            '<div class="mrht-btn" data-vote="g"><span style="font-size:15px;font-weight:bold;">\uD83D\uDC80 Bogey</span><div class="mrht-mono" style="font-size:9px;letter-spacing:1.5px;color:#8a7f63;margin-top:1px;">DISAGREE</div></div></div>';
+        }
+        var total=c.b+c.g, bp=total?Math.round(c.b/total*100):0, gp=total?100-bp:0;
+        var bBtn='<div class="mrht-btn" style="'+(mine==='b'?'background:#1e6b4f;border:none;color:#fff;':'opacity:.5;')+'"><span style="font-size:15px;font-weight:bold;">\uD83D\uDC26 Birdie'+(mine==='b'?' \u2713':'')+'</span><div class="mrht-mono" style="font-size:9px;letter-spacing:1px;margin-top:1px;'+(mine==='b'?'color:#cfe9dd;':'color:#8a7f63;')+'">'+(mine==='b'?bp+'% OF READERS':'AGREE')+'</div></div>';
+        var gBtn='<div class="mrht-btn" style="'+(mine==='g'?'background:#a32d2d;border:none;color:#fff;':'opacity:.5;')+'"><span style="font-size:15px;font-weight:bold;">\uD83D\uDC80 Bogey'+(mine==='g'?' \u2713':'')+'</span><div class="mrht-mono" style="font-size:9px;letter-spacing:1px;margin-top:1px;'+(mine==='g'?'color:#f0d3d3;':'color:#8a7f63;')+'">'+(mine==='g'?gp+'% OF READERS':'DISAGREE')+'</div></div>';
+        var maj=(mine==='b'&&bp>=gp)||(mine==='g'&&gp>bp);
+        return head+'<div style="display:flex;gap:8px;margin-top:13px;">'+bBtn+gBtn+'</div>'+
+          '<div style="border-top:1px dashed #ddd0ad;margin-top:14px;padding-top:12px;">'+
+            bar('\uD83D\uDC26',bp,'#4a9d6e')+bar('\uD83D\uDC80',gp,'#d9663a')+
+            '<div style="text-align:center;margin-top:10px;"><span class="mrht-mono" style="background:#e6efe2;color:#2f7d5b;font-size:11px;padding:4px 10px;border-radius:20px;">'+(maj?'\u2705 You\u2019re with the majority!':'\uD83D\uDD25 Hot take \u2014 you\u2019re in the minority.')+'</span></div>'+
+            '<div style="text-align:center;margin-top:12px;">'+(done()?'<button class="mrht-cta" data-results="1">See My Results \u2192</button>':'<button class="mrht-cta" data-nav="1">Next Take \u2192</button>')+'</div>'+
+          '</div>';
+      }
+      function stat(v,l,c){return '<div><div style="font-size:18px;font-weight:bold;color:'+c+';">'+v+'</div><div class="mrht-mono" style="font-size:9px;color:#9b8c6a;letter-spacing:.5px;">'+l+'</div></div>';}
+      function resultHTML(){
+        var b=0,tot=0,sb=0,sg=0,fair=0,k;
+        for(var i=0;i<takes.length;i++){ sb+=counts.takes[i].b; sg+=counts.takes[i].g; }
+        for(k in store.votes){ tot++; if(store.votes[k]==='b')b++; var cc=counts.takes[k]; var mj=cc.b>=cc.g?'b':'g'; if(store.votes[k]===mj)fair++; }
+        var bog=tot-b, p=personas[Math.min(b,5)];
+        var mood=(sb+sg)?Math.round(sb/(sb+sg)*100):0;
+        var fairway=tot?Math.round(fair/tot*100):0;
+        return '<div style="text-align:center;padding:6px 4px 2px;">'+
+          '<div style="font-size:30px;">\uD83C\uDF7B</div>'+
+          '<div style="font-size:21px;font-weight:bold;margin-top:6px;">'+esc(p.n)+'</div>'+
+          '<div style="font-size:13px;color:#8a7f63;line-height:1.45;margin:6px 8px 0;">'+esc(p.d)+'</div>'+
+          '<div style="display:flex;justify-content:center;gap:30px;margin-top:16px;">'+
+            '<div><div style="font-size:22px;font-weight:bold;color:#2f7d5b;">'+b+'</div><div class="mrht-mono" style="font-size:9px;color:#9b8c6a;letter-spacing:1px;">BIRDIES</div></div>'+
+            '<div><div style="font-size:22px;font-weight:bold;color:#a32d2d;">'+bog+'</div><div class="mrht-mono" style="font-size:9px;color:#9b8c6a;letter-spacing:1px;">BOGEYS</div></div></div>'+
+          '<div style="border-top:1px dashed #ddd0ad;margin:16px 0 12px;"></div>'+
+          '<div class="mrht-mono" style="color:#b8860b;font-weight:bold;font-size:11px;letter-spacing:1px;">\uD83D\uDCCA TODAY AT THE BAR</div>'+
+          '<div style="display:flex;justify-content:center;gap:20px;margin-top:10px;">'+
+            stat(fmt(counts.playedToday),'PLAYED TODAY','#2b2620')+
+            stat(mood+'%','BAR MOOD \uD83D\uDC26','#2f7d5b')+
+            stat(fairway+'%','FAIRWAY FINDERS','#b8860b')+
+          '</div>'+
+          '<div style="margin-top:14px;"><button class="mrht-nav mrht-mono" data-back="1" style="font-size:12px;letter-spacing:1px;">\u2039 Back to takes</button></div></div>';
+      }
+      function wire(){
+        var ds=root.querySelectorAll('.mrht-dot'),i;
+        for(i=0;i<ds.length;i++){ ds[i].onclick=function(){ showResult=false; idx=parseInt(this.getAttribute('data-i'),10); render(); }; }
+        var nv=root.querySelectorAll('[data-nav]');
+        for(i=0;i<nv.length;i++){ nv[i].onclick=function(){ var d=parseInt(this.getAttribute('data-nav'),10); idx=(idx+d+takes.length)%takes.length; showResult=false; render(); }; }
+        var vb=root.querySelectorAll('[data-vote]');
+        for(i=0;i<vb.length;i++){ vb[i].onclick=function(){ vote(this.getAttribute('data-vote')); }; }
+        var rs=root.querySelector('[data-results]'); if(rs) rs.onclick=function(){ showResult=true; render(); complete(); };
+        var bk=root.querySelector('[data-back]'); if(bk) bk.onclick=function(){ showResult=false; render(); };
+      }
+      get();
+    })();
+    </script>
 
     <span class="d"></span>
 
