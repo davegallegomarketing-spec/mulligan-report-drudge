@@ -1263,6 +1263,8 @@
       function fmt(n){return (n||0).toLocaleString();}
       function zero(){ var t=[];for(var i=0;i<takes.length;i++)t.push({b:0,g:0});return {takes:t,playedToday:0}; }
       function done(){ return Object.keys(store.votes).length>=takes.length; }
+      function frontier(){ for(var i=0;i<takes.length;i++){ if(store.votes[i]==null) return i; } return takes.length; }
+      function maxIndex(){ return Math.min(frontier(), takes.length-1); }
 
       function get(){
         fetch(API).then(function(r){return r.json();}).then(function(d){
@@ -1288,7 +1290,8 @@
         if(!counts) return;
         var dots='';
         for(var i=0;i<takes.length;i++){
-          dots+='<button class="mrht-dot'+((i===idx&&!showResult)?' on':'')+(store.votes[i]!=null?' done':'')+'" data-i="'+i+'"></button>';
+          var locked=i>maxIndex();
+          dots+='<button class="mrht-dot'+((i===idx&&!showResult)?' on':'')+(store.votes[i]!=null?' done':'')+'" data-i="'+i+'" style="'+(locked?'opacity:.35;cursor:default;':'')+'"></button>';
         }
         root.innerHTML=
           '<div class="mrht-mono" style="font-size:10px;color:#9b8c6a;letter-spacing:.5px;margin-top:2px;">Vote \u00b7 Birdie = agree \u00b7 Bogey = disagree</div>'+
@@ -1305,9 +1308,10 @@
       function cardHTML(){
         var t=takes[idx], c=counts.takes[idx], mine=store.votes[idx];
         var spicy=t.spicy?'<span class="mrht-mono" style="background:#f7e1cf;color:#c0531f;font-weight:bold;font-size:9px;padding:2px 6px;border-radius:20px;">\uD83C\uDF36 SPICY</span>':'';
+        var canBack=idx>0, canFwd=idx<maxIndex();
         var head='<div style="display:flex;align-items:center;justify-content:space-between;">'+
             '<span class="mrht-mono" style="color:#b08a2e;font-size:11px;letter-spacing:1.5px;">TAKE '+(idx+1)+' OF '+takes.length+'</span>'+
-            '<div><button class="mrht-nav" data-nav="-1">\u2039</button><button class="mrht-nav" data-nav="1">\u203a</button></div></div>'+
+            '<div><button class="mrht-nav" data-nav="-1" style="'+(canBack?'':'opacity:.25;cursor:default;')+'">\u2039</button><button class="mrht-nav" data-nav="1" style="'+(canFwd?'':'opacity:.25;cursor:default;')+'">\u203a</button></div></div>'+
           '<div style="display:flex;align-items:center;gap:7px;margin-top:6px;flex-wrap:wrap;">'+
             '<span class="mrht-mono" style="color:#2f7d5b;font-weight:bold;font-size:11px;letter-spacing:1px;">'+t.tag+'</span>'+spicy+'</div>'+
           '<div style="font-size:16px;line-height:1.42;font-weight:bold;margin:11px 0 8px;">\u201C'+esc(t.text)+'\u201D</div>'+
@@ -1354,14 +1358,15 @@
       }
       function wire(){
         var ds=root.querySelectorAll('.mrht-dot'),i;
-        for(i=0;i<ds.length;i++){ ds[i].onclick=function(){ showResult=false; idx=parseInt(this.getAttribute('data-i'),10); render(); }; }
+        for(i=0;i<ds.length;i++){ ds[i].onclick=function(){ var t=parseInt(this.getAttribute('data-i'),10); if(t>maxIndex())return; showResult=false; idx=t; render(); }; }
         var nv=root.querySelectorAll('[data-nav]');
-        for(i=0;i<nv.length;i++){ nv[i].onclick=function(){ var d=parseInt(this.getAttribute('data-nav'),10); idx=(idx+d+takes.length)%takes.length; showResult=false; render(); }; }
+        for(i=0;i<nv.length;i++){ nv[i].onclick=function(){ var d=parseInt(this.getAttribute('data-nav'),10); var t=idx+d; if(t<0||t>maxIndex())return; idx=t; showResult=false; render(); }; }
         var vb=root.querySelectorAll('[data-vote]');
         for(i=0;i<vb.length;i++){ vb[i].onclick=function(){ vote(this.getAttribute('data-vote')); }; }
         var rs=root.querySelector('[data-results]'); if(rs) rs.onclick=function(){ showResult=true; render(); complete(); };
         var bk=root.querySelector('[data-back]'); if(bk) bk.onclick=function(){ showResult=false; render(); };
       }
+      idx=Math.min(frontier(),takes.length-1);
       get();
     })();
     </script>
