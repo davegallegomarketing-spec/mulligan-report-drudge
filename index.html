@@ -1257,8 +1257,8 @@
       ];
       var counts=null, idx=0, showResult=false, busy=false;
       var store=load();
-      function load(){ try{return JSON.parse(localStorage.getItem(LS))||{votes:{},done:false};}catch(e){return {votes:{},done:false};} }
-      function save(){ try{localStorage.setItem(LS,JSON.stringify(store));}catch(e){} }
+      function load(){ return {votes:{},done:false}; }
+      function save(){}
       function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
       function fmt(n){return (n||0).toLocaleString();}
       function zero(){ var t=[];for(var i=0;i<takes.length;i++)t.push({b:0,g:0});return {takes:t,playedToday:0}; }
@@ -1366,7 +1366,7 @@
         var rs=root.querySelector('[data-results]'); if(rs) rs.onclick=function(){ showResult=true; render(); complete(); };
         var bk=root.querySelector('[data-back]'); if(bk) bk.onclick=function(){ showResult=false; render(); };
       }
-      idx=Math.min(frontier(),takes.length-1);
+      idx=0;
       get();
     })();
     </script>
